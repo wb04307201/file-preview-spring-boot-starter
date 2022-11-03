@@ -70,7 +70,7 @@
             <dependency>
                 <groupId>com.gitee.wb04307201</groupId>
                 <artifactId>sql-util</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
