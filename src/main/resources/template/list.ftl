@@ -15,8 +15,7 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">原文件名</th>
-                    <th scope="col">原文件路径</th>
-                    <th scope="col">文件路径</th>
+                    <th scope="col">文件名</th>
                     <th scope="col">转换状态</th>
                     <th scope="col">转换开始时间</th>
                     <th scope="col">转换结束时间</th>
@@ -31,8 +30,7 @@
                         <tr>
                             <th scope="row">${row.id}</th>
                             <td>${row.orgFileName!'-'}</td>
-                            <td>${row.orgFilePath!'-'}</td>
-                            <td>${row.filePath!'-'}</td>
+                            <td>${row.fileName!'-'}</td>
                             <td>${row.convertStatus!'-'}</td>
                             <td>${row.convertStartTime!'-'}</td>
                             <td>${row.convertEndTime!'-'}</td>

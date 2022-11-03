@@ -70,11 +70,12 @@ public class OnlyOfficePreviewServlet extends BaseServlet {
                         "word".equals(convertInfoDto.getType()) ||
                                 "excel".equals(convertInfoDto.getType()) ||
                                 "power point".equals(convertInfoDto.getType()) ||
-                                "pdf".equals(convertInfoDto.getType())
+                                "pdf".equals(convertInfoDto.getType()) ||
+                                "txt".equals(convertInfoDto.getType())
                 ) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("url", onlyOfficePreviewProperties.getApijs());
-                    if ("word".equals(convertInfoDto.getType()) || "pdf".equals(convertInfoDto.getType()))
+                    if ("word".equals(convertInfoDto.getType()) || "pdf".equals(convertInfoDto.getType()) || "txt".equals(convertInfoDto.getType()))
                         data.put("documentType", "word");
                     else if ("excel".equals(convertInfoDto.getType()))
                         data.put("documentType", "cell");
