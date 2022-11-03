@@ -12,7 +12,7 @@
         body {
             background: #fff;
             color: #333;
-            font-family: Arial, Tahoma,sans-serif;
+            font-family: Arial, Tahoma, sans-serif;
             font-size: 12px;
             font-weight: normal;
             height: 100%;
@@ -21,28 +21,32 @@
             padding: 0;
             text-decoration: none;
         }
-
-        .form {
-            height: 100%;
-        }
-
-        div {
-            margin: 0;
-            padding: 0;
-        }
     </style>
     <script src="${url}"></script>
     <script inline="javascript">
-        var config = JSON.parse('${config}');
-        console.log(config);
+        var config = {
+            "type": "desktop",
+            "width": "100%",
+            "height": "100%",
+            "documentType": "${documentType}",
+            "document": {
+                "fileType": "${fileType}",
+                "key": "${key}",
+                "title": "${title}",
+                "url": "${url}"
+            },
+            "editorConfig": {
+                "callbackUrl": "${callbackUrl}",
+                "lang": "${zh}",
+                "user": "${user}"
+            }
+        };
     </script>
 </head>
 <body>
-<div class="form">
-    <div id="iframeEditor"></div>
-</div>
+<div id="placeholder"></div>
 <script language="javascript" type="text/javascript">
-    var docEditor = new DocsAPI.DocEditor("iframeEditor", config);
+    var docEditor = new DocsAPI.DocEditor("placeholder", config);
 </script>
 </body>
 </html>

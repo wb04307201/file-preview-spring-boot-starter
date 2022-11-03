@@ -2,10 +2,14 @@ package cn.wubo.file.online.common;
 
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.util.ArrayUtil;
+import freemarker.template.TemplateException;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommonUtils {
 
@@ -128,17 +132,17 @@ public class CommonUtils {
         }
     }
 
-    public static void setContentType(HttpServletResponse resp,String type, String extName) {
-        if("audio".equals(type) && ("m4a".equals(extName) || "mp3".equals(extName)) )
+    public static void setContentType(HttpServletResponse resp, String type, String extName) {
+        if ("audio".equals(type) && ("m4a".equals(extName) || "mp3".equals(extName)))
             resp.setContentType("audio/mpeg;charset=UTF-8");
-        else if("audio".equals(type) && "wav".equals(extName))
+        else if ("audio".equals(type) && "wav".equals(extName))
             resp.setContentType("audio/wav;charset=UTF-8");
 
-        else if("video".equals(type) && "mp4".equals(extName))
+        else if ("video".equals(type) && "mp4".equals(extName))
             resp.setContentType("video/mp4;charset=UTF-8");
-        else if("video".equals(type) && "webm".equals(extName))
+        else if ("video".equals(type) && "webm".equals(extName))
             resp.setContentType("video/webm;charset=UTF-8");
-        else if("video".equals(type) && "ogg".equals(extName))
+        else if ("video".equals(type) && "ogg".equals(extName))
             resp.setContentType("video/ogg;charset=UTF-8");
     }
 
@@ -148,7 +152,7 @@ public class CommonUtils {
             if (!file.createNewFile())
                 throw new RuntimeException("创建文件失败");
         }
-        return new FileOutputStream(file);
+        return Files.newOutputStream(file.toPath());
     }
 
     public static void writeToStream(File file, OutputStream os) throws IOException {
@@ -161,6 +165,26 @@ public class CommonUtils {
             os.flush();
         } catch (IOException e) {
             throw new IORuntimeException(e);
+        }
+    }
+
+    public static void writeFromByte(byte[] b, File file) throws IORuntimeException {
+        try (OutputStream os = getOutputStream(file)) {
+            os.write(b);
+            os.flush();
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
+
+    public static void errorPage(String message, HttpServletResponse resp) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("message", message);
+        try {
+            Page errorPage = new Page("error.ftl", data, resp.getWriter());
+            errorPage.write();
+        } catch (IOException | TemplateException e) {
+            throw new RuntimeException(e);
         }
     }
 

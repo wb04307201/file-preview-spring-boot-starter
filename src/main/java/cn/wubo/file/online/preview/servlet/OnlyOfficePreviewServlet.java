@@ -1,13 +1,12 @@
 package cn.wubo.file.online.preview.servlet;
 
 import cn.wubo.file.online.BaseServlet;
+import cn.wubo.file.online.common.CommonUtils;
 import cn.wubo.file.online.common.Page;
 import cn.wubo.file.online.file.IFileService;
 import cn.wubo.file.online.file.dto.ConvertInfoDto;
 import cn.wubo.file.online.file.storage.IStorageService;
-import cn.wubo.file.online.common.CommonUtils;
 import freemarker.template.TemplateException;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -24,13 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class PreviewServlet extends BaseServlet {
+public class OnlyOfficePreviewServlet extends BaseServlet {
 
     @Autowired
     IStorageService historyService;
 
     @Autowired
     IFileService fileService;
+
+    OnlyOfficePreviewProperties onlyOfficePreviewProperties;
 
     private static final String LOST_ID = "缺少预览文件id";
 
@@ -39,6 +40,8 @@ public class PreviewServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
+
+        log.debug(onlyOfficePreviewProperties.toString());
 
         log.debug("预览文件-----开始");
         String id = req.getParameter("id");
@@ -62,9 +65,20 @@ public class PreviewServlet extends BaseServlet {
                 historyService.save(convertInfoDto);
 
                 CommonUtils.setContentType(resp, convertInfoDto.getType(), convertInfoDto.getExtName());
-                File file = new File(convertInfoDto.getFilePath());
-                try (OutputStream os = resp.getOutputStream()) {
-                    CommonUtils.writeToStream(file, os);
+
+                if ("word".equals(convertInfoDto.getType()) || "excel".equals(convertInfoDto.getType()) || "power point".equals(convertInfoDto.getType())) {
+                    Map<String, Object> data = new HashMap<>();
+                    Page onlyofficePage = new Page("onlyoffice.ftl", data, resp.getWriter());
+                    try {
+                        onlyofficePage.write();
+                    } catch (TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    File file = new File(convertInfoDto.getFilePath());
+                    try (OutputStream os = resp.getOutputStream()) {
+                        CommonUtils.writeToStream(file, os);
+                    }
                 }
             }
         }

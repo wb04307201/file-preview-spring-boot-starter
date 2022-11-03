@@ -8,7 +8,7 @@ import cn.wubo.file.online.office.impl.JodOfficeConverter;
 import cn.wubo.file.online.office.impl.OnlyOfficeConverter;
 import cn.wubo.file.online.office.impl.SpireOfficeConverter;
 import cn.wubo.file.online.preview.servlet.PreviewConfiguration;
-import cn.wubo.file.online.preview.servlet.oo.OnlyOfficePreviewConfiguration;
+import cn.wubo.file.online.preview.servlet.OnlyOfficePreviewConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -38,7 +38,7 @@ public class FileOnlineRegistrar implements ImportBeanDefinitionRegistrar {
                 registerBean(FileServiceImpl.class, registry);
                 registerBean(PreviewConfiguration.class, registry);
                 break;
-            case "only":
+            case "onlyoffice":
                 registerBean(OnlyOfficeConverter.class, registry);
                 registerBean(OnlyOfficeFileServiceImpl.class, registry);
                 registerBean(OnlyOfficePreviewConfiguration.class, registry);
