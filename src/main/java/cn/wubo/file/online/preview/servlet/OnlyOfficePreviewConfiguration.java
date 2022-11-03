@@ -10,9 +10,11 @@ import org.springframework.context.annotation.Configuration;
 public class OnlyOfficePreviewConfiguration {
 
     @Bean
-    public ServletRegistrationBean<OnlyOfficePreviewServlet> onlyOfficePreviewServlet() {
+    public ServletRegistrationBean<OnlyOfficePreviewServlet> onlyOfficePreviewServlet(OnlyOfficePreviewProperties onlyOfficePreviewProperties) {
         ServletRegistrationBean<OnlyOfficePreviewServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new OnlyOfficePreviewServlet());
+        OnlyOfficePreviewServlet onlyOfficePreviewServlet = new OnlyOfficePreviewServlet();
+        onlyOfficePreviewServlet.setOnlyOfficePreviewProperties(onlyOfficePreviewProperties);
+        registration.setServlet(onlyOfficePreviewServlet);
         registration.addUrlMappings("/file/online/preview");
         return registration;
     }
@@ -21,7 +23,7 @@ public class OnlyOfficePreviewConfiguration {
     public ServletRegistrationBean<OnlyOfficeDownloadServlet> onlyOfficeDownloadServlet() {
         ServletRegistrationBean<OnlyOfficeDownloadServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new OnlyOfficeDownloadServlet());
-        registration.addUrlMappings("/file/online/onlyoffice/download");
+        registration.addUrlMappings("/file/online/preview/onlyoffice/download");
         return registration;
     }
 
@@ -29,7 +31,7 @@ public class OnlyOfficePreviewConfiguration {
     public ServletRegistrationBean<OnlyOfficeCallbackServlet> onlyOfficeCallbackServlet() {
         ServletRegistrationBean<OnlyOfficeCallbackServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new OnlyOfficeCallbackServlet());
-        registration.addUrlMappings("/file/online/onlyoffice/callback");
+        registration.addUrlMappings("/file/online/preview/onlyoffice/callback");
         return registration;
     }
 }

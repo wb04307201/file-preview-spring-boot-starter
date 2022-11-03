@@ -6,6 +6,7 @@ import cn.wubo.file.online.common.Page;
 import cn.wubo.file.online.file.IFileService;
 import cn.wubo.file.online.file.dto.ConvertInfoDto;
 import cn.wubo.file.online.file.storage.IStorageService;
+import com.alibaba.fastjson.JSON;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,7 @@ public class OnlyOfficeCallbackServlet extends BaseServlet {
     @Autowired
     IFileService fileService;
 
-    private static final String LOST_ID = "缺少预览文件id";
-
-    private static final String FILE_NOT_READY = "文件正在转码，请稍后再试！";
+    private final static String STATUS = "status";
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -46,9 +45,8 @@ public class OnlyOfficeCallbackServlet extends BaseServlet {
         log.debug("回调文件-----开始");
         Map<String, String[]> paramMap = req.getParameterMap();
 
-        Integer status = Integer.parseInt(paramMap.get("status")[0]);
         int saved = 0;
-        if (status == 2 || status == 3) {
+        if (paramMap.containsKey(STATUS) && (Integer.parseInt(paramMap.get(STATUS)[0]) == 2 || Integer.parseInt(paramMap.get(STATUS)[0]) == 3)) {
             String id = paramMap.get("id")[0];
             ConvertInfoDto convertInfoDto = new ConvertInfoDto();
             convertInfoDto.setId(id);
@@ -62,6 +60,14 @@ public class OnlyOfficeCallbackServlet extends BaseServlet {
             String changesurl = paramMap.get("changesurl")[0];
             File changeFile = new File("change" + File.separator + convertInfoDto.getId() + File.separator + System.currentTimeMillis() + ".zip");
             CommonUtils.writeFromByte(downloadFromOnlyOffice(changesurl), changeFile);
+        }
+
+        Map<String, Object> res = new HashMap();
+        res.put("error", saved);
+        resp.setContentType("application/json");
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write(JSON.toJSONString(res));
+            writer.flush();
         }
 
         log.debug("回调文件-----结束");

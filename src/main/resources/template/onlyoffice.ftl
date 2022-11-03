@@ -33,12 +33,16 @@
                 "fileType": "${fileType}",
                 "key": "${key}",
                 "title": "${title}",
-                "url": "${url}"
+                "url": "${downloadUrl}"
             },
             "editorConfig": {
+                "mode": "view",
                 "callbackUrl": "${callbackUrl}",
-                "lang": "${zh}",
-                "user": "${user}"
+                "lang": "${lang}",
+                "user": {
+                    "id":"${userid}",
+                    "name":"${username}"
+                }
             }
         };
     </script>

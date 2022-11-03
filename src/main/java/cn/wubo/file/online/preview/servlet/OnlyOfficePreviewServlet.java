@@ -7,6 +7,7 @@ import cn.wubo.file.online.file.IFileService;
 import cn.wubo.file.online.file.dto.ConvertInfoDto;
 import cn.wubo.file.online.file.storage.IStorageService;
 import freemarker.template.TemplateException;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -31,6 +32,7 @@ public class OnlyOfficePreviewServlet extends BaseServlet {
     @Autowired
     IFileService fileService;
 
+    @Setter
     OnlyOfficePreviewProperties onlyOfficePreviewProperties;
 
     private static final String LOST_ID = "缺少预览文件id";
@@ -40,8 +42,6 @@ public class OnlyOfficePreviewServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
-
-        log.debug(onlyOfficePreviewProperties.toString());
 
         log.debug("预览文件-----开始");
         String id = req.getParameter("id");
@@ -66,8 +66,28 @@ public class OnlyOfficePreviewServlet extends BaseServlet {
 
                 CommonUtils.setContentType(resp, convertInfoDto.getType(), convertInfoDto.getExtName());
 
-                if ("word".equals(convertInfoDto.getType()) || "excel".equals(convertInfoDto.getType()) || "power point".equals(convertInfoDto.getType())) {
+                if (
+                        "word".equals(convertInfoDto.getType()) ||
+                                "excel".equals(convertInfoDto.getType()) ||
+                                "power point".equals(convertInfoDto.getType()) ||
+                                "pdf".equals(convertInfoDto.getType())
+                ) {
                     Map<String, Object> data = new HashMap<>();
+                    data.put("url", onlyOfficePreviewProperties.getApijs());
+                    if ("word".equals(convertInfoDto.getType()) || "pdf".equals(convertInfoDto.getType()))
+                        data.put("documentType", "word");
+                    else if ("excel".equals(convertInfoDto.getType()))
+                        data.put("documentType", "cell");
+                    else if ("power point".equals(convertInfoDto.getType()))
+                        data.put("documentType", "slide");
+                    data.put("fileType", convertInfoDto.getExtName());
+                    data.put("key", convertInfoDto.getId());
+                    data.put("title", convertInfoDto.getOrgFileName());
+                    data.put("downloadUrl", onlyOfficePreviewProperties.getDownload() + "?id=" + convertInfoDto.getId());
+                    data.put("callbackUrl", onlyOfficePreviewProperties.getCallback() + "?id=" + convertInfoDto.getId());
+                    data.put("lang", "zh");
+                    data.put("userid", "file preview");
+                    data.put("username", "file preview");
                     Page onlyofficePage = new Page("onlyoffice.ftl", data, resp.getWriter());
                     try {
                         onlyofficePage.write();

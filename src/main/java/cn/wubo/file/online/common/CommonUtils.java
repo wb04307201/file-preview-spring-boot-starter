@@ -127,6 +127,10 @@ public class CommonUtils {
                 return "pdf";
             case "html":
                 return "html";
+            case "txt":
+            case "sql":
+            case "log":
+                return "txt";
             default:
                 return "unkonow";
         }
@@ -146,16 +150,20 @@ public class CommonUtils {
             resp.setContentType("video/ogg;charset=UTF-8");
     }
 
-    public static OutputStream getOutputStream(File file) throws IOException {
-        if (!file.exists()) {
-            file.getCanonicalFile().getParentFile().mkdirs();
-            if (!file.createNewFile())
-                throw new RuntimeException("创建文件失败");
+    public static OutputStream getOutputStream(File file) {
+        try {
+            if (!file.exists()) {
+                file.getCanonicalFile().getParentFile().mkdirs();
+                if (!file.createNewFile())
+                    throw new RuntimeException("创建文件失败");
+            }
+            return Files.newOutputStream(file.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return Files.newOutputStream(file.toPath());
     }
 
-    public static void writeToStream(File file, OutputStream os) throws IOException {
+    public static void writeToStream(File file, OutputStream os) {
         try (FileInputStream is = new FileInputStream(file)) {
             byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
             int len;
@@ -168,7 +176,7 @@ public class CommonUtils {
         }
     }
 
-    public static void writeFromByte(byte[] b, File file) throws IORuntimeException {
+    public static void writeFromByte(byte[] b, File file) {
         try (OutputStream os = getOutputStream(file)) {
             os.write(b);
             os.flush();
