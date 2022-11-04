@@ -37,40 +37,53 @@
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>4.0.4</version>
             </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-core</artifactId>
-                <version>5.8.5</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>31.1-jre</version>
-            </dependency>
+
+            <!-- Spire.Office for Java -->
             <dependency>
                 <groupId>e-iceblue</groupId>
                 <artifactId>spire.office.free</artifactId>
                 <version>5.3.1</version>
+            </dependency>
+
+            <!-- jodconverter -->
+            <dependency>
+                <groupId>org.jodconverter</groupId>
+                <artifactId>jodconverter-local</artifactId>
+                <version>4.4.4</version>
             </dependency>
             <dependency>
                 <groupId>org.jodconverter</groupId>
                 <artifactId>jodconverter-local-lo</artifactId>
                 <version>4.4.4</version>
             </dependency>
-            <!--<dependency>
+            <dependency>
                 <groupId>org.jodconverter</groupId>
-                <artifactId>jodconverter-online</artifactId>
-                <version>4.2.4</version>
-            </dependency>-->
+                <artifactId>jodconverter-remote</artifactId>
+                <version>4.4.4</version>
+            </dependency>
             <dependency>
                 <groupId>org.jodconverter</groupId>
                 <artifactId>jodconverter-spring-boot-starter</artifactId>
                 <version>4.4.4</version>
             </dependency>
+
+            <!-- 处理sql -->
             <dependency>
                 <groupId>com.gitee.wb04307201</groupId>
                 <artifactId>sql-util</artifactId>
                 <version>1.2</version>
+            </dependency>
+
+            <!-- 解压缩 -->
+            <dependency>
+                <groupId>net.sf.sevenzipjbinding</groupId>
+                <artifactId>sevenzipjbinding</artifactId>
+                <version>16.02-2.01</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.sevenzipjbinding</groupId>
+                <artifactId>sevenzipjbinding-all-platforms</artifactId>
+                <version>16.02-2.01</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -102,24 +115,13 @@
             <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <!-- Spire.Office for Java -->
-        <dependency>
             <groupId>e-iceblue</groupId>
             <artifactId>spire.office.free</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local -->
         <dependency>
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-local-lo</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-spring-boot-starter -->
         <dependency>
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-spring-boot-starter</artifactId>
@@ -127,6 +129,14 @@
         <dependency>
             <groupId>com.gitee.wb04307201</groupId>
             <artifactId>sql-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.sevenzipjbinding</groupId>
+            <artifactId>sevenzipjbinding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.sevenzipjbinding</groupId>
+            <artifactId>sevenzipjbinding-all-platforms</artifactId>
         </dependency>
     </dependencies>
 
