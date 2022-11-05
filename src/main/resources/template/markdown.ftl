@@ -5,7 +5,8 @@
     <title>Markdown</title>
     <script type="text/javascript" src="/marked/4.2.1/marked.min.js"></script>
     <script type="text/javascript" src="/js-base64/3.7.2/base64.min.js"></script>
-    <script type="text/javascript" src="/highlight/11.6.0/highlight.min.js"></script>
+    <script type="text/javascript" src="/highlight/11.6.0/js/highlight.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/highlight/11.6.0/css/gradient-light.min.css"/>
 </head>
 <body>
 <div id="content"></div>
