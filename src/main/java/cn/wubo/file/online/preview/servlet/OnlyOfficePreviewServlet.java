@@ -86,7 +86,7 @@ public class OnlyOfficePreviewServlet extends BaseServlet {
                         data.put("documentType", "cell");
                     else if ("power point".equals(convertInfoDto.getType()))
                         data.put("documentType", "slide");
-                    data.put("fileType", convertInfoDto.getExtName());
+                    data.put("fileType", "txt".equals(convertInfoDto.getType()) ? "txt" : convertInfoDto.getExtName());
                     data.put("key", convertInfoDto.getId());
                     data.put("title", convertInfoDto.getOrgFileName());
                     data.put("downloadUrl", onlyOfficePreviewProperties.getDownload() + "?id=" + convertInfoDto.getId());
@@ -100,9 +100,9 @@ public class OnlyOfficePreviewServlet extends BaseServlet {
                     Map<String, Object> data = new HashMap<>();
                     try (Stream<String> lines = Files.lines(Paths.get(convertInfoDto.getFilePath()))) {
                         data.put("content",
-                                        new String(Base64.getEncoder().encode(
-                                                lines.collect(Collectors.joining("\n")).getBytes()
-                                        )));
+                                new String(Base64.getEncoder().encode(
+                                        lines.collect(Collectors.joining("\n")).getBytes()
+                                )));
                     }
                     Page markdownPage = new Page("markdown.ftl", data, resp);
                     markdownPage.write();
