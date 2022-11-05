@@ -1,12 +1,13 @@
 package cn.wubo.file.online.common;
 
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.util.ArrayUtil;
 import freemarker.template.TemplateException;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class CommonUtils {
      * @return 是否包含任意一个字符串
      */
     public static boolean containsAny(CharSequence str, CharSequence... testStrs) {
-        if (!StringUtils.hasLength(str) || ArrayUtil.isEmpty(testStrs)) {
+        if (!StringUtils.hasLength(str) || arrayIsEmpty(testStrs)) {
             return false;
         }
         for (CharSequence checkStr : testStrs) {
@@ -49,6 +50,17 @@ public class CommonUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 数组是否为空
+     *
+     * @param <T>   数组元素类型
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static <T> boolean arrayIsEmpty(T[] array) {
+        return array == null || array.length == 0;
     }
 
     /**
@@ -131,8 +143,10 @@ public class CommonUtils {
             case "sql":
             case "log":
                 return "txt";
+            case "md":
+                return "markdown";
             default:
-                return "unkonow";
+                return "unknow";
         }
     }
 
@@ -172,7 +186,7 @@ public class CommonUtils {
             }
             os.flush();
         } catch (IOException e) {
-            throw new IORuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -181,19 +195,15 @@ public class CommonUtils {
             os.write(b);
             os.flush();
         } catch (IOException e) {
-            throw new IORuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
     public static void errorPage(String message, HttpServletResponse resp) {
         Map<String, Object> data = new HashMap<>();
         data.put("message", message);
-        try {
-            Page errorPage = new Page("error.ftl", data, resp.getWriter());
-            errorPage.write();
-        } catch (IOException | TemplateException e) {
-            throw new RuntimeException(e);
-        }
+        Page errorPage = new Page("error.ftl", data, resp);
+        errorPage.write();
     }
 
 }

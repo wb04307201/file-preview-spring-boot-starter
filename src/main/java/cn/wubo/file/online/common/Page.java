@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,18 +16,22 @@ public class Page {
 
     private String templateName;
     private Map<String, Object> params;
-    private Writer out;
+    private HttpServletResponse resp;
 
-    public Page(String templateName, Map<String, Object> params, Writer out) {
+    public Page(String templateName, Map<String, Object> params, HttpServletResponse resp) {
         this.templateName = templateName;
         this.params = params;
-        this.out = out;
+        this.resp = resp;
     }
 
-    public void write() throws IOException, TemplateException {
-        freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
-        cfg.setClassForTemplateLoading(this.getClass(), "/template");
-        Template template = cfg.getTemplate(templateName, "UTF-8");
-        template.process(params, out);
+    public void write() {
+        try (PrintWriter printWriter = resp.getWriter()) {
+            freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
+            cfg.setClassForTemplateLoading(this.getClass(), "/template");
+            Template template = cfg.getTemplate(templateName, "UTF-8");
+            template.process(params, printWriter);
+        } catch (IOException | TemplateException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

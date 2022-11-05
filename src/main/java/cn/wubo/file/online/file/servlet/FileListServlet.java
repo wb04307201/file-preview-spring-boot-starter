@@ -25,12 +25,8 @@ public class FileListServlet extends BaseServlet {
         Map<String, Object> data = new HashMap<>();
         data.put("list", fileService.list(new ConvertInfoDto()));
 
-        Page listPage = new Page("list.ftl", data, resp.getWriter());
-        try {
-            listPage.write();
-        } catch (TemplateException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        Page listPage = new Page("list.ftl", data, resp);
+        listPage.write();
         //super.doGet(req, resp);
     }
 }
