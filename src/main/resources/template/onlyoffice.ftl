@@ -23,7 +23,7 @@
         }
     </style>
     <script src="${url}"></script>
-    <script inline="javascript">
+    <script>
         var config = {
             "type": "desktop",
             "width": "100%",
