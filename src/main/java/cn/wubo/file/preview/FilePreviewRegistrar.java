@@ -23,15 +23,18 @@ public class FilePreviewRegistrar implements ImportBeanDefinitionRegistrar {
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         Map<String, Object> params = importingClassMetadata.getAnnotationAttributes(EnableFilePreview.class.getName());
-        String covert = (String) params.get("convert");
-        String storage = (String) params.get("storage");
-        registerBean(getStorageClass(storage), registry);
-        registerBeanConvert(covert, registry);
-        registerBean(FileListConfiguration.class, registry);
+        if (params != null) {
+            String covert = (String) params.get("convert");
+            String storage = (String) params.get("storage");
+            registerBean(getStorageClass(storage), registry);
+            registerBeanConvert(covert, registry);
+            registerBean(FileListConfiguration.class, registry);
+        }
         //ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
     }
 
     private void registerBeanConvert(String value, BeanDefinitionRegistry registry) {
+        log.debug("convert:{}", value);
         switch (value) {
             case "spire":
                 registerBean(SpireOfficeConverter.class, registry);
@@ -53,11 +56,8 @@ public class FilePreviewRegistrar implements ImportBeanDefinitionRegistrar {
     }
 
     private Class<?> getStorageClass(String value) {
-        switch (value) {
-            case "h2":
-            default:
-                return H2StorageServiceImpl.class;
-        }
+        log.debug("storage:{}", value);
+        return H2StorageServiceImpl.class;
     }
 
     private void registerBean(Class<?> clasz, BeanDefinitionRegistry registry) {
