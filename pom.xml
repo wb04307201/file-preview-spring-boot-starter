@@ -58,11 +58,6 @@
             </dependency>
             <dependency>
                 <groupId>org.jodconverter</groupId>
-                <artifactId>jodconverter-remote</artifactId>
-                <version>4.4.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jodconverter</groupId>
                 <artifactId>jodconverter-spring-boot-starter</artifactId>
                 <version>4.4.4</version>
             </dependency>
@@ -75,6 +70,18 @@
             </dependency>
 
             <!-- 解压缩 -->
+            <dependency>
+                <groupId>net.sf.sevenzipjbinding</groupId>
+                <artifactId>sevenzipjbinding</artifactId>
+                <version>16.02-2.01</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.sevenzipjbinding</groupId>
+                <artifactId>sevenzipjbinding-all-platforms</artifactId>
+                <version>16.02-2.01</version>
+            </dependency>
+
+            <!-- sevenzipjbinding -->
             <dependency>
                 <groupId>net.sf.sevenzipjbinding</groupId>
                 <artifactId>sevenzipjbinding</artifactId>
@@ -129,6 +136,14 @@
         <dependency>
             <groupId>com.gitee.wb04307201</groupId>
             <artifactId>sql-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.sevenzipjbinding</groupId>
+            <artifactId>sevenzipjbinding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.sevenzipjbinding</groupId>
+            <artifactId>sevenzipjbinding-all-platforms</artifactId>
         </dependency>
         <dependency>
             <groupId>net.sf.sevenzipjbinding</groupId>
