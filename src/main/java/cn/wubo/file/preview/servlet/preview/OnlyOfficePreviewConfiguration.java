@@ -15,7 +15,7 @@ public class OnlyOfficePreviewConfiguration {
         OnlyOfficePreviewServlet onlyOfficePreviewServlet = new OnlyOfficePreviewServlet();
         onlyOfficePreviewServlet.setOnlyOfficePreviewProperties(onlyOfficePreviewProperties);
         registration.setServlet(onlyOfficePreviewServlet);
-        registration.addUrlMappings("/file/online/preview");
+        registration.addUrlMappings("/file/preview");
         return registration;
     }
 
@@ -23,7 +23,7 @@ public class OnlyOfficePreviewConfiguration {
     public ServletRegistrationBean<DownloadServlet> onlyOfficeDownloadServlet() {
         ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new DownloadServlet());
-        registration.addUrlMappings("/file/online/download");
+        registration.addUrlMappings("/file/preview/download");
         return registration;
     }
 
@@ -31,7 +31,7 @@ public class OnlyOfficePreviewConfiguration {
     public ServletRegistrationBean<OnlyOfficeCallbackServlet> onlyOfficeCallbackServlet() {
         ServletRegistrationBean<OnlyOfficeCallbackServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new OnlyOfficeCallbackServlet());
-        registration.addUrlMappings("/file/online/preview/onlyoffice/callback");
+        registration.addUrlMappings("/file/preview/onlyoffice/callback");
         return registration;
     }
 }

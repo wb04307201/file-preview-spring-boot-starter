@@ -11,7 +11,7 @@ public class PreviewConfiguration {
     public ServletRegistrationBean<PreviewServlet> officeServlet() {
         ServletRegistrationBean<PreviewServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new PreviewServlet());
-        registration.addUrlMappings("/file/online/preview");
+        registration.addUrlMappings("/file/preview");
         return registration;
     }
 
@@ -19,7 +19,7 @@ public class PreviewConfiguration {
     public ServletRegistrationBean<DownloadServlet> onlyOfficeDownloadServlet() {
         ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new DownloadServlet());
-        registration.addUrlMappings("/file/online/download");
+        registration.addUrlMappings("/file/preview/download");
         return registration;
     }
 }

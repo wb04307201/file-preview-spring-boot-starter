@@ -36,7 +36,7 @@
                             <td>${row.convertEndTime!'-'}</td>
                             <td>${row.prePreviewTime!'-'}</td>
                             <td>${row.errorMessage!'-'}</td>
-                            <td><a href="/file/online/preview?id=${row.id}" class="link-primary">预览文件</a></td>
+                            <td><a href="/file/preview?id=${row.id}" class="link-primary">预览文件</a></td>
                         </tr>
                     </#list>
                 </#if>

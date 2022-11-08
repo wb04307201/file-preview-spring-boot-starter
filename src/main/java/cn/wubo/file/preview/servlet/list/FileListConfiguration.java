@@ -11,7 +11,7 @@ public class FileListConfiguration {
     public ServletRegistrationBean<FileListServlet> listServlet() {
         ServletRegistrationBean<FileListServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new FileListServlet());
-        registration.addUrlMappings("/file/online/list");
+        registration.addUrlMappings("/file/preview/list");
         return registration;
     }
 }
