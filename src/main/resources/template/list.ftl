@@ -29,7 +29,7 @@
                     <#list list as row>
                         <tr>
                             <th scope="row">${row.id}</th>
-                            <td>${row.orgFileName!'-'}</td>
+                            <td>${row.sourceFileName!'-'}</td>
                             <td>${row.fileName!'-'}</td>
                             <td>${row.convertStatus!'-'}</td>
                             <td>${row.convertStartTime!'-'}</td>
