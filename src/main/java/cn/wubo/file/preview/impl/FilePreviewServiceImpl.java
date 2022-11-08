@@ -61,13 +61,7 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
         convertInfoDto.setSourceExtName(CommonUtils.extName(convertInfoDto.getSourceFileName()));
         convertInfoDto.setSourceType(CommonUtils.fileType(convertInfoDto.getSourceExtName()));
-        log.debug("转换文件-----orgExtName:{} orgType:{}", convertInfoDto.getSourceExtName(), convertInfoDto.getSourceType());
-        historyService.save(convertInfoDto);
-        return convertInfoDto;
-    }
-
-    public void doCovert(ConvertInfoDto convertInfoDto) {
-        log.debug("转换线程-----开始-----" + Thread.currentThread().getName());
+        log.debug("源文件-----sourceExtName:{} sourceType:{}", convertInfoDto.getSourceExtName(), convertInfoDto.getSourceType());
         switch (convertInfoDto.getSourceType()) {
             case "word":
             case "power point":
@@ -83,14 +77,18 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
                 convertInfoDto.setType(convertInfoDto.getSourceType());
                 break;
         }
-
+        log.debug("转换文件-----extName:{} type:{}", convertInfoDto.getExtName(), convertInfoDto.getType());
         convertInfoDto.setFileName(convertInfoDto.getId() + CommonUtils.DOT + convertInfoDto.getExtName());
-        log.debug("转换线程-----covertFileName:{}", convertInfoDto.getFileName());
-
+        log.debug("转换文件-----fileName:{}", convertInfoDto.getFileName());
         String filePath = "covert" + File.separator + convertInfoDto.getFileName();
-        log.debug("转换线程-----filePath:{}", filePath);
+        log.debug("转换文件-----filePath:{}", filePath);
+        historyService.save(convertInfoDto);
+        return convertInfoDto;
+    }
 
-        try (OutputStream os = CommonUtils.getOutputStream(filePath)) {
+    public void doCovert(ConvertInfoDto convertInfoDto) {
+        log.debug("转换线程-----开始-----" + Thread.currentThread().getName());
+        try (OutputStream os = CommonUtils.getOutputStream(convertInfoDto.getFilePath())) {
             switch (convertInfoDto.getSourceType()) {
                 case "word":
                     officeConverter.wordConvert(convertInfoDto.getSourceFilePath(), os);
@@ -111,7 +109,6 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
             log.debug("转换线程-----error:{}", e.getMessage());
             throw new RuntimeException(e);
         } finally {
-            convertInfoDto.setFilePath(filePath);
             if ("10".equals(convertInfoDto.getConvertStatus())) convertInfoDto.setConvertStatus("20");
             convertInfoDto.setConvertEndTime(new Timestamp(System.currentTimeMillis()));
             historyService.save(convertInfoDto);

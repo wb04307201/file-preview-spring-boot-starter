@@ -59,31 +59,28 @@ public class OnlyOfficeFilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
         convertInfoDto.setSourceExtName(CommonUtils.extName(convertInfoDto.getSourceFileName()));
         convertInfoDto.setSourceType(CommonUtils.fileType(convertInfoDto.getSourceExtName()));
-        log.debug("转换文件-----orgExtName:{} orgType:{}", convertInfoDto.getSourceExtName(), convertInfoDto.getSourceType());
+        log.debug("源文件-----orgExtName:{} orgType:{}", convertInfoDto.getSourceExtName(), convertInfoDto.getSourceType());
+        convertInfoDto.setExtName(convertInfoDto.getSourceExtName());
+        convertInfoDto.setType(convertInfoDto.getSourceType());
+        log.debug("转换文件-----extName:{} type:{}", convertInfoDto.getExtName(), convertInfoDto.getType());
+        convertInfoDto.setFileName(convertInfoDto.getId() + CommonUtils.DOT + convertInfoDto.getExtName());
+        log.debug("转换文件-----fileName:{}", convertInfoDto.getFileName());
+        String filePath = "covert" + File.separator + convertInfoDto.getFileName();
+        log.debug("转换文件-----filePath:{}", filePath);
         historyService.save(convertInfoDto);
         return convertInfoDto;
     }
 
     public void doCovert(ConvertInfoDto convertInfoDto) {
         log.debug("转换线程-----开始-----OnlyOffice-----" + Thread.currentThread().getName());
-        convertInfoDto.setExtName(convertInfoDto.getSourceExtName());
-        convertInfoDto.setType(convertInfoDto.getSourceType());
-
-        convertInfoDto.setFileName(convertInfoDto.getId() + CommonUtils.DOT + convertInfoDto.getExtName());
-        log.debug("转换线程-----covertFileName:{}", convertInfoDto.getFileName());
-
-        String filePath = "covert" + File.separator + convertInfoDto.getFileName();
-        log.debug("转换线程-----filePath:{}", filePath);
-
-        try (OutputStream os = CommonUtils.getOutputStream(filePath)) {
-            CommonUtils.writeToStream(filePath, os);
+        try (OutputStream os = CommonUtils.getOutputStream(convertInfoDto.getFilePath())) {
+            CommonUtils.writeToStream(convertInfoDto.getSourceFilePath(), os);
         } catch (IOException e) {
             convertInfoDto.setConvertStatus("30");
             convertInfoDto.setErrorMessage(e.getMessage());
             log.debug("转换线程-----error:{}", e.getMessage());
             throw new RuntimeException(e);
         } finally {
-            convertInfoDto.setFilePath(filePath);
             if ("10".equals(convertInfoDto.getConvertStatus())) convertInfoDto.setConvertStatus("20");
             convertInfoDto.setConvertEndTime(new Timestamp(System.currentTimeMillis()));
             historyService.save(convertInfoDto);
