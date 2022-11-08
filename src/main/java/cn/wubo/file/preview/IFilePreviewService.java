@@ -6,7 +6,7 @@ public interface IFilePreviewService {
 
     ConvertInfoDto covert(String sourcePath);
 
-    ConvertInfoDto covert(String sourcePath,ConvertInfoDto convertInfoDto);
+    ConvertInfoDto recovert(ConvertInfoDto convertInfoDto);
 
     ConvertInfoDto record(String sourcePath);
 }

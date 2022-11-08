@@ -60,7 +60,7 @@ public class PreviewServlet extends BaseServlet {
                 CommonUtils.errorPage(FILE_NOT_READY, resp);
             } else {
                 if ("00".equals(convertInfoDto.getConvertStatus()))
-                    convertInfoDto = fileService.covert(convertInfoDto.getFilePath(), convertInfoDto);
+                    convertInfoDto = fileService.recovert(convertInfoDto);
                 convertInfoDto.setPrePreviewTime(new Timestamp(System.currentTimeMillis()));
                 historyService.save(convertInfoDto);
 

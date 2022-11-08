@@ -37,7 +37,7 @@ public class OnlyOfficeFilePreviewServiceImpl implements IFilePreviewService {
     }
 
     @Override
-    public ConvertInfoDto covert(String sourcePath, ConvertInfoDto convertInfoDto) {
+    public ConvertInfoDto recovert(ConvertInfoDto convertInfoDto) {
         convertInfoDto.setConvertStatus("10");
         convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
         historyService.save(convertInfoDto);
@@ -56,7 +56,7 @@ public class OnlyOfficeFilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setSourceFileName(path.getFileName().toString());
         convertInfoDto.setSourceFilePath(path.toAbsolutePath().toString());
         convertInfoDto.setConvertStatus(convertStatus);
-        convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
+        if("10".equals(convertStatus)) convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
         convertInfoDto.setSourceExtName(CommonUtils.extName(convertInfoDto.getSourceFileName()));
         convertInfoDto.setSourceType(CommonUtils.fileType(convertInfoDto.getSourceExtName()));
         log.debug("源文件-----sourceExtName:{} sourceType:{}", convertInfoDto.getSourceExtName(), convertInfoDto.getSourceType());
