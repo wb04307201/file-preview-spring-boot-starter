@@ -61,7 +61,7 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
         convertInfoDto.setSourceExtName(CommonUtils.extName(convertInfoDto.getSourceFileName()));
         convertInfoDto.setSourceType(CommonUtils.fileType(convertInfoDto.getSourceExtName()));
-        log.debug("源文件-----sourceExtName:{} sourceType:{}", convertInfoDto.getSourceExtName(), convertInfoDto.getSourceType());
+        log.debug("源文件-----sourceFilePath:{} sourceType:{}", convertInfoDto.getSourceFilePath(), convertInfoDto.getSourceType());
         switch (convertInfoDto.getSourceType()) {
             case "word":
             case "power point":
@@ -77,11 +77,9 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
                 convertInfoDto.setType(convertInfoDto.getSourceType());
                 break;
         }
-        log.debug("转换文件-----extName:{} type:{}", convertInfoDto.getExtName(), convertInfoDto.getType());
         convertInfoDto.setFileName(convertInfoDto.getId() + CommonUtils.DOT + convertInfoDto.getExtName());
-        log.debug("转换文件-----fileName:{}", convertInfoDto.getFileName());
-        String filePath = "covert" + File.separator + convertInfoDto.getFileName();
-        log.debug("转换文件-----filePath:{}", filePath);
+        convertInfoDto.setFilePath(Paths.get("covert" + File.separator + convertInfoDto.getFileName()).toAbsolutePath().toString());
+        log.debug("转换文件-----filePath:{} type:{}", convertInfoDto.getFilePath(),convertInfoDto.getType());
         historyService.save(convertInfoDto);
         return convertInfoDto;
     }

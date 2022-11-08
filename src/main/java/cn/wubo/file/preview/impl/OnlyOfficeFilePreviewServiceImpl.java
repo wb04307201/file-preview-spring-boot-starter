@@ -62,11 +62,9 @@ public class OnlyOfficeFilePreviewServiceImpl implements IFilePreviewService {
         log.debug("源文件-----sourceExtName:{} sourceType:{}", convertInfoDto.getSourceExtName(), convertInfoDto.getSourceType());
         convertInfoDto.setExtName(convertInfoDto.getSourceExtName());
         convertInfoDto.setType(convertInfoDto.getSourceType());
-        log.debug("转换文件-----extName:{} type:{}", convertInfoDto.getExtName(), convertInfoDto.getType());
         convertInfoDto.setFileName(convertInfoDto.getId() + CommonUtils.DOT + convertInfoDto.getExtName());
-        log.debug("转换文件-----fileName:{}", convertInfoDto.getFileName());
-        String filePath = "covert" + File.separator + convertInfoDto.getFileName();
-        log.debug("转换文件-----filePath:{}", filePath);
+        convertInfoDto.setFilePath(Paths.get("covert" + File.separator + convertInfoDto.getFileName()).toAbsolutePath().toString());
+        log.debug("转换文件-----filePath:{} type:{}", convertInfoDto.getFilePath(),convertInfoDto.getType());
         historyService.save(convertInfoDto);
         return convertInfoDto;
     }
