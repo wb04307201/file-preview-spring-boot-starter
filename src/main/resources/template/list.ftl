@@ -28,10 +28,27 @@
                 <#if list?? && (list?size > 0)>
                     <#list list as row>
                         <tr>
-                            <th scope="row">${row.id}</th>
+                            <th scope="row">${row_index + 1}</th>
                             <td>${row.sourceFileName!'-'}</td>
                             <td>${row.fileName!'-'}</td>
-                            <td>${row.convertStatus!'-'}</td>
+                            <td>
+                                <#switch row.convertStatus>
+                                    <#case "00">
+                                        未转换
+                                        <#break>
+                                    <#case "10">
+                                        转换中
+                                        <#break>
+                                    <#case "20">
+                                        转换完成
+                                        <#break>
+                                    <#case "30">
+                                        转换失败
+                                        <#break>
+                                    <#default>
+                                        -
+                                </#switch>
+                            </td>
                             <td>${row.convertStartTime!'-'}</td>
                             <td>${row.convertEndTime!'-'}</td>
                             <td>${row.prePreviewTime!'-'}</td>
