@@ -53,6 +53,9 @@ public class H2StorageServiceImpl implements IStorageService {
     public List<ConvertInfoDto> list(ConvertInfoDto convertInfoDto) {
         try {
             Connection conn = connectionPool.getConnection();
+            if (!ExecuteSqlUtils.isTableExists(conn, FILE_CONVERT_INFO, connectionPool.getDbType())) {
+                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(FILE_CONVERT_INFO, convertInfoDto), new HashMap<>());
+            }
             List<ConvertInfoDto> res = ExecuteSqlUtils.executeQuery(conn, ModelSqlUtils.selectSql(FILE_CONVERT_INFO, convertInfoDto), new HashMap<>(), ConvertInfoDto.class);
             connectionPool.returnConnection(conn);
             return res;

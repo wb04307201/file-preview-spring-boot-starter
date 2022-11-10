@@ -62,6 +62,7 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setSourceExtName(CommonUtils.extName(convertInfoDto.getSourceFileName()));
         convertInfoDto.setSourceType(CommonUtils.fileType(convertInfoDto.getSourceExtName()));
         log.debug("源文件-----sourceFilePath:{} sourceType:{}", convertInfoDto.getSourceFilePath(), convertInfoDto.getSourceType());
+        historyService.save(convertInfoDto);
         switch (convertInfoDto.getSourceType()) {
             case "word":
             case "power point":
@@ -80,7 +81,6 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setFileName(convertInfoDto.getId() + CommonUtils.DOT + convertInfoDto.getExtName());
         convertInfoDto.setFilePath(Paths.get("covert" + File.separator + convertInfoDto.getFileName()).toAbsolutePath().toString());
         log.debug("转换文件-----filePath:{} type:{}", convertInfoDto.getFilePath(), convertInfoDto.getType());
-        historyService.save(convertInfoDto);
         return convertInfoDto;
     }
 
