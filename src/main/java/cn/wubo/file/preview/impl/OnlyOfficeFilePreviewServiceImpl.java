@@ -56,7 +56,7 @@ public class OnlyOfficeFilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setSourceFileName(path.getFileName().toString());
         convertInfoDto.setSourceFilePath(path.toAbsolutePath().toString());
         convertInfoDto.setConvertStatus(convertStatus);
-        if("10".equals(convertStatus)) convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
+        if ("10".equals(convertStatus)) convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
         convertInfoDto.setSourceExtName(CommonUtils.extName(convertInfoDto.getSourceFileName()));
         convertInfoDto.setSourceType(CommonUtils.fileType(convertInfoDto.getSourceExtName()));
         log.debug("源文件-----sourceExtName:{} sourceType:{}", convertInfoDto.getSourceExtName(), convertInfoDto.getSourceType());
@@ -65,25 +65,25 @@ public class OnlyOfficeFilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setType(convertInfoDto.getSourceType());
         convertInfoDto.setFileName(convertInfoDto.getId() + CommonUtils.DOT + convertInfoDto.getExtName());
         convertInfoDto.setFilePath(Paths.get("covert" + File.separator + convertInfoDto.getFileName()).toAbsolutePath().toString());
-        log.debug("转换文件-----filePath:{} type:{}", convertInfoDto.getFilePath(),convertInfoDto.getType());
+        log.debug("转换文件-----filePath:{} type:{}", convertInfoDto.getFilePath(), convertInfoDto.getType());
         return convertInfoDto;
     }
 
     public void doCovert(ConvertInfoDto convertInfoDto) {
-        log.debug("转换线程-----开始-----OnlyOffice-----" + Thread.currentThread().getName());
+        log.debug("转换线程-----开始-----OnlyOffice-----{}", Thread.currentThread().getName());
         try (OutputStream os = CommonUtils.getOutputStream(convertInfoDto.getFilePath())) {
             CommonUtils.writeToStream(convertInfoDto.getSourceFilePath(), os);
             convertInfoDto.setConverter("copy");
+            convertInfoDto.setConvertStatus("20");
         } catch (IOException e) {
             convertInfoDto.setConvertStatus("30");
             convertInfoDto.setErrorMessage(e.getMessage());
-            log.debug("转换线程-----error:{}", e.getMessage());
+            log.debug("转换线程-----error:{}-----OnlyOffice-----{}", e.getMessage(), Thread.currentThread().getName());
             throw new RuntimeException(e);
         } finally {
-            if ("10".equals(convertInfoDto.getConvertStatus())) convertInfoDto.setConvertStatus("20");
             convertInfoDto.setConvertEndTime(new Timestamp(System.currentTimeMillis()));
             historyService.save(convertInfoDto);
         }
-        log.debug("转换线程-----结束-----OnlyOffice-----" + Thread.currentThread().getName());
+        log.debug("转换线程-----结束-----OnlyOffice-----{}", Thread.currentThread().getName());
     }
 }

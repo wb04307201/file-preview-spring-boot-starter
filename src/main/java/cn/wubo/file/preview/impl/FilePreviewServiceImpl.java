@@ -85,7 +85,7 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
     }
 
     public void doCovert(ConvertInfoDto convertInfoDto) {
-        log.debug("转换线程-----开始-----" + Thread.currentThread().getName());
+        log.debug("转换线程-----开始-----{}", Thread.currentThread().getName());
         try {
             switch (convertInfoDto.getSourceType()) {
                 case "word":
@@ -104,16 +104,16 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
                     }
                     break;
             }
+            convertInfoDto.setConvertStatus("20");
         } catch (Exception e) {
             convertInfoDto.setConvertStatus("30");
             convertInfoDto.setErrorMessage(e.getMessage());
-            log.debug("转换线程-----error:{}", e.getMessage());
+            log.debug("转换线程-----error:{}-----{}", e.getMessage(), Thread.currentThread().getName());
             throw new RuntimeException(e);
         } finally {
-            if ("10".equals(convertInfoDto.getConvertStatus())) convertInfoDto.setConvertStatus("20");
             convertInfoDto.setConvertEndTime(new Timestamp(System.currentTimeMillis()));
             historyService.save(convertInfoDto);
         }
-        log.debug("转换线程-----结束-----" + Thread.currentThread().getName());
+        log.debug("转换线程-----结束-----{}", Thread.currentThread().getName());
     }
 }
