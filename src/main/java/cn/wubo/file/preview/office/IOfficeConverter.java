@@ -1,12 +1,14 @@
 package cn.wubo.file.preview.office;
 
+import cn.wubo.file.preview.dto.ConvertInfoDto;
+
 import java.io.OutputStream;
 
 public interface IOfficeConverter {
 
-    void wordConvert(String sourcePath, OutputStream os);
+    void wordConvert(ConvertInfoDto convertInfoDto);
 
-    void excelConvert(String sourcePath, OutputStream os);
+    void excelConvert(ConvertInfoDto convertInfoDto);
 
-    void pptConvert(String sourcePath, OutputStream os);
+    void pptConvert(ConvertInfoDto convertInfoDto);
 }

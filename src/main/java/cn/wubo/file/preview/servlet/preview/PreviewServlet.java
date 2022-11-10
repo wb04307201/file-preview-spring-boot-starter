@@ -1,11 +1,10 @@
 package cn.wubo.file.preview.servlet.preview;
 
-import cn.wubo.file.preview.common.BaseServlet;
-import cn.wubo.file.preview.common.Page;
 import cn.wubo.file.preview.IFilePreviewService;
+import cn.wubo.file.preview.common.BaseServlet;
+import cn.wubo.file.preview.common.CommonUtils;
 import cn.wubo.file.preview.dto.ConvertInfoDto;
 import cn.wubo.file.preview.storage.IStorageService;
-import cn.wubo.file.preview.common.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -13,18 +12,9 @@ import org.springframework.util.StringUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 public class PreviewServlet extends BaseServlet {
@@ -64,23 +54,7 @@ public class PreviewServlet extends BaseServlet {
                 convertInfoDto.setPrePreviewTime(new Timestamp(System.currentTimeMillis()));
                 historyService.save(convertInfoDto);
 
-                if ("markdown".equals(convertInfoDto.getType())) {
-                    Map<String, Object> data = new HashMap<>();
-                    try (Stream<String> lines = Files.lines(Paths.get(convertInfoDto.getFilePath()))) {
-                        data.put("content",
-                                new String(Base64.getEncoder().encode(
-                                        lines.collect(Collectors.joining("\n")).getBytes()
-                                )));
-                    }
-                    Page markdownPage = new Page("markdown.ftl", data, resp);
-                    markdownPage.write();
-                } else {
-                    CommonUtils.setContentType(resp, convertInfoDto.getType(), convertInfoDto.getExtName());
-                    File file = new File(convertInfoDto.getFilePath());
-                    try (OutputStream os = resp.getOutputStream()) {
-                        CommonUtils.writeToStream(file, os);
-                    }
-                }
+                PreviewBuilder.common(convertInfoDto, resp);
             }
         }
         log.debug("预览文件-----结束");

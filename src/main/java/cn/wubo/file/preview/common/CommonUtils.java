@@ -217,30 +217,51 @@ public class CommonUtils {
         errorPage.write();
     }
 
-    public static List<String> compress(String filePath, String direct) {
-        List<String> exacts = new ArrayList<>();
+    public static List<Integer> itemIndexes(String filePath) {
+        List<Integer> itemIndexes = new ArrayList<>();
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(filePath, "r");
              IInArchive inArchive = SevenZip.openInArchive(null, // autodetect archive type
                      new RandomAccessFileInStream(randomAccessFile));) {
             ISimpleInArchive simpleInArchive = inArchive.getSimpleInterface();
             for (ISimpleInArchiveItem item : simpleInArchive.getArchiveItems()) {
-                if (!item.isFolder()) {
+                if (!item.isFolder())
+                    itemIndexes.add(item.getItemIndex());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return itemIndexes;
+    }
+
+    public static List<String> exactItems(String filePath, String direct, List<Integer> itemIndexes) {
+        List<String> exactPaths = new ArrayList<>();
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(filePath, "r");
+             IInArchive inArchive = SevenZip.openInArchive(null, // autodetect archive type
+                     new RandomAccessFileInStream(randomAccessFile));) {
+            ISimpleInArchive simpleInArchive = inArchive.getSimpleInterface();
+            for (ISimpleInArchiveItem item : simpleInArchive.getArchiveItems()) {
+                if (itemIndexes.contains(item.getItemIndex())) {
                     ExtractOperationResult result = item.extractSlow(data -> {
                         String exactPath = direct + File.separator + item.getPath();
-                        exacts.add(exactPath);
+                        exactPaths.add(exactPath);
                         writeFromByte(data, exactPath);
                         return data.length; // Return amount of consumed data
                     });
 
-                    if (result != ExtractOperationResult.OK) {
+                    if (result != ExtractOperationResult.OK)
                         throw new RuntimeException("Error extracting item: " + result.toString());
-                    }
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return exacts;
+        return exactPaths;
+    }
+
+    public static void main(String[] args) throws IOException {
+        List<Integer> itemIndexes = itemIndexes("C:\\Users\\wb043\\Desktop\\sql-parsing-master.zip");
+        List<String> exactPaths = exactItems("C:\\Users\\wb043\\Desktop\\sql-parsing-master.zip", "exact", itemIndexes);
+        System.out.println(exactPaths);
     }
 
 }

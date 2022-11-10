@@ -1,8 +1,8 @@
 package cn.wubo.file.preview.servlet.preview;
 
+import cn.wubo.file.preview.IFilePreviewService;
 import cn.wubo.file.preview.common.BaseServlet;
 import cn.wubo.file.preview.common.CommonUtils;
-import cn.wubo.file.preview.IFilePreviewService;
 import cn.wubo.file.preview.dto.ConvertInfoDto;
 import cn.wubo.file.preview.storage.IStorageService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,6 @@ public class OnlyOfficeCallbackServlet extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
-
         log.debug("回调文件-----开始");
         Map<String, String[]> paramMap = req.getParameterMap();
 
@@ -55,9 +54,7 @@ public class OnlyOfficeCallbackServlet extends BaseServlet {
         try (PrintWriter writer = resp.getWriter()) {
             writer.write("{\"error\":0}");
         }
-
         log.debug("回调文件-----结束");
-        //super.doGet(req, resp);
     }
 
     private void downloadFromOnlyOffice(String url,String target) {

@@ -28,7 +28,6 @@ public class DownloadServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
-
         log.debug("下载文件-----开始");
         String id = req.getParameter("id");
         ConvertInfoDto convertInfoDto = new ConvertInfoDto();
@@ -40,6 +39,5 @@ public class DownloadServlet extends BaseServlet {
             CommonUtils.writeToStream(file, os);
         }
         log.debug("下载----结束");
-        //super.doGet(req, resp);
     }
 }

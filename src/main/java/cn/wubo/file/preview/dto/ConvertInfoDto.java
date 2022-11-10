@@ -26,4 +26,5 @@ public class ConvertInfoDto {
     private Timestamp convertEndTime;
     private Timestamp prePreviewTime;
     private String errorMessage;
+    private String converter;
 }

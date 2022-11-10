@@ -1,10 +1,10 @@
 package cn.wubo.file.preview.impl;
 
-import cn.wubo.file.preview.common.CommonUtils;
 import cn.wubo.file.preview.IFilePreviewService;
+import cn.wubo.file.preview.common.CommonUtils;
 import cn.wubo.file.preview.dto.ConvertInfoDto;
-import cn.wubo.file.preview.storage.IStorageService;
 import cn.wubo.file.preview.office.IOfficeConverter;
+import cn.wubo.file.preview.storage.IStorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -58,7 +58,7 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         convertInfoDto.setSourceFileName(path.getFileName().toString());
         convertInfoDto.setSourceFilePath(path.toAbsolutePath().toString());
         convertInfoDto.setConvertStatus(convertStatus);
-        if("10".equals(convertStatus)) convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
+        if ("10".equals(convertStatus)) convertInfoDto.setConvertStartTime(new Timestamp(System.currentTimeMillis()));
         convertInfoDto.setSourceExtName(CommonUtils.extName(convertInfoDto.getSourceFileName()));
         convertInfoDto.setSourceType(CommonUtils.fileType(convertInfoDto.getSourceExtName()));
         log.debug("源文件-----sourceFilePath:{} sourceType:{}", convertInfoDto.getSourceFilePath(), convertInfoDto.getSourceType());
@@ -79,29 +79,32 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         }
         convertInfoDto.setFileName(convertInfoDto.getId() + CommonUtils.DOT + convertInfoDto.getExtName());
         convertInfoDto.setFilePath(Paths.get("covert" + File.separator + convertInfoDto.getFileName()).toAbsolutePath().toString());
-        log.debug("转换文件-----filePath:{} type:{}", convertInfoDto.getFilePath(),convertInfoDto.getType());
+        log.debug("转换文件-----filePath:{} type:{}", convertInfoDto.getFilePath(), convertInfoDto.getType());
         historyService.save(convertInfoDto);
         return convertInfoDto;
     }
 
     public void doCovert(ConvertInfoDto convertInfoDto) {
         log.debug("转换线程-----开始-----" + Thread.currentThread().getName());
-        try (OutputStream os = CommonUtils.getOutputStream(convertInfoDto.getFilePath())) {
+        try {
             switch (convertInfoDto.getSourceType()) {
                 case "word":
-                    officeConverter.wordConvert(convertInfoDto.getSourceFilePath(), os);
+                    officeConverter.wordConvert(convertInfoDto);
                     break;
                 case "power point":
-                    officeConverter.pptConvert(convertInfoDto.getSourceFilePath(), os);
+                    officeConverter.pptConvert(convertInfoDto);
                     break;
                 case "excel":
-                    officeConverter.excelConvert(convertInfoDto.getSourceFilePath(), os);
+                    officeConverter.excelConvert(convertInfoDto);
                     break;
                 default:
-                    CommonUtils.writeToStream(convertInfoDto.getSourceFilePath(), os);
+                    try (OutputStream os = CommonUtils.getOutputStream(convertInfoDto.getFilePath())) {
+                        CommonUtils.writeToStream(convertInfoDto.getSourceFilePath(), os);
+                        convertInfoDto.setConverter("copy");
+                    }
                     break;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             convertInfoDto.setConvertStatus("30");
             convertInfoDto.setErrorMessage(e.getMessage());
             log.debug("转换线程-----error:{}", e.getMessage());

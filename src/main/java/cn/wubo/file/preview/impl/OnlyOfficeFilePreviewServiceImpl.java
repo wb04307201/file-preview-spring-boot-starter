@@ -73,6 +73,7 @@ public class OnlyOfficeFilePreviewServiceImpl implements IFilePreviewService {
         log.debug("转换线程-----开始-----OnlyOffice-----" + Thread.currentThread().getName());
         try (OutputStream os = CommonUtils.getOutputStream(convertInfoDto.getFilePath())) {
             CommonUtils.writeToStream(convertInfoDto.getSourceFilePath(), os);
+            convertInfoDto.setConverter("copy");
         } catch (IOException e) {
             convertInfoDto.setConvertStatus("30");
             convertInfoDto.setErrorMessage(e.getMessage());
