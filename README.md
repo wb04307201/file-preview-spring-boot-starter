@@ -54,10 +54,41 @@ public class FilePreviewDemoApplication {
 ```
 ### 在针对word，excel，ppt文件的处理上，支持3种模式
 #### jodconverter 使用注解@EnableFilePreview或者@EnableFilePreview(convert="jod")
-#### spire。office 使用注解@EnableFilePreview(convert="spire")
+> 安装[libroffice](https://zh-cn.libreoffice.org/)并添加配置
+```yml
+jodconverter:
+  local:
+    enabled: true
+    # libreOffice根目录
+    officeHome: C:\Program Files\LibreOffice
+    # 任务执行的超时时间
+    taskExecutionTimeout: 86400000
+    # 任务队列的超时时间
+    taskQueueTimeout: 86400000
+    # 端口（线程）
+    portNumbers: [2001,2002,2003]
+    # 一个进程的超时时间
+    processTimeout: 86400000
+```
+#### spire.office 使用注解@EnableFilePreview(convert="spire")
+> 项目中使用的spire.office为免费版本，转换office文件存在一定限制
+> 如要使用收费版本，请排除免费版本的依赖并添加正式版本  
+> [Spire.Office](https://www.e-iceblue.com/)
 #### onlyoffice 使用注解@EnableFilePreview(convert="onlyoffice")
-
+> 使用[onlyoffice](https://www.onlyoffice.com/zh/)将不对office文件进行转换    
+> 并使用onlyoffice预览office文件以及pdf，txt等类型的文件  
+> 可以通过docker快速安装onlyoffice并添加配置
+```yml
+file:
+  online:
+    preview:
+      onlyoffice:
+        apijs: http://127.0.0.1/web-apps/apps/api/documents/api.js
+        download: http://10.133.48.74:8080/file/preview/download
+        callback: http://10.133.48.74:8080/file/preview/onlyoffice/callback
+```
 ## 第五步 预览文件
+
 
 
 
