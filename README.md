@@ -87,8 +87,16 @@ file:
         download: http://10.133.48.74:8080/file/preview/download
         callback: http://10.133.48.74:8080/file/preview/onlyoffice/callback
 ```
-## 第五步 预览文件
+## 第五步 预览文件（截图为使用onlyoffice进行预览）
+> 通过http://127.0.0.1:8080/file/preview?id=?预览文件  
+> 通过http://127.0.0.1:8080/file/preview/list查看历史记录
 
+![img.png](img.png)
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
+![img_4.png](img_4.png)
+![img_5.png](img_5.png)
+![img_6.png](img_6.png)
 
 
 
