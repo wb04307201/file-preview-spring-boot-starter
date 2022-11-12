@@ -88,6 +88,7 @@ file:
         callback: http://10.133.48.74:8080/file/preview/onlyoffice/callback
 ```
 #### 准备扩展[document4j](https://github.com/documents4j/documents4j)
+#### 准备扩展对压缩文件的支持
 
 ## 第五步 预览文件（截图为使用onlyoffice进行预览）
 > 通过http://127.0.0.1:8080/file/preview?id=?预览文件  
