@@ -87,6 +87,8 @@ file:
         download: http://10.133.48.74:8080/file/preview/download
         callback: http://10.133.48.74:8080/file/preview/onlyoffice/callback
 ```
+#### 准备扩展[document4j](https://github.com/documents4j/documents4j)
+
 ## 第五步 预览文件（截图为使用onlyoffice进行预览）
 > 通过http://127.0.0.1:8080/file/preview?id=?预览文件  
 > 通过http://127.0.0.1:8080/file/preview/list查看历史记录
