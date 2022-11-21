@@ -62,13 +62,6 @@
                 <version>4.4.4</version>
             </dependency>
 
-            <!-- 处理sql -->
-            <dependency>
-                <groupId>com.gitee.wb04307201</groupId>
-                <artifactId>sql-util</artifactId>
-                <version>1.2.1</version>
-            </dependency>
-
             <!-- 解压缩 -->
             <dependency>
                 <groupId>net.sf.sevenzipjbinding</groupId>
@@ -136,6 +129,7 @@
         <dependency>
             <groupId>com.gitee.wb04307201</groupId>
             <artifactId>sql-util</artifactId>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>net.sf.sevenzipjbinding</groupId>
