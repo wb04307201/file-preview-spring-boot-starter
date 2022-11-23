@@ -41,7 +41,7 @@ public class OnlyOfficePreviewServlet extends BaseServlet {
         String id = req.getParameter("id");
         if (!StringUtils.hasLength(id)) {
             log.debug("预览文件-----error:{}", LOST_ID);
-            CommonUtils.errorPage(LOST_ID, resp);
+            CommonUtils.errorPage(LOST_ID, req, resp);
         } else {
             log.debug("预览文件-----id:{}", id);
             ConvertInfoDto convertInfoDto = new ConvertInfoDto();
@@ -51,14 +51,14 @@ public class OnlyOfficePreviewServlet extends BaseServlet {
             log.debug("预览文件-----convertStatus:{}", convertInfoDto.getConvertStatus());
             if ("10".equals(convertInfoDto.getConvertStatus())) {
                 log.debug("预览文件-----error:{}", FILE_NOT_READY);
-                CommonUtils.errorPage(FILE_NOT_READY, resp);
+                CommonUtils.errorPage(FILE_NOT_READY, req, resp);
             } else {
                 if ("00".equals(convertInfoDto.getConvertStatus()))
                     convertInfoDto = fileService.recovert(convertInfoDto);
                 convertInfoDto.setPrePreviewTime(new Timestamp(System.currentTimeMillis()));
                 historyService.save(convertInfoDto);
 
-                PreviewBuilder.onlyOffice(convertInfoDto, resp, onlyOfficePreviewProperties);
+                PreviewBuilder.onlyOffice(convertInfoDto, req, resp, onlyOfficePreviewProperties);
             }
         }
         log.debug("预览文件-----结束");

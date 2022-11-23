@@ -22,6 +22,7 @@ public class FileListServlet extends BaseServlet {
         resp.setCharacterEncoding("UTF-8");
 
         Map<String, Object> data = new HashMap<>();
+        data.put("contextPath", req.getContextPath());
         data.put("list", fileService.list(new ConvertInfoDto()));
 
         Page listPage = new Page("list.ftl", data, resp);

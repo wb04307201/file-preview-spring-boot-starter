@@ -85,6 +85,12 @@
                 <artifactId>sevenzipjbinding-all-platforms</artifactId>
                 <version>16.02-2.01</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.gitee.wb04307201</groupId>
+                <artifactId>sql-util</artifactId>
+                <version>1.2.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -127,25 +133,24 @@
             <artifactId>jodconverter-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.sf.sevenzipjbinding</groupId>
+            <artifactId>sevenzipjbinding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.sevenzipjbinding</groupId>
+            <artifactId>sevenzipjbinding-all-platforms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.sevenzipjbinding</groupId>
+            <artifactId>sevenzipjbinding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.sevenzipjbinding</groupId>
+            <artifactId>sevenzipjbinding-all-platforms</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.gitee.wb04307201</groupId>
             <artifactId>sql-util</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.sevenzipjbinding</groupId>
-            <artifactId>sevenzipjbinding</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.sevenzipjbinding</groupId>
-            <artifactId>sevenzipjbinding-all-platforms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.sevenzipjbinding</groupId>
-            <artifactId>sevenzipjbinding</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.sevenzipjbinding</groupId>
-            <artifactId>sevenzipjbinding-all-platforms</artifactId>
         </dependency>
     </dependencies>
 

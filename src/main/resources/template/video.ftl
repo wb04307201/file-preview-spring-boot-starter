@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Video</title>
-    <script type="text/javascript" src="/video.js/7.10.2/video.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/video.js/7.10.2/video-js.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/video.js/7.10.2/fantasy/index.css"/>
+    <script type="text/javascript" src="${contextPath}/video.js/7.10.2/video.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/video.js/7.10.2/video-js.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/video.js/7.10.2/fantasy/index.css"/>
 </head>
 <body>
 <video

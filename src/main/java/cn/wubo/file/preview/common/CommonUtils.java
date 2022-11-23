@@ -6,6 +6,7 @@ import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
 import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
@@ -210,8 +211,9 @@ public class CommonUtils {
         }
     }
 
-    public static void errorPage(String message, HttpServletResponse resp) {
+    public static void errorPage(String message, HttpServletRequest req, HttpServletResponse resp) {
         Map<String, Object> data = new HashMap<>();
+        data.put("contextPath", req.getContextPath());
         data.put("message", message);
         Page errorPage = new Page("error.ftl", data, resp);
         errorPage.write();

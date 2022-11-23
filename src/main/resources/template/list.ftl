@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>文件信息列表</title>
-    <link rel="stylesheet" type="text/css" href="/bootstrap/5.1.3/css/bootstrap.css"/>
-    <script type="text/javascript" src="/bootstrap/5.1.3/js/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/bootstrap/5.1.3/css/bootstrap.css"/>
+    <script type="text/javascript" src="${contextPath}/bootstrap/5.1.3/js/bootstrap.bundle.js"></script>
 </head>
 <body>
 <div class="container-fluid">
