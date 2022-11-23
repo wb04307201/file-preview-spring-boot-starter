@@ -39,18 +39,18 @@ public class PreviewBuilder {
         } else if ("video".equals(convertInfoDto.getType())) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, req.getContextPath());
-            data.put("url", "/file/preview/download?id=" + convertInfoDto.getId());
+            data.put("url", req.getContextPath() + "/file/preview/download?id=" + convertInfoDto.getId());
             Page markdownPage = new Page("video.ftl", data, resp);
             markdownPage.write();
         } else if ("audio".equals(convertInfoDto.getType())) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, req.getContextPath());
-            data.put("url", "/file/preview/download?id=" + convertInfoDto.getId());
+            data.put("url", req.getContextPath() + "/file/preview/download?id=" + convertInfoDto.getId());
             Page markdownPage = new Page("audio.ftl", data, resp);
             markdownPage.write();
         } else if ("pdf".equals(convertInfoDto.getType())) {
             try {
-                resp.sendRedirect(String.format("/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", req.getContextPath(), convertInfoDto.getId()));
+                resp.sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", req.getContextPath(), req.getContextPath(), convertInfoDto.getId()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
