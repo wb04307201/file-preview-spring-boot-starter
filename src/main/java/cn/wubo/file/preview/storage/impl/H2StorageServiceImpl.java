@@ -26,9 +26,6 @@ public class H2StorageServiceImpl implements IStorageService {
             convertInfoDto.setId(UUID.randomUUID().toString());
             try {
                 Connection conn = connectionPool.getConnection();
-                if (!ExecuteSqlUtils.isTableExists(conn, FILE_CONVERT_INFO, connectionPool.getDbType())) {
-                    ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(FILE_CONVERT_INFO, convertInfoDto), new HashMap<>());
-                }
                 int res = ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.insertSql(FILE_CONVERT_INFO, convertInfoDto), new HashMap<>());
                 connectionPool.returnConnection(conn);
                 if (res == 1) return convertInfoDto;
@@ -36,7 +33,7 @@ public class H2StorageServiceImpl implements IStorageService {
             } catch (SQLException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }else{
+        } else {
             try {
                 Connection conn = connectionPool.getConnection();
                 int res = ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.updateByIdSql(FILE_CONVERT_INFO, convertInfoDto), new HashMap<>());
@@ -53,12 +50,22 @@ public class H2StorageServiceImpl implements IStorageService {
     public List<ConvertInfoDto> list(ConvertInfoDto convertInfoDto) {
         try {
             Connection conn = connectionPool.getConnection();
-            if (!ExecuteSqlUtils.isTableExists(conn, FILE_CONVERT_INFO, connectionPool.getDbType())) {
-                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(FILE_CONVERT_INFO, convertInfoDto), new HashMap<>());
-            }
             List<ConvertInfoDto> res = ExecuteSqlUtils.executeQuery(conn, ModelSqlUtils.selectSql(FILE_CONVERT_INFO, convertInfoDto), new HashMap<>(), ConvertInfoDto.class);
             connectionPool.returnConnection(conn);
             return res;
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void check() {
+        try {
+            Connection conn = connectionPool.getConnection();
+            if (!ExecuteSqlUtils.isTableExists(conn, FILE_CONVERT_INFO, connectionPool.getDbType())) {
+                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(FILE_CONVERT_INFO, new ConvertInfoDto()), new HashMap<>());
+            }
+            connectionPool.returnConnection(conn);
         } catch (SQLException | InterruptedException e) {
             throw new RuntimeException(e);
         }
