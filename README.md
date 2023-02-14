@@ -84,8 +84,8 @@ jodconverter:
 docker run -i -t -d -p 80:80 -e JWT_ENABLED=false onlyoffice/documentserver
 ```
 
-> 容器启动成功后，打开http://127.0.0.1/可以看到换应页面
-> 找到如下界面，并分别在终端中执行1，2的命令，然后点击3可看到onlyoffice测试页面    
+> 容器启动成功后，打开http://127.0.0.1/可以看到欢迎页面
+> 如果需要使用onlyoffice自带的测试页面，可以找页面中如下部分，并分别在终端中执行1，2的命令，然后点击按钮3    
 > ![img_3.png](img_3.png)   
 > ![img_7.png](img_7.png)  
 > docker版本的onlyoffice安装成功后，在项目中添加配置信息
