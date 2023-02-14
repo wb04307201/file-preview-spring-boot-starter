@@ -54,7 +54,8 @@ public class FilePreviewDemoApplication {
 ```
 ### 在针对word，excel，ppt文件的处理上，支持3种模式
 #### jodconverter 使用注解@EnableFilePreview或者@EnableFilePreview(convert="jod")
-> 安装[libroffice](https://zh-cn.libreoffice.org/)并添加配置
+> 安装[libroffice](https://zh-cn.libreoffice.org/)并添加配置  
+> 详细配置内容请查看[jodconverter](https://github.com/sbraconnier/jodconverter/)
 ```yml
 jodconverter:
   local:
@@ -77,15 +78,25 @@ jodconverter:
 #### onlyoffice 使用注解@EnableFilePreview(convert="onlyoffice")
 > 使用[onlyoffice](https://www.onlyoffice.com/zh/)将不对office文件进行转换    
 > 并使用onlyoffice预览office文件以及pdf，txt等类型的文件  
-> 可以通过docker快速安装onlyoffice并添加配置
+> 可以通过docker快速安装onlyoffice，命令如下
+
+```commandline
+docker run -i -t -d -p 80:80 -e JWT_ENABLED=false onlyoffice/documentserver
+```
+
+> 容器启动成功后，打开http://127.0.0.1/并找到如下内容  
+> ![img_3.png](img_3.png)  
+> 分别在终端中执行1，2的命令，然后点击3可看到如下界面  
+> ![img_7.png](img_7.png)  
+> docker版本的onlyoffice安装成功，并在项目中添加配置信息
 ```yml
 file:
   online:
     preview:
       onlyoffice:
         apijs: http://127.0.0.1/web-apps/apps/api/documents/api.js
-        download: http://10.133.48.74:8080/file/preview/download
-        callback: http://10.133.48.74:8080/file/preview/onlyoffice/callback
+        download: http://当前机器ip:当前机器port/file/preview/download
+        callback: http://当前机器ip:当前机器port/file/preview/onlyoffice/callback
 ```
 #### 准备扩展[document4j](https://github.com/documents4j/documents4j)
 #### 准备扩展对压缩文件的支持
