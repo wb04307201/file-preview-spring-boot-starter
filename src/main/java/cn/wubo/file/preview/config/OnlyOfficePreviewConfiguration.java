@@ -1,5 +1,9 @@
-package cn.wubo.file.preview.servlet.preview;
+package cn.wubo.file.preview.config;
 
+import cn.wubo.file.preview.servlet.preview.DownloadServlet;
+import cn.wubo.file.preview.servlet.preview.OnlyOfficeCallbackServlet;
+import cn.wubo.file.preview.servlet.preview.OnlyOfficePreviewProperties;
+import cn.wubo.file.preview.servlet.preview.OnlyOfficePreviewServlet;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;

@@ -59,7 +59,7 @@ public class H2StorageServiceImpl implements IStorageService {
     }
 
     @Override
-    public void check() {
+    public void init() {
         try {
             Connection conn = connectionPool.getConnection();
             if (!ExecuteSqlUtils.isTableExists(conn, FILE_CONVERT_INFO, connectionPool.getDbType())) {

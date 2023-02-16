@@ -1,5 +1,7 @@
-package cn.wubo.file.preview.servlet.preview;
+package cn.wubo.file.preview.config;
 
+import cn.wubo.file.preview.servlet.preview.DownloadServlet;
+import cn.wubo.file.preview.servlet.preview.PreviewServlet;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 

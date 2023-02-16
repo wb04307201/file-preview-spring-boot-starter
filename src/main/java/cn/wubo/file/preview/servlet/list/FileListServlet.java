@@ -5,6 +5,7 @@ import cn.wubo.file.preview.common.Page;
 import cn.wubo.file.preview.dto.ConvertInfoDto;
 import cn.wubo.file.preview.storage.IStorageService;
 import cn.wubo.file.preview.storage.impl.H2StorageServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,8 @@ import java.util.Map;
 
 public class FileListServlet extends BaseServlet {
 
-    IStorageService fileService = new H2StorageServiceImpl();
+    @Autowired
+    IStorageService fileService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -98,12 +98,67 @@ file:
         download: http://当前机器ip:当前机器port/file/preview/download
         callback: http://当前机器ip:当前机器port/file/preview/onlyoffice/callback
 ```
-#### 准备扩展[document4j](https://github.com/documents4j/documents4j)
-#### 准备扩展对压缩文件的支持
+## 第五步 存储预览文件信息
+> 默认使用h2数据库存储预览文件信息，如有需要可以扩展其他存储方式，不想修改可以跳过这一步  
+> 新建一个类并引用接口cn.wubo.file.preview.storage.IStorageService并实现接口方法，例如
+```java
+package cn.wubo.file.preview.demo;
 
-## 第五步 预览文件（截图为使用onlyoffice进行预览）
+import cn.wubo.file.preview.dto.ConvertInfoDto;
+import cn.wubo.file.preview.storage.IStorageService;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+public class MemoryStorageServiceImpl implements IStorageService {
+
+    private static List<ConvertInfoDto> convertInfoDtoList;
+
+    @Override
+    public ConvertInfoDto save(ConvertInfoDto convertInfoDto) {
+        if (!StringUtils.hasLength(convertInfoDto.getId())) {
+            convertInfoDto.setId(UUID.randomUUID().toString());
+            convertInfoDtoList.add(convertInfoDto);
+        } else {
+            convertInfoDtoList.stream().filter(e -> e.getId().equals(convertInfoDto.getId())).findAny().ifPresent(e -> e = convertInfoDto);
+        }
+        return convertInfoDto;
+    }
+
+    @Override
+    public List<ConvertInfoDto> list(ConvertInfoDto convertInfoDto) {
+        return convertInfoDtoList;
+    }
+
+    @Override
+    public void init() {
+        convertInfoDtoList = new ArrayList<>();
+    }
+}
+```
+> 修改`@EnableFilePreview`注解，增加storage参数只想新存储类的路径，例如
+```java
+@EnableFilePreview(convert = "onlyoffice", storage = "cn.wubo.file.preview.demo.MemoryStorageServiceImpl")
+@SpringBootApplication
+public class FilePreviewDemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(FilePreviewDemoApplication.class, args);
+    }
+
+}
+```
+
+#### ! *可能会扩展对压缩文件的支持*
+#### ! *可能会扩展[document4j](https://github.com/documents4j/documents4j)，但其不支持ppt，需要其他方案补充*
+
+## 第六步 预览文件
 > 通过http://127.0.0.1:8080/file/preview?id=?预览文件  
-> 通过http://127.0.0.1:8080/file/preview/list查看历史记录
+> 通过http://127.0.0.1:8080/file/preview/list查看历史记录  
+> 如果使用`spring.servlet.context-path`,请在地址中同样增加context-path值  
+> 截图为使用onlyoffice进行预览
 
 ![img.png](img.png)
 ![img_1.png](img_1.png)

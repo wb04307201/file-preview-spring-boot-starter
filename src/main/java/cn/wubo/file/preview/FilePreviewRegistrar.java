@@ -2,13 +2,14 @@ package cn.wubo.file.preview;
 
 import cn.wubo.file.preview.impl.FilePreviewServiceImpl;
 import cn.wubo.file.preview.impl.OnlyOfficeFilePreviewServiceImpl;
-import cn.wubo.file.preview.servlet.list.FileListConfiguration;
+import cn.wubo.file.preview.config.FileListConfiguration;
+import cn.wubo.file.preview.storage.IStorageService;
 import cn.wubo.file.preview.storage.impl.H2StorageServiceImpl;
 import cn.wubo.file.preview.office.impl.JodOfficeConverter;
 import cn.wubo.file.preview.office.impl.OnlyOfficeConverter;
 import cn.wubo.file.preview.office.impl.SpireOfficeConverter;
-import cn.wubo.file.preview.servlet.preview.PreviewConfiguration;
-import cn.wubo.file.preview.servlet.preview.OnlyOfficePreviewConfiguration;
+import cn.wubo.file.preview.config.PreviewConfiguration;
+import cn.wubo.file.preview.config.OnlyOfficePreviewConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -26,7 +27,12 @@ public class FilePreviewRegistrar implements ImportBeanDefinitionRegistrar {
         if (params != null) {
             String covert = (String) params.get("convert");
             String storage = (String) params.get("storage");
-            registerBean(getStorageClass(storage), registry);
+            try {
+                Class clasz = Class.forName(storage);
+                registerBean(clasz, registry);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             registerBeanConvert(covert, registry);
             registerBean(FileListConfiguration.class, registry);
         }
@@ -53,11 +59,6 @@ public class FilePreviewRegistrar implements ImportBeanDefinitionRegistrar {
                 registerBean(PreviewConfiguration.class, registry);
                 break;
         }
-    }
-
-    private Class<?> getStorageClass(String value) {
-        log.debug("storage:{}", value);
-        return H2StorageServiceImpl.class;
     }
 
     private void registerBean(Class<?> clasz, BeanDefinitionRegistry registry) {
