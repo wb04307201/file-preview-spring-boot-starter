@@ -80,7 +80,7 @@ jodconverter:
 > 并使用onlyoffice预览office文件以及pdf，txt等类型的文件  
 > 可以通过docker快速安装onlyoffice，命令如下
 
-```commandline
+```bash
 docker run -i -t -d -p 80:80 -e JWT_ENABLED=false onlyoffice/documentserver
 ```
 
