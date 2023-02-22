@@ -4,6 +4,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import java.util.Objects;
 
 public class BaseServlet extends HttpServlet {
 
@@ -12,8 +13,8 @@ public class BaseServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        WebApplicationContextUtils
-                .getWebApplicationContext(getServletContext())
+        Objects.requireNonNull(WebApplicationContextUtils
+                        .getWebApplicationContext(getServletContext()))
                 .getAutowireCapableBeanFactory().autowireBean(this);
     }
 }
