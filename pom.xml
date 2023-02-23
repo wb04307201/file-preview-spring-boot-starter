@@ -85,12 +85,6 @@
                 <artifactId>sevenzipjbinding-all-platforms</artifactId>
                 <version>16.02-2.01</version>
             </dependency>
-
-            <dependency>
-                <groupId>com.gitee.wb04307201</groupId>
-                <artifactId>sql-util</artifactId>
-                <version>1.2.3</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -151,6 +145,7 @@
         <dependency>
             <groupId>com.gitee.wb04307201</groupId>
             <artifactId>sql-util</artifactId>
+            <version>1.2.3</version>
         </dependency>
     </dependencies>
 
