@@ -27,10 +27,11 @@ public class SpireOfficeConverter implements IOfficeConverter {
                     newFileName = newFileName.replace(extName, "pdf");
                     break;
                 case "excel":
+                    //处理成html时，会产生多个文件，改成pdf
                     Workbook workbook = new Workbook();
                     workbook.loadFromStream(is);
-                    workbook.saveToStream(os, com.spire.xls.FileFormat.HTML);
-                    newFileName = newFileName.replace(extName, "html");
+                    workbook.saveToStream(os, com.spire.xls.FileFormat.PDF);
+                    newFileName = newFileName.replace(extName, "pdf");
                     break;
                 case "power point":
                     Presentation presentation = new Presentation();
