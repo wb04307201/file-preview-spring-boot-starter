@@ -20,6 +20,13 @@ public interface IFilePreviewRecord {
     List<FilePreviewInfo> list(FilePreviewInfo filePreviewInfo);
 
     /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    FilePreviewInfo findById(String id);
+
+    /**
      * 初始化
      */
     void init();

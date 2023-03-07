@@ -19,17 +19,18 @@ public class DownloadServlet extends HttpServlet {
     IFilePreviewRecord filePreviewRecord;
     IFileStorage fileStorage;
 
+    public DownloadServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+        this.filePreviewRecord = filePreviewRecord;
+        this.fileStorage = fileStorage;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
         log.debug("下载文件-----开始");
         String id = req.getParameter("id");
-        FilePreviewInfo query = new FilePreviewInfo();
-        query.setId(id);
-        FilePreviewInfo info = filePreviewRecord.list(query).get(0);
-
+        FilePreviewInfo info = filePreviewRecord.findById(id);
         byte[] bytes = fileStorage.get(info);
-
         try (OutputStream os = resp.getOutputStream()) {
             IoUtils.writeToStream(bytes, os);
         }

@@ -1,7 +1,7 @@
 package cn.wubo.file.preview.servlet.list;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
-import cn.wubo.file.preview.common.Page;
+import cn.wubo.file.preview.utils.Page;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 
 import javax.servlet.ServletException;

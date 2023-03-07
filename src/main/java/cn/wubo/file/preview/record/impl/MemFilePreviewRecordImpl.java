@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,15 @@ public class MemFilePreviewRecordImpl implements IFilePreviewRecord {
                 .filter(e -> !StringUtils.hasLength(filePreviewInfo.getFileName()) || e.getFileName().contains(filePreviewInfo.getFileName()))
                 .filter(e -> !StringUtils.hasLength(filePreviewInfo.getFilePath()) || e.getFilePath().contains(filePreviewInfo.getFilePath()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public FilePreviewInfo findById(String id) {
+        Optional<FilePreviewInfo> optionalFileInfo = filePreviewInfos.stream()
+                .filter(e -> e.getId().equals(id))
+                .findAny();
+        if (optionalFileInfo.isPresent()) return optionalFileInfo.get();
+        else throw new RuntimeException("文件记录未找到!");
     }
 
     @Override

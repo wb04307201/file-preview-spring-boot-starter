@@ -24,19 +24,19 @@ public class SpireOfficeConverter implements IOfficeConverter {
                     Document document = new Document();
                     document.loadFromStream(is, FileFormat.Auto);
                     document.saveToStream(os, com.spire.doc.FileFormat.PDF);
-                    newFileName = newFileName.replace(extName, "html");
+                    newFileName = newFileName.replace(extName, "pdf");
                     break;
-                case "power point":
+                case "excel":
                     Workbook workbook = new Workbook();
                     workbook.loadFromStream(is);
                     workbook.saveToStream(os, com.spire.xls.FileFormat.HTML);
                     newFileName = newFileName.replace(extName, "html");
                     break;
-                case "excel":
+                case "power point":
                     Presentation presentation = new Presentation();
                     presentation.loadFromStream(is, com.spire.presentation.FileFormat.AUTO);
                     presentation.saveToFile(os, com.spire.presentation.FileFormat.PDF);
-                    newFileName = newFileName.replace(extName, "html");
+                    newFileName = newFileName.replace(extName, "pdf");
                     break;
                 default:
                     IoUtils.copy(is, os);

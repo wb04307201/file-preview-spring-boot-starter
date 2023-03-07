@@ -1,11 +1,9 @@
 package cn.wubo.file.preview.servlet.preview;
 
-import cn.wubo.file.preview.core.IFilePreviewService;
-import cn.wubo.file.preview.common.CommonUtils;
-import cn.wubo.file.preview.dto.ConvertInfoDto;
+import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
+import cn.wubo.file.preview.storage.IFileStorage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,38 +15,36 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
 public class OnlyOfficeCallbackServlet extends HttpServlet {
 
-    @Autowired
-    IFilePreviewRecord historyService;
-
-    @Autowired
-    IFilePreviewService fileService;
+    IFilePreviewRecord filePreviewRecord;
+    IFileStorage fileStorage;
 
     private static final String STATUS = "status";
+
+    public OnlyOfficeCallbackServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+        this.filePreviewRecord = filePreviewRecord;
+        this.fileStorage = fileStorage;
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
         log.debug("回调文件-----开始");
         Map<String, String[]> paramMap = req.getParameterMap();
-
         if (paramMap.containsKey(STATUS) && (Integer.parseInt(paramMap.get(STATUS)[0]) == 2 || Integer.parseInt(paramMap.get(STATUS)[0]) == 3)) {
             String id = paramMap.get("id")[0];
-            ConvertInfoDto convertInfoDto = new ConvertInfoDto();
-            convertInfoDto.setId(id);
-            List<ConvertInfoDto> list = historyService.list(convertInfoDto);
-            convertInfoDto = list.get(0);
+            FilePreviewInfo info = filePreviewRecord.findById(id);
 
-            downloadFromOnlyOffice(paramMap.get("url")[0],convertInfoDto.getFilePath());
-            downloadFromOnlyOffice(paramMap.get("changesurl")[0],"change" + File.separator + convertInfoDto.getId() + File.separator + System.currentTimeMillis() + ".zip");
+            byte[] fileBytes = downloadFromOnlyOffice(paramMap.get("url")[0]);
+            fileStorage.replace(fileBytes, info);
+            //变更记录下载
+            //byte[] changeBytes = downloadFromOnlyOffice(paramMap.get("changesurl")[0]);
         }
 
         try (PrintWriter writer = resp.getWriter()) {
@@ -57,11 +53,11 @@ public class OnlyOfficeCallbackServlet extends HttpServlet {
         log.debug("回调文件-----结束");
     }
 
-    private void downloadFromOnlyOffice(String url,String target) {
+    private byte[] downloadFromOnlyOffice(String url) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<Resource> httpEntity = new HttpEntity<>(headers);
         ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, byte[].class);
-        CommonUtils.writeFromByte(response.getBody(),target);
+        return response.getBody();
     }
 }

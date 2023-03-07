@@ -23,11 +23,11 @@ public class JodOfficeConverter implements IOfficeConverter {
         try {
             switch (fileType) {
                 case "word":
-                case "excel":
+                case "power point":
                     converter.convert(is).to(os).as(DefaultDocumentFormatRegistry.PDF).execute();
                     newFileName = newFileName.replace(extName, "pdf");
                     break;
-                case "power point":
+                case "excel":
                     converter.convert(is).to(os).as(DefaultDocumentFormatRegistry.HTML).execute();
                     newFileName = newFileName.replace(extName, "html");
                     break;

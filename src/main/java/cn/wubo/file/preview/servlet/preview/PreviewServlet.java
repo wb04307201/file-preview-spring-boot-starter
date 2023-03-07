@@ -1,6 +1,6 @@
 package cn.wubo.file.preview.servlet.preview;
 
-import cn.wubo.file.preview.common.Page;
+import cn.wubo.file.preview.utils.Page;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
@@ -30,20 +30,22 @@ public class PreviewServlet extends HttpServlet {
 
     private static final String CONTEXT_PATH = "contextPath";
 
+    public PreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+        this.filePreviewRecord = filePreviewRecord;
+        this.fileStorage = fileStorage;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
-
         log.debug("预览文件-----开始");
         String id = req.getParameter("id");
         log.debug("预览文件-----id:{}", id);
-        FilePreviewInfo query = new FilePreviewInfo();
-        query.setId(id);
-        FilePreviewInfo info = filePreviewRecord.list(query).get(0);
+        FilePreviewInfo info = filePreviewRecord.findById(id);
 
         String contextPath = req.getContextPath();
-
-        String fileType = FileUtils.fileType(info.getFileName());
+        String extName = FileUtils.extName(info.getFileName());
+        String fileType = FileUtils.fileType(extName);
         if ("markdown".equals(fileType)) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, contextPath);

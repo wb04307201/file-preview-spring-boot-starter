@@ -1,21 +1,13 @@
 package cn.wubo.file.preview.servlet.preview;
 
-import cn.wubo.file.preview.common.Page;
-import cn.wubo.file.preview.core.FilePreviewInfo;
-import cn.wubo.file.preview.core.IFilePreviewService;
-import cn.wubo.file.preview.common.CommonUtils;
-import cn.wubo.file.preview.config.OnlyOfficePreviewProperties;
+import cn.wubo.file.preview.utils.Page;
 import cn.wubo.file.preview.config.OnlyOfficeProperties;
-import cn.wubo.file.preview.dto.ConvertInfoDto;
+import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
-import cn.wubo.file.preview.servlet.PreviewBuilder;
 import cn.wubo.file.preview.storage.IFileStorage;
 import cn.wubo.file.preview.utils.FileUtils;
 import cn.wubo.file.preview.utils.IoUtils;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,10 +17,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,22 +30,44 @@ public class OnlyOfficePreviewServlet extends HttpServlet {
     IFileStorage fileStorage;
     OnlyOfficeProperties onlyOfficeProperties;
     private static final String CONTEXT_PATH = "contextPath";
+    private static final String DOCUMENT_TYPE = "documentType";
+
+    public OnlyOfficePreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage, OnlyOfficeProperties onlyOfficeProperties) {
+        this.filePreviewRecord = filePreviewRecord;
+        this.fileStorage = fileStorage;
+        this.onlyOfficeProperties = onlyOfficeProperties;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
-
         log.debug("预览文件-----开始");
         String id = req.getParameter("id");
         log.debug("预览文件-----id:{}", id);
-        FilePreviewInfo query = new FilePreviewInfo();
-        query.setId(id);
-        FilePreviewInfo info = filePreviewRecord.list(query).get(0);
+        FilePreviewInfo info = filePreviewRecord.findById(id);
 
         String contextPath = req.getContextPath();
-
-        String fileType = FileUtils.fileType(info.getFileName());
-        if ("markdown".equals(fileType)) {
+        String extName = FileUtils.extName(info.getFileName());
+        String fileType = FileUtils.fileType(extName);
+        if ("word".equals(fileType) || "excel".equals(fileType) || "power point".equals(fileType) || "pdf".equals(fileType) || "txt".equals(fileType)) {
+            Map<String, Object> data = new HashMap<>();
+            data.put(CONTEXT_PATH, req.getContextPath());
+            data.put("url", onlyOfficeProperties.getApijs());
+            if ("word".equals(fileType) || "pdf".equals(fileType) || "txt".equals(fileType))
+                data.put(DOCUMENT_TYPE, "word");
+            else if ("excel".equals(fileType)) data.put(DOCUMENT_TYPE, "cell");
+            else if ("power point".equals(fileType)) data.put(DOCUMENT_TYPE, "slide");
+            data.put("fileType", "txt".equals(fileType) ? "txt" : extName);
+            data.put("key", info.getId());
+            data.put("title", info.getOriginalFilename());
+            data.put("downloadUrl", onlyOfficeProperties.getDownload() + "?id=" + info.getId());
+            data.put("callbackUrl", onlyOfficeProperties.getCallback() + "?id=" + info.getId());
+            data.put("lang", "zh");
+            data.put("userid", "file preview");
+            data.put("username", "file preview");
+            Page onlyofficePage = new Page("onlyoffice.ftl", data, resp);
+            onlyofficePage.write();
+        } else if ("markdown".equals(fileType)) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, contextPath);
 
@@ -80,10 +92,10 @@ public class OnlyOfficePreviewServlet extends HttpServlet {
             data.put("url", contextPath + "/file/preview/download?id=" + info.getId());
             Page markdownPage = new Page("audio.ftl", data, resp);
             markdownPage.write();
-        } else if ("pdf".equals(fileType)) {
-            resp.sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", contextPath, contextPath, info.getId()));
         } else {
             resp.setContentType(FileUtils.getMimeType(info.getFileName()));
+
+
             try (OutputStream os = resp.getOutputStream()) {
                 IoUtils.writeToStream(fileStorage.get(info), os);
             }

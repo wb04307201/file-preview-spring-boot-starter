@@ -1,4 +1,4 @@
-package cn.wubo.file.preview.common;
+package cn.wubo.file.preview.utils;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
