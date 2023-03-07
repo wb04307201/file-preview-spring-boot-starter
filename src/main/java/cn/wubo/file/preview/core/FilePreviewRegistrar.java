@@ -1,45 +1,40 @@
-package cn.wubo.file.preview;
+package cn.wubo.file.preview.core;
 
-import cn.wubo.file.preview.impl.FilePreviewServiceImpl;
-import cn.wubo.file.preview.impl.OnlyOfficeFilePreviewServiceImpl;
-import cn.wubo.file.preview.config.FileListConfiguration;
-import cn.wubo.file.preview.storage.IStorageService;
-import cn.wubo.file.preview.storage.impl.H2StorageServiceImpl;
-import cn.wubo.file.preview.office.impl.JodOfficeConverter;
-import cn.wubo.file.preview.office.impl.OnlyOfficeConverter;
-import cn.wubo.file.preview.office.impl.SpireOfficeConverter;
-import cn.wubo.file.preview.config.PreviewConfiguration;
-import cn.wubo.file.preview.config.OnlyOfficePreviewConfiguration;
+import cn.wubo.file.preview.EnableFilePreview;
+import cn.wubo.file.preview.config.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.util.Map;
 
+@EnableConfigurationProperties({FilePreviewProperties.class})
 @Slf4j
 public class FilePreviewRegistrar implements ImportBeanDefinitionRegistrar {
+
+    FilePreviewProperties properties;
+
+    public FilePreviewRegistrar(FilePreviewProperties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         Map<String, Object> params = importingClassMetadata.getAnnotationAttributes(EnableFilePreview.class.getName());
         if (params != null) {
             String covert = (String) params.get("convert");
-            String storage = (String) params.get("storage");
-            try {
-                Class clasz = Class.forName(storage);
-                registerBean(clasz, registry);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            registerBean(properties.getFilePreviewRecord(), registry);
+            registerBean(properties.getFileStorage(), registry);
             registerBeanConvert(covert, registry);
             registerBean(FileListConfiguration.class, registry);
         }
         //ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
     }
 
-    private void registerBeanConvert(String value, BeanDefinitionRegistry registry) {
+    /*private void registerBeanConvert(String value, BeanDefinitionRegistry registry) {
         log.debug("convert:{}", value);
         switch (value) {
             case "spire":
@@ -59,11 +54,35 @@ public class FilePreviewRegistrar implements ImportBeanDefinitionRegistrar {
                 registerBean(PreviewConfiguration.class, registry);
                 break;
         }
+    }*/
+
+    private void registerBeanConvert(String value, BeanDefinitionRegistry registry) {
+        log.debug("convert:{}", value);
+        switch (value) {
+            case "spire":
+                registerBean(SpireConfiguration.class,registry);
+                break;
+            case "onlyoffice":
+                registerBean(OnlyConfiguration.class, registry);
+                break;
+            case "jod":
+            default:
+                registerBean(JodConfiguration.class, registry);
+                break;
+        }
     }
 
-    private void registerBean(Class<?> clasz, BeanDefinitionRegistry registry) {
+    private void registerBean(Class<?> clazz, BeanDefinitionRegistry registry) {
         GenericBeanDefinition genericBeanDefinition = new GenericBeanDefinition();
-        genericBeanDefinition.setBeanClass(clasz);
-        registry.registerBeanDefinition(clasz.getSimpleName(), genericBeanDefinition);
+        genericBeanDefinition.setBeanClass(clazz);
+        registry.registerBeanDefinition(clazz.getSimpleName(), genericBeanDefinition);
+    }
+
+    private void registerBean(String className, BeanDefinitionRegistry registry) {
+        try {
+            registerBean(Class.forName(className), registry);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

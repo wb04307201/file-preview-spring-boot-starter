@@ -1,10 +1,9 @@
 package cn.wubo.file.preview.servlet.preview;
 
-import cn.wubo.file.preview.IFilePreviewService;
-import cn.wubo.file.preview.common.BaseServlet;
+import cn.wubo.file.preview.core.IFilePreviewService;
 import cn.wubo.file.preview.common.CommonUtils;
 import cn.wubo.file.preview.dto.ConvertInfoDto;
-import cn.wubo.file.preview.storage.IStorageService;
+import cn.wubo.file.preview.record.IFilePreviewRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -15,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class OnlyOfficeCallbackServlet extends BaseServlet {
+public class OnlyOfficeCallbackServlet extends HttpServlet {
 
     @Autowired
-    IStorageService historyService;
+    IFilePreviewRecord historyService;
 
     @Autowired
     IFilePreviewService fileService;

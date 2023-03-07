@@ -1,35 +1,21 @@
 package cn.wubo.file.preview.office.impl;
 
-import cn.wubo.file.preview.common.CommonUtils;
-import cn.wubo.file.preview.dto.ConvertInfoDto;
+import cn.wubo.file.preview.exception.ConvertRuntimeException;
 import cn.wubo.file.preview.office.IOfficeConverter;
+import cn.wubo.file.preview.utils.IoUtils;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
+//无需转换
 public class OnlyOfficeConverter implements IOfficeConverter {
 
-    @Override
-    public void wordConvert(ConvertInfoDto convertInfoDto) {
-        convert(convertInfoDto);
-    }
-
-    @Override
-    public void excelConvert(ConvertInfoDto convertInfoDto) {
-        convert(convertInfoDto);
-    }
-
-    @Override
-    public void pptConvert(ConvertInfoDto convertInfoDto) {
-        convert(convertInfoDto);
-    }
-
-    private void convert(ConvertInfoDto convertInfoDto){
-        try (OutputStream os = CommonUtils.getOutputStream(convertInfoDto.getFilePath())) {
-            CommonUtils.writeToStream(convertInfoDto.getSourceFilePath(), os);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public String convert(InputStream is, OutputStream os, String fileName) {
+        try {
+            IoUtils.copy(is, os);
+        } catch (Exception e) {
+            throw new ConvertRuntimeException(e.getMessage(), e);
         }
-        convertInfoDto.setConverter("OnlyOffice");
+        return fileName;
     }
 }

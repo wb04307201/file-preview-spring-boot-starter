@@ -1,7 +1,7 @@
-package cn.wubo.file.preview.storage.impl;
+package cn.wubo.file.preview.record.impl;
 
 import cn.wubo.file.preview.dto.ConvertInfoDto;
-import cn.wubo.file.preview.storage.IStorageService;
+import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.sql.util.ConnectionParam;
 import cn.wubo.sql.util.ConnectionPool;
 import cn.wubo.sql.util.ExecuteSqlUtils;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class H2StorageServiceImpl implements IStorageService {
+public class H2FilePreviewRecordImpl implements IFilePreviewRecord {
 
     private static final String FILE_CONVERT_INFO = "file_online_convert_info";
 

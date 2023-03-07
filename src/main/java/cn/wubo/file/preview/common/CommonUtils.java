@@ -158,7 +158,6 @@ public class CommonUtils {
             resp.setContentType("audio/mpeg;charset=UTF-8");
         else if ("audio".equals(type) && "wav".equals(extName))
             resp.setContentType("audio/wav;charset=UTF-8");
-
         else if ("video".equals(type) && "mp4".equals(extName))
             resp.setContentType("video/mp4;charset=UTF-8");
         else if ("video".equals(type) && "webm".equals(extName))

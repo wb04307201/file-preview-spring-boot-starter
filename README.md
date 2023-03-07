@@ -101,18 +101,20 @@ file:
 ## 第五步 存储预览文件信息
 > 默认使用h2数据库存储预览文件信息，如有需要可以扩展其他存储方式，不想修改可以跳过这一步  
 > 新建一个类并引用接口cn.wubo.file.preview.storage.IStorageService并实现接口方法，例如
+
 ```java
 package cn.wubo.file.preview.demo;
 
 import cn.wubo.file.preview.dto.ConvertInfoDto;
-import cn.wubo.file.preview.storage.IStorageService;
+import cn.wubo.file.preview.record.IFilePreviewRecord;
+import cn.wubo.file.preview.record.IStorageService;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MemoryStorageServiceImpl implements IStorageService {
+public class MemoryStorageServiceImpl implements IFilePreviewRecord {
 
     private static List<ConvertInfoDto> convertInfoDtoList;
 

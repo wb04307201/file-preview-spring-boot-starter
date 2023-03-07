@@ -1,8 +1,11 @@
-package cn.wubo.file.preview.servlet.preview;
+package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.common.CommonUtils;
 import cn.wubo.file.preview.common.Page;
+import cn.wubo.file.preview.config.OnlyOfficeProperties;
+import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.dto.ConvertInfoDto;
+import cn.wubo.file.preview.utils.FileUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,8 +28,9 @@ public class PreviewBuilder {
     private PreviewBuilder() {
     }
 
-    public static void common(ConvertInfoDto convertInfoDto, HttpServletRequest req, HttpServletResponse resp) {
-        if ("markdown".equals(convertInfoDto.getType())) {
+    public static void common(FilePreviewInfo filePreviewInfo, HttpServletRequest req, HttpServletResponse resp) {
+        String fileType = FileUtils.fileType(filePreviewInfo.getFileName());
+        if ("markdown".equals(fileType)) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, req.getContextPath());
             try (Stream<String> lines = Files.lines(Paths.get(convertInfoDto.getFilePath()))) {
@@ -36,26 +40,28 @@ public class PreviewBuilder {
             }
             Page markdownPage = new Page("markdown.ftl", data, resp);
             markdownPage.write();
-        } else if ("video".equals(convertInfoDto.getType())) {
+        } else if ("video".equals(fileType)) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, req.getContextPath());
-            data.put("url", req.getContextPath() + "/file/preview/download?id=" + convertInfoDto.getId());
+            data.put("url", req.getContextPath() + "/file/preview/download?id=" + filePreviewInfo.getId());
             Page markdownPage = new Page("video.ftl", data, resp);
             markdownPage.write();
-        } else if ("audio".equals(convertInfoDto.getType())) {
+        } else if ("audio".equals(fileType)) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, req.getContextPath());
-            data.put("url", req.getContextPath() + "/file/preview/download?id=" + convertInfoDto.getId());
+            data.put("url", req.getContextPath() + "/file/preview/download?id=" + filePreviewInfo.getId());
             Page markdownPage = new Page("audio.ftl", data, resp);
             markdownPage.write();
-        } else if ("pdf".equals(convertInfoDto.getType())) {
+        } else if ("pdf".equals(fileType)) {
             try {
-                resp.sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", req.getContextPath(), req.getContextPath(), convertInfoDto.getId()));
+                resp.sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", req.getContextPath(), req.getContextPath(), filePreviewInfo.getId()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            CommonUtils.setContentType(resp, convertInfoDto.getType(), convertInfoDto.getExtName());
+            FileUtils.getMimeType(filePreviewInfo.getFileName());
+            resp.setContentType("audio/mpeg;charset=UTF-8");
+            CommonUtils.setContentType(resp, fileType, convertInfoDto.getExtName());
             File file = new File(convertInfoDto.getFilePath());
             try (OutputStream os = resp.getOutputStream()) {
                 CommonUtils.writeToStream(file, os);
@@ -65,11 +71,11 @@ public class PreviewBuilder {
         }
     }
 
-    public static void onlyOffice(ConvertInfoDto convertInfoDto, HttpServletRequest req, HttpServletResponse resp, OnlyOfficePreviewProperties onlyOfficePreviewProperties) {
+    public static void onlyOffice(ConvertInfoDto convertInfoDto, HttpServletRequest req, HttpServletResponse resp, OnlyOfficeProperties onlyOfficeProperties) {
         if ("word".equals(convertInfoDto.getType()) || "excel".equals(convertInfoDto.getType()) || "power point".equals(convertInfoDto.getType()) || "pdf".equals(convertInfoDto.getType()) || "txt".equals(convertInfoDto.getType())) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, req.getContextPath());
-            data.put("url", onlyOfficePreviewProperties.getApijs());
+            data.put("url", onlyOfficeProperties.getApijs());
             if ("word".equals(convertInfoDto.getType()) || "pdf".equals(convertInfoDto.getType()) || "txt".equals(convertInfoDto.getType()))
                 data.put(DOCUMENT_TYPE, "word");
             else if ("excel".equals(convertInfoDto.getType())) data.put(DOCUMENT_TYPE, "cell");
@@ -77,8 +83,8 @@ public class PreviewBuilder {
             data.put("fileType", "txt".equals(convertInfoDto.getType()) ? "txt" : convertInfoDto.getExtName());
             data.put("key", convertInfoDto.getId());
             data.put("title", convertInfoDto.getSourceFileName());
-            data.put("downloadUrl", onlyOfficePreviewProperties.getDownload() + "?id=" + convertInfoDto.getId());
-            data.put("callbackUrl", onlyOfficePreviewProperties.getCallback() + "?id=" + convertInfoDto.getId());
+            data.put("downloadUrl", onlyOfficeProperties.getDownload() + "?id=" + convertInfoDto.getId());
+            data.put("callbackUrl", onlyOfficeProperties.getCallback() + "?id=" + convertInfoDto.getId());
             data.put("lang", "zh");
             data.put("userid", "file preview");
             data.put("username", "file preview");
