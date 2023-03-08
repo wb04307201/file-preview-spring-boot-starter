@@ -19,6 +19,7 @@
                     <th scope="col">文件定位</th>
                     <th scope="col">删除</th>
                     <th scope="col">预览</th>
+                    <th scope="col">下载</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,7 @@
                             <td>${row.filePath!'-'}</td>
                             <td><a href="${contextPath}/file/preview/delete?id=${row.id}" class="link-primary">@删除</a></td>
                             <td><a href="${contextPath}/file/preview?id=${row.id}" class="link-primary">@预览</a></td>
+                            <td><a href="${contextPath}/file/preview/download?id=${row.id}" class="link-primary">@下载</a></td>
                         </tr>
                     </#list>
                 </#if>

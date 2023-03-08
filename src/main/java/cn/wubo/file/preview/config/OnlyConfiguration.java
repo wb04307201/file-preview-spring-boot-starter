@@ -56,9 +56,9 @@ public class OnlyConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(FilePreviewService filePreviewService) {
+    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
         ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new DownloadServlet(filePreviewService));
+        registration.setServlet(new DownloadServlet(filePreviewRecord, fileStorage));
         registration.addUrlMappings("/file/preview/download");
         return registration;
     }

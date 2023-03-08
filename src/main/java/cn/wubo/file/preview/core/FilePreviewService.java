@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.FastByteArrayOutputStream;
 
 import java.io.InputStream;
+import java.util.Date;
 
 @Slf4j
 public class FilePreviewService {
@@ -34,6 +35,7 @@ public class FilePreviewService {
 
         //3 保存记录
         filePreviewInfo.setOriginalFilename(fileName);
+        filePreviewInfo.setCreateTime(new Date());
         filePreviewInfo = filePreviewRecord.save(filePreviewInfo);
         return filePreviewInfo;
     }
