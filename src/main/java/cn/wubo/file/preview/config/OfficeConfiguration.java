@@ -38,7 +38,7 @@ public class OfficeConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<FileListServlet> listServlet(IFilePreviewRecord filePreviewRecord) {
+    public ServletRegistrationBean<FileListServlet> filePreviewListServlet(IFilePreviewRecord filePreviewRecord) {
         ServletRegistrationBean<FileListServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new FileListServlet(filePreviewRecord));
         registration.addUrlMappings("/file/preview/list");

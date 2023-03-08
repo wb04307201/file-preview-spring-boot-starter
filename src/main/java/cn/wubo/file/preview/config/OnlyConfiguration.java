@@ -31,7 +31,7 @@ public class OnlyConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<OnlyOfficePreviewServlet> onlyOfficePreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+    public ServletRegistrationBean<OnlyOfficePreviewServlet> filePreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
         ServletRegistrationBean<OnlyOfficePreviewServlet> registration = new ServletRegistrationBean<>();
         OnlyOfficePreviewServlet onlyOfficePreviewServlet = new OnlyOfficePreviewServlet(filePreviewRecord, fileStorage, properties.getOnlyOffice());
         registration.setServlet(onlyOfficePreviewServlet);
@@ -40,7 +40,7 @@ public class OnlyConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<OnlyOfficeCallbackServlet> onlyOfficeCallbackServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+    public ServletRegistrationBean<OnlyOfficeCallbackServlet> filePreviewCallbackServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
         ServletRegistrationBean<OnlyOfficeCallbackServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new OnlyOfficeCallbackServlet(filePreviewRecord, fileStorage));
         registration.addUrlMappings("/file/preview/onlyoffice/callback");
@@ -48,7 +48,7 @@ public class OnlyConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DeleteServlet> deleteServlet(FilePreviewService filePreviewService) {
+    public ServletRegistrationBean<DeleteServlet> filePreviewDeleteServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<DeleteServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new DeleteServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/delete");
@@ -56,7 +56,7 @@ public class OnlyConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DownloadServlet> downloadServlet(FilePreviewService filePreviewService) {
+    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new DownloadServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/download");

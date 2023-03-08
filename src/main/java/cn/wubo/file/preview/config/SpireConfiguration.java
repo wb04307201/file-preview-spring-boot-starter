@@ -24,7 +24,7 @@ public class SpireConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<PreviewServlet> previewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+    public ServletRegistrationBean<PreviewServlet> filePreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
         ServletRegistrationBean<PreviewServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new PreviewServlet(filePreviewRecord, fileStorage));
         registration.addUrlMappings("/file/preview");
@@ -32,7 +32,7 @@ public class SpireConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DeleteServlet> deleteServlet(FilePreviewService filePreviewService) {
+    public ServletRegistrationBean<DeleteServlet> filePreviewDeleteServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<DeleteServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new DeleteServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/delete");
@@ -40,7 +40,7 @@ public class SpireConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DownloadServlet> downloadServlet(FilePreviewService filePreviewService) {
+    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new DownloadServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/download");
