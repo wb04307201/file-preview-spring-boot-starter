@@ -6,28 +6,35 @@
 > 只需要简单的配置和编码，即可集成到springboot中  
 > 支持word，excel，ppt，pdf，图片，视频，音频，markdown等格式文件的在线预览
 
+## [代码示例](https://gitee.com/wb04307201/file-preview-demo)
+
 ## 第一步 增加 JitPack 仓库
+
 ```xml
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
+
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
 ```
 
 ## 第二步 引入jar
+
 ```xml
-    <dependency>
-        <groupId>com.gitee.wb04307201</groupId>
-        <artifactId>chatbot-spring-boot-starter</artifactId>
-        <version>Tag</version>
-    </dependency>
+
+<dependency>
+    <groupId>com.gitee.wb04307201</groupId>
+    <artifactId>chatbot-spring-boot-starter</artifactId>
+    <version>Tag</version>
+</dependency>
 ```
 
 ## 第三步 在启动类上加上`@EnableFilePreview`注解
 
 ```java
+
 @EnableFilePreview
 @SpringBootApplication
 public class FilePreviewDemoApplication {
@@ -40,22 +47,25 @@ public class FilePreviewDemoApplication {
 ```
 
 ## 第四步 注入IFilePreviewService，并对文件进行转换
+
 > 目的是将 word，ppt转换成pdf excel转换成html，并存储所有的预览文件
 > 也可以只记录源文件的位置
+
 ```java
     @Autowired
-    IFilePreviewService filePreviewService;
+    FilePreviewService filePreviewService;
 
-    //存储预览文件
-    filePreviewService.covert(uploadFile.getAbsolutePath());
-
-    //存储预览文件,预览时再存储预览文件
-    filePreviewService.record(uploadFile.getAbsolutePath());
+    //预览文件转换
+    FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
 ```
+
 ### 在针对word，excel，ppt文件的处理上，支持3种模式
+
 #### jodconverter 使用注解@EnableFilePreview或者@EnableFilePreview(convert="jod")
+
 > 安装[libroffice](https://zh-cn.libreoffice.org/)并添加配置  
 > 详细配置内容请查看[jodconverter](https://github.com/sbraconnier/jodconverter/)
+
 ```yml
 jodconverter:
   local:
@@ -67,15 +77,19 @@ jodconverter:
     # 任务队列的超时时间
     taskQueueTimeout: 86400000
     # 端口（线程）
-    portNumbers: [2001,2002,2003]
+    portNumbers: [ 2001,2002,2003 ]
     # 一个进程的超时时间
     processTimeout: 86400000
 ```
+
 #### spire.office 使用注解@EnableFilePreview(convert="spire")
+
 > 项目中使用的spire.office为免费版本，转换office文件存在一定限制
 > 如要使用收费版本，请排除免费版本的依赖并添加正式版本  
 > [Spire.Office](https://www.e-iceblue.com/)
+
 #### onlyoffice 使用注解@EnableFilePreview(convert="onlyoffice")
+
 > 使用[onlyoffice](https://www.onlyoffice.com/zh/)将不对office文件进行转换    
 > 并使用onlyoffice预览office文件以及pdf，txt等类型的文件  
 > 可以通过docker快速安装onlyoffice，命令如下
@@ -89,16 +103,68 @@ docker run -i -t -d -p 80:80 -e JWT_ENABLED=false onlyoffice/documentserver
 > ![img_3.png](img_3.png)   
 > ![img_7.png](img_7.png)  
 > docker版本的onlyoffice安装成功后，在项目中添加配置信息
+
 ```yml
 file:
   online:
     preview:
       onlyoffice:
-        apijs: http://127.0.0.1/web-apps/apps/api/documents/api.js
-        download: http://当前机器ip:当前机器port/file/preview/download
-        callback: http://当前机器ip:当前机器port/file/preview/onlyoffice/callback
+        apijs: http://127.0.0.1/web-apps/apps/api/documents/api.js #OnlyOffice服务地址
+        download: http://ip:port/file/preview/download #当前服务的ip:port
+        callback: http://ip:port/file/preview/onlyoffice/callback #当前服务的ip:port
 ```
+
+## 第六步 预览文件信息
+
+> 可通过第四步返回的文件信息中的id
+> 访问http://ip:port/file/preview?id=??进行文件预览
+> 如果配置了context-path,请在地址中同样添加
+> 截图为使用onlyoffice进行预览
+
+![img.png](img.png)
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
+![img_4.png](img_4.png)
+![img_5.png](img_5.png)
+
+## 其他1：内置界面
+上传的文件可通过http://ip:端口/file/preview/list进行查看  
+注意：如配置了context-path需要在地址中对应添加  
+![img_8.png](img_8.png)
+
+
+## 其他2：下载文件、删除文件
+> 可通过第四步返回的文件信息中的id
+> 访问http://ip:port/file/preview/download?id=??进行文件下载
+> 访问http://ip:port/file/preview/delete?id=??进行文件删除
+> 如果配置了context-path,请在地址中同样添加
+> 也可以调用IFilePreviewService服务中方法自行处理下载和删除
+
+```java
+    //获取文件bytes
+    byte[] bytes = filePreviewService.download(filePreviewInfo.getId());
+    
+    //删除预览文件
+    Boolean result = filePreviewService.delete(filePreviewInfo.getId());  
+```
+## 其他3：实际使用中，可通过配置和实现接口方法将数据持久化到数据库中
+```yaml
+file:
+  preview:
+    file-preview-record: "cn.wubo.file.preview.record.impl.MemFilePreviewRecordImpl"
+```
+
+## 其他4：实际使用中，可通过配置和实现接口方法将文件持久化到其他平台中
+```yaml
+file:
+  preview:
+    file-storage: "cn.wubo.file.preview.storage.impl.LocalFileStorageImpl"
+
+```
+
+
 ## 第五步 存储预览文件信息
+
 > 默认使用h2数据库存储预览文件信息，如有需要可以扩展其他存储方式，不想修改可以跳过这一步  
 > 新建一个类并引用接口cn.wubo.file.preview.storage.IStorageService并实现接口方法，例如
 
@@ -140,8 +206,11 @@ public class MemoryStorageServiceImpl implements IFilePreviewRecord {
     }
 }
 ```
+
 > 修改`@EnableFilePreview`注解，增加storage参数只想新存储类的路径，例如
+
 ```java
+
 @EnableFilePreview(convert = "onlyoffice", storage = "cn.wubo.file.preview.demo.MemoryStorageServiceImpl")
 @SpringBootApplication
 public class FilePreviewDemoApplication {
@@ -154,22 +223,15 @@ public class FilePreviewDemoApplication {
 ```
 
 #### ! *可能会扩展对压缩文件的支持*
+
 #### ! *可能会扩展[document4j](https://github.com/documents4j/documents4j)，但其不支持ppt，需要其他方案补充*
 
 ## 第六步 预览文件
+
 > 通过http://127.0.0.1:8080/file/preview?id=?预览文件  
 > 通过http://127.0.0.1:8080/file/preview/list查看历史记录  
-> 如果使用`spring.servlet.context-path`,请在地址中同样增加context-path值  
-> 截图为使用onlyoffice进行预览
-
-![img.png](img.png)
-![img_1.png](img_1.png)
-![img_2.png](img_2.png)
-![img_4.png](img_4.png)
-![img_5.png](img_5.png)
-![img_6.png](img_6.png)
-
-
+> 如果使用`spring.servlet.context-path`,请在地址中同样增加context-path值
 
 ### 示例
+
 https://gitee.com/wb04307201/file-preview-demo

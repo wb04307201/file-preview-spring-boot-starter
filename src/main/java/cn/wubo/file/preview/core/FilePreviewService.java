@@ -1,7 +1,5 @@
-package cn.wubo.file.preview.core.impl;
+package cn.wubo.file.preview.core;
 
-import cn.wubo.file.preview.core.FilePreviewInfo;
-import cn.wubo.file.preview.core.IFilePreviewService;
 import cn.wubo.file.preview.office.IOfficeConverter;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
@@ -11,19 +9,18 @@ import org.springframework.util.FastByteArrayOutputStream;
 import java.io.InputStream;
 
 @Slf4j
-public class FilePreviewServiceImpl implements IFilePreviewService {
+public class FilePreviewService {
 
     IOfficeConverter officeConverter;
     IFileStorage fileStorage;
     IFilePreviewRecord filePreviewRecord;
 
-    public FilePreviewServiceImpl(IOfficeConverter officeConverter, IFileStorage fileStorage, IFilePreviewRecord filePreviewRecord) {
+    public FilePreviewService(IOfficeConverter officeConverter, IFileStorage fileStorage, IFilePreviewRecord filePreviewRecord) {
         this.officeConverter = officeConverter;
         this.fileStorage = fileStorage;
         this.filePreviewRecord = filePreviewRecord;
     }
 
-    @Override
     public FilePreviewInfo covert(InputStream is, String fileName) {
         //1 调用转换
         byte[] bytes;
@@ -41,7 +38,6 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         return filePreviewInfo;
     }
 
-    @Override
     public Boolean delete(String id) {
         //1 调用查询
         FilePreviewInfo filePreviewInfo = filePreviewRecord.findById(id);
@@ -50,7 +46,6 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         return fileStorage.delete(filePreviewInfo) && filePreviewRecord.deleteById(id);
     }
 
-    @Override
     public byte[] download(String id) {
         FilePreviewInfo info = filePreviewRecord.findById(id);
         return fileStorage.get(info);

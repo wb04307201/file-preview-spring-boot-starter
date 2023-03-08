@@ -15,7 +15,6 @@ public class LocalFileStorageImpl implements IFileStorage {
     @Override
     public FilePreviewInfo save(byte[] bytes, String fileName) {
         FilePreviewInfo filePreviewInfo = new FilePreviewInfo();
-
         filePreviewInfo.setFileName(fileName);
 
         Path filePath = Paths.get(basePath, fileName);
@@ -29,19 +28,6 @@ public class LocalFileStorageImpl implements IFileStorage {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public Boolean replace(byte[] bytes, FilePreviewInfo filePreviewInfo) {
-        Path filePath = Paths.get(filePreviewInfo.getFilePath());
-        try {
-            Files.delete(filePath);
-            Files.createFile(filePath);
-            Files.write(filePath, bytes);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return true;
     }
 
     @Override

@@ -41,8 +41,8 @@ public class OnlyOfficeCallbackServlet extends HttpServlet {
             String id = paramMap.get("id")[0];
             FilePreviewInfo info = filePreviewRecord.findById(id);
 
-            byte[] fileBytes = downloadFromOnlyOffice(paramMap.get("url")[0]);
-            fileStorage.replace(fileBytes, info);
+            //取回修改后文件
+            //byte[] fileBytes = downloadFromOnlyOffice(paramMap.get("url")[0]);
             //变更记录下载
             //byte[] changeBytes = downloadFromOnlyOffice(paramMap.get("changesurl")[0]);
         }

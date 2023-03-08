@@ -1,7 +1,6 @@
 package cn.wubo.file.preview.config;
 
-import cn.wubo.file.preview.core.IFilePreviewService;
-import cn.wubo.file.preview.core.impl.FilePreviewServiceImpl;
+import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.office.IOfficeConverter;
 import cn.wubo.file.preview.office.impl.SpireOfficeConverter;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
@@ -20,8 +19,8 @@ public class SpireConfiguration {
     }
 
     @Bean
-    public IFilePreviewService filePreviewService(IOfficeConverter officeConverter, IFileStorage fileStorage, IFilePreviewRecord filePreviewRecord) {
-        return new FilePreviewServiceImpl(officeConverter, fileStorage, filePreviewRecord);
+    public FilePreviewService filePreviewService(IOfficeConverter officeConverter, IFileStorage fileStorage, IFilePreviewRecord filePreviewRecord) {
+        return new FilePreviewService(officeConverter, fileStorage, filePreviewRecord);
     }
 
     @Bean
@@ -33,7 +32,7 @@ public class SpireConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DeleteServlet> deleteServlet(IFilePreviewService filePreviewService) {
+    public ServletRegistrationBean<DeleteServlet> deleteServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<DeleteServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new DeleteServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/delete");
@@ -41,7 +40,7 @@ public class SpireConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DownloadServlet> downloadServlet(IFilePreviewService filePreviewService) {
+    public ServletRegistrationBean<DownloadServlet> downloadServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new DownloadServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/download");

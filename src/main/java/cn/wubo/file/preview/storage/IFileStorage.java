@@ -13,14 +13,6 @@ public interface IFileStorage {
     FilePreviewInfo save(byte[] bytes, String fileName);
 
     /**
-     * bytes替换文件
-     * @param bytes
-     * @param filePreviewInfo
-     * @return
-     */
-    Boolean replace(byte[] bytes, FilePreviewInfo filePreviewInfo);
-
-    /**
      * 删除文件
      * @param filePreviewInfo
      * @return

@@ -1,6 +1,6 @@
 package cn.wubo.file.preview.servlet;
 
-import cn.wubo.file.preview.core.IFilePreviewService;
+import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.utils.IoUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,9 +14,9 @@ import java.io.OutputStream;
 @Slf4j
 public class DownloadServlet extends HttpServlet {
 
-    IFilePreviewService filePreviewService;
+    FilePreviewService filePreviewService;
 
-    public DownloadServlet(IFilePreviewService filePreviewService) {
+    public DownloadServlet(FilePreviewService filePreviewService) {
         this.filePreviewService = filePreviewService;
     }
 

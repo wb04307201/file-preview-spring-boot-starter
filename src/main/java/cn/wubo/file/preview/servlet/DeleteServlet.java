@@ -1,7 +1,6 @@
 package cn.wubo.file.preview.servlet;
 
-import cn.wubo.file.preview.core.IFilePreviewService;
-import cn.wubo.file.preview.record.IFilePreviewRecord;
+import cn.wubo.file.preview.core.FilePreviewService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletException;
@@ -13,9 +12,9 @@ import java.io.IOException;
 @Slf4j
 public class DeleteServlet extends HttpServlet {
 
-    IFilePreviewService filePreviewService;
+    FilePreviewService filePreviewService;
 
-    public DeleteServlet(IFilePreviewService filePreviewService) {
+    public DeleteServlet(FilePreviewService filePreviewService) {
         this.filePreviewService = filePreviewService;
     }
 
