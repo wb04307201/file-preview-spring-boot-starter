@@ -1,7 +1,6 @@
-package cn.wubo.file.preview.servlet.preview;
+package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.utils.Page;
-import cn.wubo.file.preview.config.OnlyOfficeProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
@@ -24,18 +23,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
-public class OnlyOfficePreviewServlet extends HttpServlet {
+public class PreviewServlet extends HttpServlet {
 
     IFilePreviewRecord filePreviewRecord;
     IFileStorage fileStorage;
-    OnlyOfficeProperties onlyOfficeProperties;
-    private static final String CONTEXT_PATH = "contextPath";
-    private static final String DOCUMENT_TYPE = "documentType";
 
-    public OnlyOfficePreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage, OnlyOfficeProperties onlyOfficeProperties) {
+    private static final String CONTEXT_PATH = "contextPath";
+
+    public PreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
         this.filePreviewRecord = filePreviewRecord;
         this.fileStorage = fileStorage;
-        this.onlyOfficeProperties = onlyOfficeProperties;
     }
 
     @Override
@@ -49,25 +46,7 @@ public class OnlyOfficePreviewServlet extends HttpServlet {
         String contextPath = req.getContextPath();
         String extName = FileUtils.extName(info.getFileName());
         String fileType = FileUtils.fileType(extName);
-        if ("word".equals(fileType) || "excel".equals(fileType) || "power point".equals(fileType) || "pdf".equals(fileType) || "txt".equals(fileType)) {
-            Map<String, Object> data = new HashMap<>();
-            data.put(CONTEXT_PATH, req.getContextPath());
-            data.put("url", onlyOfficeProperties.getApijs());
-            if ("word".equals(fileType) || "pdf".equals(fileType) || "txt".equals(fileType))
-                data.put(DOCUMENT_TYPE, "word");
-            else if ("excel".equals(fileType)) data.put(DOCUMENT_TYPE, "cell");
-            else if ("power point".equals(fileType)) data.put(DOCUMENT_TYPE, "slide");
-            data.put("fileType", "txt".equals(fileType) ? "txt" : extName);
-            data.put("key", info.getId());
-            data.put("title", info.getOriginalFilename());
-            data.put("downloadUrl", onlyOfficeProperties.getDownload() + "?id=" + info.getId());
-            data.put("callbackUrl", onlyOfficeProperties.getCallback() + "?id=" + info.getId());
-            data.put("lang", "zh");
-            data.put("userid", "file preview");
-            data.put("username", "file preview");
-            Page onlyofficePage = new Page("onlyoffice.ftl", data, resp);
-            onlyofficePage.write();
-        } else if ("markdown".equals(fileType)) {
+        if ("markdown".equals(fileType)) {
             Map<String, Object> data = new HashMap<>();
             data.put(CONTEXT_PATH, contextPath);
 
@@ -92,10 +71,10 @@ public class OnlyOfficePreviewServlet extends HttpServlet {
             data.put("url", contextPath + "/file/preview/download?id=" + info.getId());
             Page markdownPage = new Page("audio.ftl", data, resp);
             markdownPage.write();
+        } else if ("pdf".equals(fileType)) {
+            resp.sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", contextPath, contextPath, info.getId()));
         } else {
             resp.setContentType(FileUtils.getMimeType(info.getFileName()));
-
-
             try (OutputStream os = resp.getOutputStream()) {
                 IoUtils.writeToStream(fileStorage.get(info), os);
             }

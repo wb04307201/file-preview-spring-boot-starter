@@ -1,4 +1,4 @@
-package cn.wubo.file.preview.servlet.list;
+package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.utils.Page;

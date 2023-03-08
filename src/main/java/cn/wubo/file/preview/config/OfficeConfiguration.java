@@ -1,8 +1,8 @@
 package cn.wubo.file.preview.config;
 
 import cn.wubo.file.preview.record.IFilePreviewRecord;
-import cn.wubo.file.preview.servlet.list.FileListServlet;
-import cn.wubo.file.preview.servlet.preview.DownloadServlet;
+import cn.wubo.file.preview.servlet.FileListServlet;
+import cn.wubo.file.preview.servlet.DownloadServlet;
 import cn.wubo.file.preview.storage.IFileStorage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -42,14 +42,6 @@ public class OfficeConfiguration {
         ServletRegistrationBean<FileListServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new FileListServlet(filePreviewRecord));
         registration.addUrlMappings("/file/preview/list");
-        return registration;
-    }
-
-    @Bean
-    public ServletRegistrationBean<DownloadServlet> downloadServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
-        ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new DownloadServlet(filePreviewRecord, fileStorage));
-        registration.addUrlMappings("/file/preview/download");
         return registration;
     }
 }

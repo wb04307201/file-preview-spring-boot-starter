@@ -5,12 +5,10 @@ import cn.wubo.file.preview.core.IFilePreviewService;
 import cn.wubo.file.preview.office.IOfficeConverter;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
-import cn.wubo.file.preview.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.FastByteArrayOutputStream;
 
 import java.io.InputStream;
-import java.util.UUID;
 
 @Slf4j
 public class FilePreviewServiceImpl implements IFilePreviewService {
@@ -41,5 +39,20 @@ public class FilePreviewServiceImpl implements IFilePreviewService {
         filePreviewInfo.setOriginalFilename(fileName);
         filePreviewInfo = filePreviewRecord.save(filePreviewInfo);
         return filePreviewInfo;
+    }
+
+    @Override
+    public Boolean delete(String id) {
+        //1 调用查询
+        FilePreviewInfo filePreviewInfo = filePreviewRecord.findById(id);
+        //2 删除文件
+        //3 删除记录
+        return fileStorage.delete(filePreviewInfo) && filePreviewRecord.deleteById(id);
+    }
+
+    @Override
+    public byte[] download(String id) {
+        FilePreviewInfo info = filePreviewRecord.findById(id);
+        return fileStorage.get(info);
     }
 }

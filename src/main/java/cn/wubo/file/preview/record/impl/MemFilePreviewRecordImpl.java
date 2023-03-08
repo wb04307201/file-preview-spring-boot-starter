@@ -43,6 +43,15 @@ public class MemFilePreviewRecordImpl implements IFilePreviewRecord {
     }
 
     @Override
+    public Boolean deleteById(String id) {
+        Optional<FilePreviewInfo> optionalFileInfo = filePreviewInfos.stream()
+                .filter(e -> e.getId().equals(id))
+                .findAny();
+        if (optionalFileInfo.isPresent()) return filePreviewInfos.remove(optionalFileInfo.get());
+        else throw new RuntimeException("文件记录未找到!");
+    }
+
+    @Override
     public void init() {
 
     }

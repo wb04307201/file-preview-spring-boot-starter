@@ -27,6 +27,13 @@ public interface IFilePreviewRecord {
     FilePreviewInfo findById(String id);
 
     /**
+     * 根据id阐述
+     * @param id
+     * @return
+     */
+    Boolean deleteById(String id);
+
+    /**
      * 初始化
      */
     void init();

@@ -1,8 +1,6 @@
-package cn.wubo.file.preview.servlet.preview;
+package cn.wubo.file.preview.servlet;
 
-import cn.wubo.file.preview.core.FilePreviewInfo;
-import cn.wubo.file.preview.record.IFilePreviewRecord;
-import cn.wubo.file.preview.storage.IFileStorage;
+import cn.wubo.file.preview.core.IFilePreviewService;
 import cn.wubo.file.preview.utils.IoUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,12 +14,10 @@ import java.io.OutputStream;
 @Slf4j
 public class DownloadServlet extends HttpServlet {
 
-    IFilePreviewRecord filePreviewRecord;
-    IFileStorage fileStorage;
+    IFilePreviewService filePreviewService;
 
-    public DownloadServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
-        this.filePreviewRecord = filePreviewRecord;
-        this.fileStorage = fileStorage;
+    public DownloadServlet(IFilePreviewService filePreviewService) {
+        this.filePreviewService = filePreviewService;
     }
 
     @Override
@@ -29,8 +25,7 @@ public class DownloadServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         log.debug("下载文件-----开始");
         String id = req.getParameter("id");
-        FilePreviewInfo info = filePreviewRecord.findById(id);
-        byte[] bytes = fileStorage.get(info);
+        byte[] bytes = filePreviewService.download(id);
         try (OutputStream os = resp.getOutputStream()) {
             IoUtils.writeToStream(bytes, os);
         }

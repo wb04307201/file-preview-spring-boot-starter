@@ -136,14 +136,13 @@ public class FileUtils {
                 return "pdf";
             case "html":
                 return "html";
+            case "md":
+                return "markdown";
             case "txt":
             case "sql":
             case "log":
-                return "txt";
-            case "md":
-                return "markdown";
             default:
-                return "unknow";
+                return "txt";
         }
     }
 

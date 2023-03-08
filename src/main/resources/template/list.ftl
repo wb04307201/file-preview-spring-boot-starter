@@ -17,6 +17,8 @@
                     <th scope="col">原文件名</th>
                     <th scope="col">文件名</th>
                     <th scope="col">文件定位</th>
+                    <th scope="col">删除</th>
+                    <th scope="col">预览</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,7 +29,8 @@
                             <td>${row.originalFilename!'-'}</td>
                             <td>${row.fileName!'-'}</td>
                             <td>${row.filePath!'-'}</td>
-                            <td><a href="${contextPath}/file/preview?id=${row.id}" class="link-primary">预览文件</a></td>
+                            <td><a href="${contextPath}/file/preview/delete?id=${row.id}" class="link-primary">@删除</a></td>
+                            <td><a href="${contextPath}/file/preview?id=${row.id}" class="link-primary">@预览</a></td>
                         </tr>
                     </#list>
                 </#if>

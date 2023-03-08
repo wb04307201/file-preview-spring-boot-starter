@@ -4,9 +4,33 @@ import cn.wubo.file.preview.core.FilePreviewInfo;
 
 public interface IFileStorage {
 
+    /**
+     * bytes保存文件
+     * @param bytes
+     * @param fileName
+     * @return
+     */
     FilePreviewInfo save(byte[] bytes, String fileName);
 
+    /**
+     * bytes替换文件
+     * @param bytes
+     * @param filePreviewInfo
+     * @return
+     */
     Boolean replace(byte[] bytes, FilePreviewInfo filePreviewInfo);
 
+    /**
+     * 删除文件
+     * @param filePreviewInfo
+     * @return
+     */
+    Boolean delete(FilePreviewInfo filePreviewInfo);
+
+    /**
+     * 获取文件bytes
+     * @param filePreviewInfo
+     * @return
+     */
     byte[] get(FilePreviewInfo filePreviewInfo);
 }

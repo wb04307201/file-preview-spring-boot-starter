@@ -45,6 +45,17 @@ public class LocalFileStorageImpl implements IFileStorage {
     }
 
     @Override
+    public Boolean delete(FilePreviewInfo filePreviewInfo) {
+        Path filePath = Paths.get(filePreviewInfo.getFilePath());
+        try {
+            Files.delete(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    @Override
     public byte[] get(FilePreviewInfo filePreviewInfo) {
         try {
             return Files.readAllBytes(Paths.get(filePreviewInfo.getFilePath()));
