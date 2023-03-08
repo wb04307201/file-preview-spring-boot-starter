@@ -121,17 +121,18 @@ file:
 > 如果配置了context-path,请在地址中同样添加
 > 截图为使用onlyoffice进行预览
 
+![img_6.png](img_6.png)
 ![img.png](img.png)
 ![img_1.png](img_1.png)
 ![img_2.png](img_2.png)
 ![img_4.png](img_4.png)
 ![img_5.png](img_5.png)
+![img_8.png](img_8.png)
 
 ## 其他1：内置界面
 上传的文件可通过http://ip:端口/file/preview/list进行查看  
 注意：如配置了context-path需要在地址中对应添加  
-![img_8.png](img_8.png)
-
+![img_9.png](img_9.png)
 
 ## 其他2：下载文件、删除文件
 > 可通过第四步返回的文件信息中的id
@@ -151,87 +152,201 @@ file:
 ```yaml
 file:
   preview:
-    file-preview-record: "cn.wubo.file.preview.record.impl.MemFilePreviewRecordImpl"
+    file-preview-record: cn.wubo.file.preview.demo.H2FilePriviewRecordImpl
+```
+```java
+public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
+
+    private static final String HISTORY = "file_preview_history";
+
+    private static ConnectionPool connectionPool = new ConnectionPool(new ConnectionParam());
+
+    @Override
+    public FilePreviewInfo save(FilePreviewInfo filePreviewInfo) {
+        try {
+            Connection conn = connectionPool.getConnection();
+            if (!StringUtils.hasLength(filePreviewInfo.getId())) {
+                filePreviewInfo.setId(UUID.randomUUID().toString());
+                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.insertSql(HISTORY, filePreviewInfo), new HashMap<>());
+            } else {
+                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.updateByIdSql(HISTORY, filePreviewInfo), new HashMap<>());
+            }
+            connectionPool.returnConnection(conn);
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return filePreviewInfo;
+    }
+
+    @Override
+    public List<FilePreviewInfo> list(FilePreviewInfo filePreviewInfo) {
+        try {
+            Connection conn = connectionPool.getConnection();
+            String sql = ModelSqlUtils.selectSql(HISTORY, new FileInfo());
+
+            List<String> condition = new ArrayList<>();
+            if (StringUtils.hasLength(filePreviewInfo.getFileName()))
+                condition.add(" fileName  like '%" + filePreviewInfo.getFileName() + "%'");
+            if (StringUtils.hasLength(filePreviewInfo.getOriginalFilename()))
+                condition.add(" originalFilename like '%" + filePreviewInfo.getOriginalFilename() + "%'");
+            if (StringUtils.hasLength(filePreviewInfo.getFilePath()))
+                condition.add(" filePath like '%" + filePreviewInfo.getFilePath() + "%'");
+
+            if (!condition.isEmpty()) sql = sql + " where " + String.join("and", condition);
+
+            List<FilePreviewInfo> res = ExecuteSqlUtils.executeQuery(conn, sql, new HashMap<>(), FilePreviewInfo.class);
+            connectionPool.returnConnection(conn);
+            return res;
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public FilePreviewInfo findById(String s) {
+        FilePreviewInfo query = new FilePreviewInfo();
+        query.setId(s);
+        String sql = ModelSqlUtils.selectSql(HISTORY, query);
+        try {
+            Connection conn = connectionPool.getConnection();
+            List<FilePreviewInfo> res = ExecuteSqlUtils.executeQuery(conn, sql, new HashMap<>(), FilePreviewInfo.class);
+            connectionPool.returnConnection(conn);
+            return res.get(0);
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Boolean deleteById(String s) {
+        FilePreviewInfo delete = new FilePreviewInfo();
+        delete.setId(s);
+        String sql = ModelSqlUtils.deleteByIdSql(HISTORY, delete);
+        try {
+            Connection conn = connectionPool.getConnection();
+            int count = ExecuteSqlUtils.executeUpdate(conn, sql, new HashMap<>());
+            connectionPool.returnConnection(conn);
+            return count == 1;
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void init() {
+
+        try {
+            Connection conn = connectionPool.getConnection();
+            if (!ExecuteSqlUtils.isTableExists(conn, HISTORY, connectionPool.getDbType())) {
+                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(HISTORY, new FilePreviewInfo()), new HashMap<>());
+            }
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
 ```
 
 ## 其他4：实际使用中，可通过配置和实现接口方法将文件持久化到其他平台中
 ```yaml
 file:
   preview:
-    file-storage: "cn.wubo.file.preview.storage.impl.LocalFileStorageImpl"
+    file-storage: cn.wubo.file.preview.demo.MinIOFileStorageImpl
 
 ```
 
-
-## 第五步 存储预览文件信息
-
-> 默认使用h2数据库存储预览文件信息，如有需要可以扩展其他存储方式，不想修改可以跳过这一步  
-> 新建一个类并引用接口cn.wubo.file.preview.storage.IStorageService并实现接口方法，例如
-
 ```java
-package cn.wubo.file.preview.demo;
+public class H2FileStroageRecordImpl implements IFileStroageRecord {
 
-import cn.wubo.file.preview.dto.ConvertInfoDto;
-import cn.wubo.file.preview.record.IFilePreviewRecord;
-import cn.wubo.file.preview.record.IStorageService;
-import org.springframework.util.StringUtils;
+    private static final String HISTORY = "file_storage_history";
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-public class MemoryStorageServiceImpl implements IFilePreviewRecord {
-
-    private static List<ConvertInfoDto> convertInfoDtoList;
+    private static ConnectionPool connectionPool = new ConnectionPool(new ConnectionParam());
 
     @Override
-    public ConvertInfoDto save(ConvertInfoDto convertInfoDto) {
-        if (!StringUtils.hasLength(convertInfoDto.getId())) {
-            convertInfoDto.setId(UUID.randomUUID().toString());
-            convertInfoDtoList.add(convertInfoDto);
-        } else {
-            convertInfoDtoList.stream().filter(e -> e.getId().equals(convertInfoDto.getId())).findAny().ifPresent(e -> e = convertInfoDto);
+    public FileInfo save(FileInfo fileInfo) {
+        try {
+            Connection conn = connectionPool.getConnection();
+            if (!StringUtils.hasLength(fileInfo.getId())) {
+                fileInfo.setId(UUID.randomUUID().toString());
+                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.insertSql(HISTORY, fileInfo), new HashMap<>());
+            } else {
+                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.updateByIdSql(HISTORY, fileInfo), new HashMap<>());
+            }
+            connectionPool.returnConnection(conn);
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        return convertInfoDto;
+        return fileInfo;
     }
 
     @Override
-    public List<ConvertInfoDto> list(ConvertInfoDto convertInfoDto) {
-        return convertInfoDtoList;
+    public List<FileInfo> list(FileInfo fileInfo) {
+        try {
+            Connection conn = connectionPool.getConnection();
+            String sql = ModelSqlUtils.selectSql(HISTORY, new FileInfo());
+
+            List<String> condition = new ArrayList<>();
+            if (StringUtils.hasLength(fileInfo.getPlatform()))
+                condition.add(" platform = '" + fileInfo.getPlatform() + "'");
+            if (StringUtils.hasLength(fileInfo.getAlias()))
+                condition.add(" alias like '%" + fileInfo.getAlias() + "%'");
+            if (StringUtils.hasLength(fileInfo.getOriginalFilename()))
+                condition.add(" originalFilename like '%" + fileInfo.getOriginalFilename() + "%'");
+
+            if (!condition.isEmpty()) sql = sql + " where " + String.join("and", condition);
+
+            List<FileInfo> res = ExecuteSqlUtils.executeQuery(conn, sql, new HashMap<>(), FileInfo.class);
+            connectionPool.returnConnection(conn);
+            return res;
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public FileInfo findById(String s) {
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setId(s);
+        String sql = ModelSqlUtils.selectSql(HISTORY, fileInfo);
+        try {
+            Connection conn = connectionPool.getConnection();
+            List<FileInfo> res = ExecuteSqlUtils.executeQuery(conn, sql, new HashMap<>(), FileInfo.class);
+            connectionPool.returnConnection(conn);
+            return res.get(0);
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Boolean delete(FileInfo fileInfo) {
+        FileInfo delete = new FileInfo();
+        delete.setId(fileInfo.getId());
+        String sql = ModelSqlUtils.deleteByIdSql(HISTORY, delete);
+        try {
+            Connection conn = connectionPool.getConnection();
+            int count = ExecuteSqlUtils.executeUpdate(conn, sql, new HashMap<>());
+            connectionPool.returnConnection(conn);
+            return count == 1;
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void init() {
-        convertInfoDtoList = new ArrayList<>();
+        try {
+            Connection conn = connectionPool.getConnection();
+            if (!ExecuteSqlUtils.isTableExists(conn, HISTORY, connectionPool.getDbType())) {
+                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(HISTORY, new FileInfo()), new HashMap<>());
+            }
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 ```
+*注意： 文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
 
-> 修改`@EnableFilePreview`注解，增加storage参数只想新存储类的路径，例如
-
-```java
-
-@EnableFilePreview(convert = "onlyoffice", storage = "cn.wubo.file.preview.demo.MemoryStorageServiceImpl")
-@SpringBootApplication
-public class FilePreviewDemoApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(FilePreviewDemoApplication.class, args);
-    }
-
-}
-```
 
 #### ! *可能会扩展对压缩文件的支持*
-
-#### ! *可能会扩展[document4j](https://github.com/documents4j/documents4j)，但其不支持ppt，需要其他方案补充*
-
-## 第六步 预览文件
-
-> 通过http://127.0.0.1:8080/file/preview?id=?预览文件  
-> 通过http://127.0.0.1:8080/file/preview/list查看历史记录  
-> 如果使用`spring.servlet.context-path`,请在地址中同样增加context-path值
-
-### 示例
-
-https://gitee.com/wb04307201/file-preview-demo
