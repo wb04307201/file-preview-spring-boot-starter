@@ -21,7 +21,9 @@ public class OfficeConfiguration {
     public IFilePreviewRecord filePreviewRecord() {
         try {
             Class clazz = Class.forName(properties.getFilePreviewRecord());
-            return (IFilePreviewRecord) clazz.newInstance();
+            IFilePreviewRecord filePreviewRecord = (IFilePreviewRecord) clazz.newInstance();
+            filePreviewRecord.init();
+            return filePreviewRecord;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
