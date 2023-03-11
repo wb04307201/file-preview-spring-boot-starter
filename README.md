@@ -123,6 +123,8 @@ file:
 
 ## 第六步 预览文件信息
 
+[代码高亮](https://blog.csdn.net/q1025387665a/article/details/128630096)
+
 > 可通过第四步返回的文件信息中的id  
 > 访问http://ip:port/file/preview?id=??进行文件预览  
 > 如果配置了context-path,请在地址中同样添加  
