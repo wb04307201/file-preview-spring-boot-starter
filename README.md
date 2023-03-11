@@ -114,6 +114,13 @@ file:
         callback: http://ip:port/file/preview/onlyoffice/callback #当前服务的ip:port
 ```
 
+#### libreoffice online
+[libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/)
+
+#### Collabora Online
+[Collabora Online](https://www.collaboraoffice.com/)
+[docs](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html)
+
 ## 第六步 预览文件信息
 
 > 可通过第四步返回的文件信息中的id  
