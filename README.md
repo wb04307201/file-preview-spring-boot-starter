@@ -2,9 +2,9 @@
 
 [![](https://jitpack.io/v/com.gitee.wb04307201/file-preview-spring-boot-starter.svg)](https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter)
 
-> 文档在线预览快速启动器  
-> 只需要简单的配置和编码，即可集成到springboot中  
-> 支持word，excel，ppt，pdf，图片，视频，音频，markdown等格式文件的在线预览
+> 一个文档在线预览的中间件  
+> 可通过简单的配置即可集成到springboot中  
+> 支持word，excel，ppt，pdf，图片，视频，音频，markdown等格式文件的在线预览  
 
 ## [代码示例](https://gitee.com/wb04307201/file-preview-demo)
 
@@ -116,17 +116,16 @@ file:
 
 ## 第六步 预览文件信息
 
-> 可通过第四步返回的文件信息中的id
-> 访问http://ip:port/file/preview?id=??进行文件预览
-> 如果配置了context-path,请在地址中同样添加
-> 截图为使用onlyoffice进行预览
+> 可通过第四步返回的文件信息中的id  
+> 访问http://ip:port/file/preview?id=??进行文件预览  
+> 如果配置了context-path,请在地址中同样添加  
+> 截图为使用onlyoffice进行预览  
 
-![img_6.png](img_6.png)
 ![img.png](img.png)
-![img_1.png](img_1.png)
 ![img_2.png](img_2.png)
 ![img_4.png](img_4.png)
 ![img_5.png](img_5.png)
+![img_6.png](img_6.png)
 ![img_8.png](img_8.png)
 
 ## 其他1：内置界面
@@ -135,11 +134,11 @@ file:
 ![img_9.png](img_9.png)
 
 ## 其他2：下载文件、删除文件
-> 可通过第四步返回的文件信息中的id
-> 访问http://ip:port/file/preview/download?id=??进行文件下载
-> 访问http://ip:port/file/preview/delete?id=??进行文件删除
-> 如果配置了context-path,请在地址中同样添加
-> 也可以调用IFilePreviewService服务中方法自行处理下载和删除
+> 可通过第四步返回的文件信息中的id  
+> 访问http://ip:port/file/preview/download?id=??进行文件下载  
+> 访问http://ip:port/file/preview/delete?id=??进行文件删除  
+> 如果配置了context-path,请在地址中同样添加  
+> 也可以调用IFilePreviewService服务中方法自行处理下载和删除  
 
 ```java
     //获取文件bytes
