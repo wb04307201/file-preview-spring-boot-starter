@@ -2,7 +2,7 @@
 
 [![](https://jitpack.io/v/com.gitee.wb04307201/file-preview-spring-boot-starter.svg)](https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter)
 
-> 一个文档在线预览的工具包  
+> 一个文档在线预览的中间件  
 > 可通过简单的配置即可集成到springboot中  
 > 支持word，excel，ppt，pdf，图片，视频，音频，markdown等格式文件的在线预览  
 
