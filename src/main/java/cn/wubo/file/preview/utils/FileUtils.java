@@ -174,6 +174,8 @@ public class FileUtils {
                 return "json";
             case "css":
                 return "css";
+            case "py":
+                return "python";
             case "txt":
             case "log":
             case "conf":

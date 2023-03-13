@@ -58,6 +58,7 @@ public class PreviewServlet extends HttpServlet {
             case "javascript":
             case "json":
             case "css":
+            case "python":
                 data.put(CONTEXT_PATH, contextPath);
                 data.put("language", fileType);
                 data.put("content", IoUtils.readByte(fileStorage.get(info), info.getFileName()));
