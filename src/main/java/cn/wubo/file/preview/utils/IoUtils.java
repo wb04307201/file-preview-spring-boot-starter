@@ -3,6 +3,11 @@ package cn.wubo.file.preview.utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 public class IoUtils {
@@ -60,6 +65,16 @@ public class IoUtils {
             } catch (Exception e) {
                 log.debug(e.getMessage(), e);
             }
+        }
+    }
+
+    public static String readByte(byte[] bytes, String fileName) throws IOException {
+        Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), fileName);
+        Files.write(path, bytes);
+        try (Stream<String> lines = Files.lines(path)) {
+            return new String(Base64.getEncoder().encode(lines.collect(Collectors.joining("\n")).getBytes()));
+        } finally {
+            Files.delete(path);
         }
     }
 }

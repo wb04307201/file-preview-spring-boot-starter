@@ -158,18 +158,32 @@ public class FileUtils {
                 return "html";
             case "md":
                 return "markdown";
-            case "txt":
             case "sql":
-            case "log":
+                return "sql";
             case "c":
-            case "conf":
             case "cpp":
             case "h":
+                return "cpp";
             case "java":
+                return "java";
+            case "xml":
+                return "xml";
+            case "js":
+                return "javascript";
+            case "json":
+                return "json";
+            case "css":
+                return "css";
+            case "py":
+                return "python";
+            case "txt":
+            case "log":
+            case "conf":
             case "prop":
             case "rc":
             case "sh":
-            case "xml":
+            case "yaml":
+            case "properties":
             default:
                 return "txt";
         }
@@ -196,11 +210,7 @@ public class FileUtils {
         String contentType = URLConnection.getFileNameMap().getContentTypeFor(filePath);
         if (null == contentType) {
             // 补充一些常用的mimeType
-            if (StringUtils.endsWithIgnoreCase(filePath, ".css")) {
-                contentType = "text/css";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".js")) {
-                contentType = "application/x-javascript";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".rar")) {
+            if (StringUtils.endsWithIgnoreCase(filePath, ".rar")) {
                 contentType = "application/x-rar-compressed";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".7z")) {
                 contentType = "application/x-7z-compressed";
@@ -216,14 +226,8 @@ public class FileUtils {
                 contentType = "application/octet-stream";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".bmp")) {
                 contentType = "image/bmp";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".c")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".class")) {
                 contentType = "application/octet-stream";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".conf")) {
-                contentType = "text/plain";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".cpp")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".doc")) {
                 contentType = "application/msword";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".docx")) {
@@ -240,24 +244,18 @@ public class FileUtils {
                 contentType = "application/x-gtar";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".gz")) {
                 contentType = "application/x-gzip";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".h")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".htm")) {
                 contentType = "text/html";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".html")) {
                 contentType = "text/html";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".jar")) {
                 contentType = "application/java-archive";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".java")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".jpeg")) {
                 contentType = "image/jpeg";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".jpg")) {
                 contentType = "image/jpeg";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".jpg")) {
                 contentType = "image/jpeg";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".log")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".m3u")) {
                 contentType = "audio/x-mpegurl";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".m4a")) {
@@ -304,22 +302,14 @@ public class FileUtils {
                 contentType = "application/vnd.ms-powerpoint";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".pptx")) {
                 contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".prop")) {
-                contentType = "text/plain";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".rc")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".rmvb")) {
                 contentType = "audio/x-pn-realaudio";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".rtf")) {
                 contentType = "application/rtf";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".sh")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".tar")) {
                 contentType = "application/x-tar";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".tgz")) {
                 contentType = "application/x-compressed";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".txt")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".wav")) {
                 contentType = "audio/x-wav";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".wma")) {
@@ -328,15 +318,45 @@ public class FileUtils {
                 contentType = "audio/x-ms-wmv";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".wps")) {
                 contentType = "application/vnd.ms-works";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".xml")) {
-                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".z")) {
                 contentType = "application/x-compress";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".zip")) {
                 contentType = "application/x-zip-compressed";
+            }
+            /*
+            else if (StringUtils.endsWithIgnoreCase(filePath, ".java")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".sh")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".txt")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".c")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".conf")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".cpp")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".h")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".log")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".prop")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".rc")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".xml")) {
+                contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".sql")) {
                 contentType = "text/plain";
-            }
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".json")) {
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".css")) {
+                //contentType = "text/css";
+                contentType = "text/plain";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".js")) {
+                //contentType = "application/x-javascript";
+                contentType = "text/plain";
+            }*/
         }
 
         // 补充

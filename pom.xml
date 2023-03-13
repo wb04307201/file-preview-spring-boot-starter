@@ -130,10 +130,6 @@
             <name>e-iceblue</name>
             <url>https://repo.e-iceblue.cn/repository/maven-public/</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
 </project>
