@@ -156,7 +156,7 @@ file:
 
 ```java
     //获取文件bytes
-    byte[]bytes=filePreviewService.download(filePreviewInfo.getId());
+    byte[] bytes=filePreviewService.download(filePreviewInfo.getId());
 
     //删除预览文件
     Boolean result=filePreviewService.delete(filePreviewInfo.getId());  
