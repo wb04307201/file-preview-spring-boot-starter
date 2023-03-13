@@ -4,7 +4,7 @@
 
 > 一个文档在线预览的中间件  
 > 可通过简单的配置即可集成到springboot中  
-> 支持word，excel，ppt，pdf，图片，视频，音频，markdown等格式文件的在线预览  
+> 支持word，excel，ppt，pdf，图片，视频，音频，markdown，代码，网页等格式文件的在线预览
 
 ## [代码示例](https://gitee.com/wb04307201/file-preview-demo)
 
@@ -34,7 +34,6 @@
 ## 第三步 在启动类上加上`@EnableFilePreview`注解
 
 ```java
-
 @EnableFilePreview
 @SpringBootApplication
 public class FilePreviewDemoApplication {
@@ -55,8 +54,8 @@ public class FilePreviewDemoApplication {
     @Autowired
     FilePreviewService filePreviewService;
 
-    //预览文件转换
-    FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
+            //预览文件转换
+            FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
 ```
 
 ### 在针对word，excel，ppt文件的处理上，支持3种模式
@@ -119,40 +118,49 @@ file:
 > 可通过第四步返回的文件信息中的id  
 > 访问http://ip:port/file/preview?id=??进行文件预览  
 > 如果配置了context-path,请在地址中同样添加  
-> 截图为使用onlyoffice进行预览  
+> 使用了一些组件帮助预览文件内容，截图为使用onlyoffice进行office文件预览
 
-![img.png](img.png)
-![img_2.png](img_2.png)
-![img_4.png](img_4.png)
-![img_5.png](img_5.png)
-![img_6.png](img_6.png)
-![img_8.png](img_8.png)
+| 文件类型           | 预览组件                                                         | 截图                                                                                                                                         |
+|----------------|--------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/) |                                                                                                                                            |
+| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                   |                                                                                                                                            |
+| word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                 | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%"> |
+| pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                  | <img src="img_11.png" width="30%" height="30%">                                                                                            |
+| audio          | [audio.js](http://kolber.github.io/audiojs/)                 | <img src="img_4.png" width="30%" height="30%">                                                                                             |
+| video          | [videojs](https://videojs.com/)                              | <img src="img_5.png" width="30%" height="30%">                                                                                             |
+| markdonw       | [Marked](https://marked.js.org/)                             | <img src="mg.png" width="30%" height="30%">                                                                                                |
+| 代码             | [CodeMirror](https://codemirror.net/)                        | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                              |
 
 ## 其他1：内置界面
+
 上传的文件可通过http://ip:端口/file/preview/list进行查看  
 注意：如配置了context-path需要在地址中对应添加  
 ![img_9.png](img_9.png)
 
 ## 其他2：下载文件、删除文件
+
 > 可通过第四步返回的文件信息中的id  
 > 访问http://ip:port/file/preview/download?id=??进行文件下载  
 > 访问http://ip:port/file/preview/delete?id=??进行文件删除  
 > 如果配置了context-path,请在地址中同样添加  
-> 也可以调用IFilePreviewService服务中方法自行处理下载和删除  
+> 也可以调用IFilePreviewService服务中方法自行处理下载和删除
 
 ```java
     //获取文件bytes
-    byte[] bytes = filePreviewService.download(filePreviewInfo.getId());
-    
+    byte[]bytes=filePreviewService.download(filePreviewInfo.getId());
+
     //删除预览文件
-    Boolean result = filePreviewService.delete(filePreviewInfo.getId());  
+    Boolean result=filePreviewService.delete(filePreviewInfo.getId());  
 ```
+
 ## 其他3：实际使用中，可通过配置和实现接口方法将数据持久化到数据库中
+
 ```yaml
 file:
   preview:
     file-preview-record: cn.wubo.file.preview.demo.H2FilePriviewRecordImpl
 ```
+
 ```java
 public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 
@@ -247,6 +255,7 @@ public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 ```
 
 ## 其他4：实际使用中，可通过配置和实现接口方法将文件持久化到其他平台中
+
 ```yaml
 file:
   preview:
@@ -345,7 +354,8 @@ public class H2FileStroageRecordImpl implements IFileStroageRecord {
     }
 }
 ```
-*注意： 文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
 
+*注意：
+文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
 
 #### ! *可能会扩展对压缩文件的支持*
