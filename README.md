@@ -113,23 +113,16 @@ file:
         callback: http://ip:port/file/preview/onlyoffice/callback #当前服务的ip:port
 ```
 
-#### libreoffice online
-[libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/)
-
-#### Collabora Online
-[Collabora Online](https://www.collaboraoffice.com/)
-[docs](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html)
-
 ## 第六步 预览文件信息
-
-[代码高亮](https://blog.csdn.net/q1025387665a/article/details/128630096)
 
 > 可通过第四步返回的文件信息中的id  
 > 访问http://ip:port/file/preview?id=??进行文件预览  
 > 如果配置了context-path,请在地址中同样添加  
-> 使用了一些组件帮助预览文件内容，截图为使用onlyoffice进行office文件预览
+> 使用了一些组件帮助预览文件内容  
+> 代码高亮支持java,python,json,javascript,C++,css,xml,sql几种类型  
+> html文件则会被渲染成网页展示  
 
-| 文件类型           | 预览组件                                                         | 截图                                                                                                                                         |
+| 文件类型           | 预览组件                                                         | 预览示例                                                                                                                                       |
 |----------------|--------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/) |                                                                                                                                            |
 | word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                   |                                                                                                                                            |
@@ -367,4 +360,12 @@ public class H2FileStroageRecordImpl implements IFileStroageRecord {
 *注意：
 文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
 
-#### ! *可能会扩展对压缩文件的支持*
+## 未来可能的工作？
+#### ! *扩展对压缩文件的支持*
+
+#### ! *扩展libreoffice online*
+[libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/)
+
+#### ! *扩展Collabora Online*
+[Collabora Online](https://www.collaboraoffice.com/)  
+[docs](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html)
