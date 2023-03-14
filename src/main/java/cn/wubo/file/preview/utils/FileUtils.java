@@ -254,8 +254,6 @@ public class FileUtils {
                 contentType = "image/jpeg";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".jpg")) {
                 contentType = "image/jpeg";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".jpg")) {
-                contentType = "image/jpeg";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".m3u")) {
                 contentType = "audio/x-mpegurl";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".m4a")) {
