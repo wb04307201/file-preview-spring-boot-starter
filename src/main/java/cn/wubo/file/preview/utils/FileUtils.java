@@ -176,6 +176,9 @@ public class FileUtils {
                 return "css";
             case "py":
                 return "python";
+            case "epub":
+            case "opf":
+                return "epub";
             case "txt":
             case "log":
             case "conf":
@@ -320,6 +323,10 @@ public class FileUtils {
                 contentType = "application/x-compress";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".zip")) {
                 contentType = "application/x-zip-compressed";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".epub")) {
+                contentType = "application/epub+zip";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".opf")) {
+                contentType = "application/epub+zip";
             }
             /*
             else if (StringUtils.endsWithIgnoreCase(filePath, ".java")) {
