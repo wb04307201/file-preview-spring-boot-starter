@@ -177,7 +177,6 @@ public class FileUtils {
             case "py":
                 return "python";
             case "epub":
-            case "opf":
                 return "epub";
             case "txt":
             case "log":
@@ -324,8 +323,6 @@ public class FileUtils {
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".zip")) {
                 contentType = "application/x-zip-compressed";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".epub")) {
-                contentType = "application/epub+zip";
-            } else if (StringUtils.endsWithIgnoreCase(filePath, ".opf")) {
                 contentType = "application/epub+zip";
             }
             /*

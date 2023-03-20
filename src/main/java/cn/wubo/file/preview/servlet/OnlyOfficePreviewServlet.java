@@ -76,13 +76,12 @@ public class OnlyOfficePreviewServlet extends HttpServlet {
                 Page onlyofficePage = new Page("onlyoffice.ftl", data, resp);
                 onlyofficePage.write();
                 break;
-            case "markdown": {
+            case "markdown":
                 data.put(CONTEXT_PATH, contextPath);
                 data.put("content", IoUtils.readByte(fileStorage.get(info), info.getFileName()));
                 Page markdownPage = new Page("markdown.ftl", data, resp);
                 markdownPage.write();
                 break;
-            }
             case "sql":
             case "cpp":
             case "java":
@@ -97,20 +96,24 @@ public class OnlyOfficePreviewServlet extends HttpServlet {
                 Page viewPage = new Page("code.ftl", data, resp);
                 viewPage.write();
                 break;
-            case "video": {
+            case "epub":
                 data.put(CONTEXT_PATH, contextPath);
                 data.put("url", contextPath + "/file/preview/download?id=" + info.getId());
-                Page markdownPage = new Page("video.ftl", data, resp);
-                markdownPage.write();
+                Page epubPage = new Page("epub.ftl", data, resp);
+                epubPage.write();
                 break;
-            }
-            case "audio": {
+            case "video":
                 data.put(CONTEXT_PATH, contextPath);
                 data.put("url", contextPath + "/file/preview/download?id=" + info.getId());
-                Page markdownPage = new Page("audio.ftl", data, resp);
-                markdownPage.write();
+                Page videoPage = new Page("video.ftl", data, resp);
+                videoPage.write();
                 break;
-            }
+            case "audio":
+                data.put(CONTEXT_PATH, contextPath);
+                data.put("url", contextPath + "/file/preview/download?id=" + info.getId());
+                Page audioPage = new Page("audio.ftl", data, resp);
+                audioPage.write();
+                break;
             case "pdf":
                 resp.sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", contextPath, contextPath, info.getId()));
                 break;
