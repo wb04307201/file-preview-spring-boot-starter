@@ -38,6 +38,11 @@
                 <version>4.0.4</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.31</version>
+            </dependency>
 
             <!-- Spire.Office for Java -->
             <dependency>
@@ -103,10 +108,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+
         <dependency>
             <groupId>e-iceblue</groupId>
             <artifactId>spire.office.free</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-local-lo</artifactId>
@@ -115,6 +122,7 @@
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-spring-boot-starter</artifactId>
         </dependency>
+
         <dependency>
             <groupId>net.sf.sevenzipjbinding</groupId>
             <artifactId>sevenzipjbinding</artifactId>
