@@ -36,7 +36,7 @@ public class FileListServlet extends HttpServlet {
         data.put("list", filePreviewRecord.list(filePreviewInfo));
         data.put("query", filePreviewInfo);
 
-        Page listPage = new Page("list.ftl", data, resp);
+        Page listPage = new Page("previewlist.ftl", data, resp);
         listPage.write();
         //super.doGet(req, resp);
     }
