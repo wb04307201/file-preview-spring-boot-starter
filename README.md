@@ -55,8 +55,8 @@ public class FilePreviewDemoApplication {
     @Autowired
     FilePreviewService filePreviewService;
 
-            //预览文件转换
-            FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
+    //预览文件转换
+    FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
 ```
 
 ### 在针对word，excel，ppt文件的处理上，支持3种模式
@@ -134,6 +134,7 @@ file:
 | markdonw       | [Marked](https://marked.js.org/)                             | <img src="img.png" width="30%" height="30%">                                                                                               |
 | 代码             | [CodeMirror](https://codemirror.net/)                        | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                              |
 | epub电子书        | [epub.js](https://github.com/futurepress/epub.js)            | <img src="img_12.png" width="30%" height="30%">                                                                                            |
+| 网页             | 直接渲染                                                         | <img src="img_13.png" width="30%" height="30%">                                                                                            |
 
 ## 其他1：内置界面
 
