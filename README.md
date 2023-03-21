@@ -119,22 +119,20 @@ file:
 > 可通过第四步返回的文件信息中的id  
 > 访问http://ip:port/file/preview?id=??进行文件预览  
 > 如果配置了context-path,请在地址中同样添加  
-> 使用了一些组件帮助预览文件内容  
-> 代码高亮支持java,python,json,javascript,C++,css,xml,sql几种类型  
-> html文件则会被渲染成网页展示
+> 使用了一些开源组件帮助预览文件内容  
 
-| 文件类型           | 预览组件                                                         | 预览示例                                                                                                                                       |
-|----------------|--------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/) |                                                                                                                                            |
-| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                   |                                                                                                                                            |
-| word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                 | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%"> |
-| pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                  | <img src="img_11.png" width="30%" height="30%">                                                                                            |
-| audio音频        | [audio.js](http://kolber.github.io/audiojs/)                 | <img src="img_4.png" width="30%" height="30%">                                                                                             |
-| video视频        | [videojs](https://videojs.com/)                              | <img src="img_5.png" width="30%" height="30%">                                                                                             |
-| markdonw       | [Marked](https://marked.js.org/)                             | <img src="img.png" width="30%" height="30%">                                                                                               |
-| 代码             | [CodeMirror](https://codemirror.net/)                        | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                              |
-| epub电子书        | [epub.js](https://github.com/futurepress/epub.js)            | <img src="img_12.png" width="30%" height="30%">                                                                                            |
-| 网页             | 直接渲染                                                         | <img src="img_13.png" width="30%" height="30%">                                                                                            |
+| 文件类型                                            | 预览组件                                                         | 预览示例                                                                                                                                       |
+|-------------------------------------------------|--------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| word/excel/ppt                                  | [jodconverter](https://github.com/sbraconnier/jodconverter/) |                                                                                                                                            |
+| word/excel/ppt                                  | [Spire.Office](https://www.e-iceblue.com/)                   |                                                                                                                                            |
+| word/excel/ppt                                  | [onlyoffice](https://www.onlyoffice.com/zh/)                 | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%"> |
+| pdf                                             | [PDF.js](https://mozilla.github.io/pdf.js/)                  | <img src="img_11.png" width="30%" height="30%">                                                                                            |
+| audio音频                                         | [audio.js](http://kolber.github.io/audiojs/)                 | <img src="img_4.png" width="30%" height="30%">                                                                                             |
+| video视频                                         | [videojs](https://videojs.com/)                              | <img src="img_5.png" width="30%" height="30%">                                                                                             |
+| markdonw                                        | [Marked](https://marked.js.org/)                             | <img src="img.png" width="30%" height="30%">                                                                                               |
+| 代码（java,python,json,javascript,C++,css,xml,sql） | [CodeMirror](https://codemirror.net/)                        | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                              |
+| epub电子书                                         | [epub.js](https://github.com/futurepress/epub.js)            | <img src="img_12.png" width="30%" height="30%">                                                                                            |
+| 网页                                              | 直接渲染                                                         | <img src="img_13.png" width="30%" height="30%">                                                                                            |
 
 ## 其他1：内置界面
 
