@@ -2,7 +2,6 @@ package cn.wubo.file.preview.config;
 
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.servlet.FileListServlet;
-import cn.wubo.file.preview.servlet.DownloadServlet;
 import cn.wubo.file.preview.storage.IFileStorage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
