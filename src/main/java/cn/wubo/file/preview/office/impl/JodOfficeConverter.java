@@ -13,8 +13,11 @@ import java.io.OutputStream;
 
 public class JodOfficeConverter implements IOfficeConverter {
 
-    @Autowired
     DocumentConverter converter;
+
+    public JodOfficeConverter(DocumentConverter converter) {
+        this.converter = converter;
+    }
 
     public String convert(InputStream is, OutputStream os, String fileName) {
         String extName = FileUtils.extName(fileName);

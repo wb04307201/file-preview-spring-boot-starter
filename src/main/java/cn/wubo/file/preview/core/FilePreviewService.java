@@ -9,6 +9,9 @@ import org.springframework.util.FastByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Date;
 
+/**
+ * 预览文件服务
+ */
 @Slf4j
 public class FilePreviewService {
 

@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 //无需转换
-public class OnlyOfficeConverter implements IOfficeConverter {
+public class NoneConverter implements IOfficeConverter {
 
     public String convert(InputStream is, OutputStream os, String fileName) {
         try {

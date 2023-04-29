@@ -11,6 +11,5 @@ import java.lang.annotation.*;
 @Documented
 @Import({FilePreviewRegistrar.class})
 public @interface EnableFilePreview {
-    //office文件预览转化工具
-    String convert() default "jod";
+
 }

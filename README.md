@@ -55,8 +55,8 @@ public class FilePreviewDemoApplication {
     @Autowired
     FilePreviewService filePreviewService;
 
-            //预览文件转换
-            FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
+    //预览文件转换
+    FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
 ```
 
 ### 在针对word，excel，ppt文件的处理上，支持3种模式
