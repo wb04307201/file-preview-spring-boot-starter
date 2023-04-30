@@ -152,10 +152,10 @@ file:
 
 ```java
     //获取文件bytes
-    byte[]bytes=filePreviewService.download(filePreviewInfo.getId());
+    byte[] bytes = filePreviewService.download(filePreviewInfo.getId());
 
-            //删除预览文件
-            Boolean result=filePreviewService.delete(filePreviewInfo.getId());  
+    //删除预览文件
+    Boolean result = filePreviewService.delete(filePreviewInfo.getId());  
 ```
 
 ## 其他3：实际使用中，可通过配置和实现接口方法将数据持久化到数据库中

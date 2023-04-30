@@ -10,11 +10,15 @@
 <script>
     const viewer = new XMindEmbedViewer({
         el: '#container-or-iframe-selector', // HTMLElement | HTMLIFrameElement | string
-    })
-    viewer.load('${url}')
-    /*fetch('test-1.xmind')
-        .then(res => res.arrayBuffer())
-        .then(file => viewer.load(file))*/
+    });
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '${url}', false); //同步清华求
+    xhr.responseType = 'blob';  // 重点
+    xhr.send(null)
+    if (xhr.status === 200) {
+        const data = new Blob([xhr.response]);
+        viewer.load(data)
+    }
 </script>
 </body>
 </html>

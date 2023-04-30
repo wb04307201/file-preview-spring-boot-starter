@@ -14,7 +14,7 @@
     marked.setOptions({
         renderer: new marked.Renderer(),
         highlight: function(code, lang) {
-            var language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
             return hljs.highlight(code, { language }).value;
         },
         langPrefix: 'hljs language-', // highlight.js css expects a top-level 'hljs' class.
