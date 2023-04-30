@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Xmind</title>
+    <script type="text/javascript" src="${contextPath}/xmind-embed-viewer/1.1.0/xmind-embed-viewer.js"></script>
 </head>
 <body>
 <div id="container-or-iframe-selector"></div>
