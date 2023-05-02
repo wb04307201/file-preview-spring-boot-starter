@@ -4,7 +4,7 @@
 
 > 一个文档在线预览的中间件  
 > 可通过简单的配置即可集成到springboot中  
-> 支持word、excel、ppt、pdf、图片、视频、音频、markdown、代码、网页、epub电子书等格式文件的在线预览
+> 支持word、excel、ppt、pdf、图片、视频、音频、markdown、代码、网页、epub电子书、Xmind脑图等格式文件的在线预览
 
 ## [代码示例](https://gitee.com/wb04307201/file-preview-demo)
 
@@ -61,12 +61,16 @@ public class FilePreviewDemoApplication {
 
 ### 在针对word，excel，ppt文件的处理上，支持3种模式
 
-#### jodconverter 使用注解@EnableFilePreview或者@EnableFilePreview(convert="jod")
+#### jodconverter
 
 > 安装[libroffice](https://zh-cn.libreoffice.org/)并添加配置  
 > 详细配置内容请查看[jodconverter](https://github.com/sbraconnier/jodconverter/)
 
-```yml
+```yaml
+file:
+  preview:
+    # 使用jodconverter模式，可省略该配置
+    officeConverter: jod
 jodconverter:
   local:
     enabled: true
@@ -82,13 +86,20 @@ jodconverter:
     processTimeout: 86400000
 ```
 
-#### spire.office 使用注解@EnableFilePreview(convert="spire")
+#### spire.office
 
 > 项目中使用的spire.office为免费版本，转换office文件存在一定限制
 > 如要使用收费版本，请排除免费版本的依赖并添加正式版本  
 > [Spire.Office](https://www.e-iceblue.com/)
 
-#### onlyoffice 使用注解@EnableFilePreview(convert="onlyoffice")
+```yaml
+file:
+  preview:
+    # 使用spire.office模式
+    officeConverter: spire
+```
+
+#### onlyoffice
 
 > 使用[onlyoffice](https://www.onlyoffice.com/zh/)将不对office文件进行转换    
 > 并使用onlyoffice预览office文件以及pdf，txt等类型的文件  
@@ -104,8 +115,11 @@ docker run -i -t -d -p 80:80 -e JWT_ENABLED=false onlyoffice/documentserver
 > ![img_7.png](img_7.png)  
 > docker版本的onlyoffice安装成功后，在项目中添加配置信息
 
-```yml
+```yaml
 file:
+  preview:
+    # 使用onlyoffice模式
+    officeConverter: only
   online:
     preview:
       onlyoffice:
@@ -134,7 +148,7 @@ file:
 | markdonw       | [Marked](https://marked.js.org/)                                     | <img src="img.png" width="30%" height="30%">                                                                                               |
 | 代码             | [CodeMirror](https://codemirror.net/)                                | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                              |
 | epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                    | <img src="img_12.png" width="30%" height="30%">                                                                                            |
-| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer) |                                                                                                                                            |
+| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer) | <img src="img_13.png" width="30%" height="30%">                                                                                            |
 
 ## 其他1：内置界面
 

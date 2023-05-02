@@ -3,22 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Xmind</title>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/bootstrap/5.1.3/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="${contextPath}/bootstrap/5.1.3/js/bootstrap.bundle.js"></script>
     <script type="text/javascript" src="${contextPath}/xmind-embed-viewer/1.1.0/xmind-embed-viewer.js"></script>
+    <script type="module" src="${contextPath}/fetch/3.6.2/fetch.js"></script>
+    <style>
+        #container-or-iframe-selector {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
 </head>
 <body>
-<div id="container-or-iframe-selector"></div>
+<div class="container">
+    <div id="container-or-iframe-selector"></div>
+</div>
 <script>
     const viewer = new XMindEmbedViewer({
         el: '#container-or-iframe-selector', // HTMLElement | HTMLIFrameElement | string
+        styles: {height: "100%", width: "100%"},
     });
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '${url}', false); //同步清华求
-    xhr.responseType = 'blob';  // 重点
-    xhr.send(null)
-    if (xhr.status === 200) {
-        const data = new Blob([xhr.response]);
-        viewer.load(data)
-    }
+    fetch('${url}')
+        .then(res => res.arrayBuffer())
+        .then(file => viewer.load(file))
 </script>
 </body>
 </html>

@@ -85,11 +85,17 @@ public class PreviewServlet extends HttpServlet {
                 Page audioPage = new Page("audio.ftl", data, resp);
                 audioPage.write();
                 break;
+            case "xmind":
+                data.put(CONTEXT_PATH, contextPath);
+                data.put("url", contextPath + "/file/preview/download?id=" + info.getId());
+                Page xmindPage = new Page("xmind.ftl", data, resp);
+                xmindPage.write();
+                break;
             case "pdf":
                 resp.sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", contextPath, contextPath, info.getId()));
                 break;
             default:
-                if("only".equals(properties.getOfficeConverter()) && ("word".equals(fileType) || "excel".equals(fileType) || "power point".equals(fileType) || "txt".equals(fileType))){
+                if ("only".equals(properties.getOfficeConverter()) && ("word".equals(fileType) || "excel".equals(fileType) || "power point".equals(fileType) || "txt".equals(fileType))) {
                     data.put(CONTEXT_PATH, req.getContextPath());
                     data.put("url", properties.getOnlyOffice().getApijs());
                     switch (fileType) {
@@ -114,7 +120,7 @@ public class PreviewServlet extends HttpServlet {
                     data.put("username", "file preview");
                     Page onlyofficePage = new Page("onlyoffice.ftl", data, resp);
                     onlyofficePage.write();
-                }else{
+                } else {
                     resp.setContentType(FileUtils.getMimeType(info.getFileName()));
                     try (OutputStream os = resp.getOutputStream()) {
                         IoUtils.writeToStream(fileStorage.get(info), os);

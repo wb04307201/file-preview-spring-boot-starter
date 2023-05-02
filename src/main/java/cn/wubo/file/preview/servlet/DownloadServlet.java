@@ -34,7 +34,7 @@ public class DownloadServlet extends HttpServlet {
         String id = req.getParameter("id");
         FilePreviewInfo info = filePreviewRecord.findById(id);
         byte[] bytes = fileStorage.get(info);
-        resp.setContentType("application/octet-stream");
+        resp.setContentType(FileUtils.getMimeType(info.getFileName()));
         resp.addHeader("Content-Length", String.valueOf(bytes.length));
         resp.addHeader("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1));
         try (OutputStream os = resp.getOutputStream()) {
