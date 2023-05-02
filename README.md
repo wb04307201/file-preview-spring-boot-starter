@@ -133,9 +133,7 @@ file:
 > 可通过第四步返回的文件信息中的id  
 > 访问http://ip:port/file/preview?id=??进行文件预览  
 > 如果配置了context-path,请在地址中同样添加  
-> 使用了一些组件帮助预览文件内容  
-> 代码高亮支持java,python,json,javascript,C++,css,xml,sql几种类型  
-> html文件则会被渲染成网页展示
+> 使用了一些开源组件帮助预览文件内容  
 
 | 文件类型           | 预览组件                                                                 | 预览示例                                                                                                                                       |
 |----------------|----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
@@ -149,6 +147,8 @@ file:
 | 代码             | [CodeMirror](https://codemirror.net/)                                | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                              |
 | epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                    | <img src="img_12.png" width="30%" height="30%">                                                                                            |
 | xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer) | <img src="img_13.png" width="30%" height="30%">                                                                                            |
+| 网页             | 直接渲染                                                                 | <img src="img_13.png" width="30%" height="30%">                                                                                            |
+
 
 ## 其他1：内置界面
 
