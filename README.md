@@ -146,7 +146,7 @@ file:
 | markdonw       | [Marked](https://marked.js.org/)                                     | <img src="img.png" width="30%" height="30%">                                                                                               |
 | 代码             | [CodeMirror](https://codemirror.net/)                                | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                              |
 | epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                    | <img src="img_12.png" width="30%" height="30%">                                                                                            |
-| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer) | <img src="img_13.png" width="30%" height="30%">                                                                                            |
+| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer) | <img src="img_14.png" width="30%" height="30%">                                                                                            |
 | 网页             | 直接渲染                                                                 | <img src="img_13.png" width="30%" height="30%">                                                                                            |
 
 
