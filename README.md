@@ -26,7 +26,7 @@
 
 <dependency>
     <groupId>com.gitee.wb04307201</groupId>
-    <artifactId>chatbot-spring-boot-starter</artifactId>
+    <artifactId>file-preview-spring-boot-starter</artifactId>
     <version>Tag</version>
 </dependency>
 ```
