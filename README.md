@@ -381,7 +381,7 @@ public class H2FileStroageRecordImpl implements IFileStroageRecord {
 
 - [ ] *扩展对压缩文件的支持*
 
-- [ ] *扩展对flowchart文件的支持*
+- [ ] *扩展对LogicFlow文件的支持*
 
 - [ ] *扩展libreoffice online*
 
