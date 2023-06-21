@@ -379,13 +379,15 @@ public class H2FileStroageRecordImpl implements IFileStroageRecord {
 
 ## 未来可能的工作？
 
-#### ! *扩展对压缩文件的支持*
+- [ ] *扩展对压缩文件的支持*
 
-#### ! *扩展libreoffice online*
+- [ ] *扩展对flowchart文件的支持*
+
+- [ ] *扩展libreoffice online*
 
 [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/)
 
-#### ! *扩展Collabora Online*
+- [ ] *扩展Collabora Online*
 
 [Collabora Online](https://www.collaboraoffice.com/)  
 [docs](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html)
