@@ -27,9 +27,10 @@
 <dependency>
     <groupId>com.gitee.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>[版本请查看](https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter)</version>
+    <version>Tag</version>
 </dependency>
 ```
+版本请到https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter查看
 
 ## 第三步 在启动类上加上`@EnableFilePreview`注解
 
