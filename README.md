@@ -30,7 +30,7 @@
     <version>Tag</version>
 </dependency>
 ```
-版本从[jitpack](https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter)或者当前仓库发行版查看
+版本请从[jitpack](https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter)或者当前仓库发行版获取
 
 ## 第三步 在启动类上加上`@EnableFilePreview`注解
 
