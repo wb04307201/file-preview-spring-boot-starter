@@ -1,6 +1,9 @@
 # file-preview-spring-boot-starter
 
 [![](https://jitpack.io/v/com.gitee.wb04307201/file-preview-spring-boot-starter.svg)](https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter)
+[![star](https://gitee.com/wb04307201/file-preview-spring-boot-starter/badge/star.svg?theme=dark)](https://gitee.com/wb04307201/file-preview-spring-boot-starter)
+[![fork](https://gitee.com/wb04307201/file-preview-spring-boot-starter/badge/fork.svg?theme=dark)](https://gitee.com/wb04307201/file-preview-spring-boot-starter)
+
 
 > 一个文档在线预览的中间件  
 > 可通过简单的配置即可集成到springboot中  
