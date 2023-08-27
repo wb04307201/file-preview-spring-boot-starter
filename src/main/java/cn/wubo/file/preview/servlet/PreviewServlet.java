@@ -140,7 +140,7 @@ public class PreviewServlet extends HttpServlet {
             Path path = Paths.get(libreOffice.getStorage());
             Files.deleteIfExists(path);
             Files.write(path, fileStorage.get(info));
-            resp.sendRedirect(String.format("%s/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/%s&permission=readonly", libreOffice.getUrl(), info.getFileName()));
+            resp.sendRedirect(String.format("%s/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/%s&permission=readonly", libreOffice.getDomain(), info.getFileName()));
         }
         //默认处理文件，附件文件mime-type返回文件
         else {

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class LibreOfficeProperties {
-    private String url;
+    private String domain;
     private String storage;
 }
