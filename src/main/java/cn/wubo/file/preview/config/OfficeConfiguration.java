@@ -36,7 +36,7 @@ public class OfficeConfiguration {
     }
 
     @Bean
-    @ConditionalOnExpression("'only'.equals('${file.preview.officeConverter}')")
+    @ConditionalOnExpression("'only'.equals('${file.preview.officeConverter}') || 'lool'.equals('${file.preview.officeConverter}')")
     public IOfficeConverter noneConverter() {
         return new NoneConverter();
     }
@@ -63,16 +63,16 @@ public class OfficeConfiguration {
     }
 
     @Bean
+    public FilePreviewService filePreviewService(IOfficeConverter officeConverter, IFileStorage fileStorage, IFilePreviewRecord filePreviewRecord) {
+        return new FilePreviewService(officeConverter, fileStorage, filePreviewRecord);
+    }
+
+    @Bean
     public ServletRegistrationBean<FileListServlet> filePreviewListServlet(IFilePreviewRecord filePreviewRecord) {
         ServletRegistrationBean<FileListServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new FileListServlet(filePreviewRecord));
         registration.addUrlMappings("/file/preview/list");
         return registration;
-    }
-
-    @Bean
-    public FilePreviewService filePreviewService(IOfficeConverter officeConverter, IFileStorage fileStorage, IFilePreviewRecord filePreviewRecord) {
-        return new FilePreviewService(officeConverter, fileStorage, filePreviewRecord);
     }
 
     @Bean

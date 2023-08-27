@@ -1,6 +1,7 @@
 package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.config.FilePreviewProperties;
+import cn.wubo.file.preview.config.LibreOfficeProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
@@ -15,12 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Slf4j
 public class PreviewServlet extends HttpServlet {
 
+    private static final Set<String> OFFICE_FILE_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("word", "excel", "power point", "txt")));
     IFilePreviewRecord filePreviewRecord;
     IFileStorage fileStorage;
     FilePreviewProperties properties;
@@ -95,41 +99,55 @@ public class PreviewServlet extends HttpServlet {
                 resp.sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", contextPath, contextPath, info.getId()));
                 break;
             default:
-                if ("only".equals(properties.getOfficeConverter()) && ("word".equals(fileType) || "excel".equals(fileType) || "power point".equals(fileType) || "txt".equals(fileType))) {
-                    data.put(CONTEXT_PATH, req.getContextPath());
-                    data.put("url", properties.getOnlyOffice().getApijs());
-                    switch (fileType) {
-                        case "word":
-                        case "txt":
-                            data.put(DOCUMENT_TYPE, "word");
-                            break;
-                        case "excel":
-                            data.put(DOCUMENT_TYPE, "cell");
-                            break;
-                        case "power point":
-                            data.put(DOCUMENT_TYPE, "slide");
-                            break;
-                    }
-                    data.put("fileType", "txt".equals(fileType) ? "txt" : extName);
-                    data.put("key", info.getId());
-                    data.put("title", info.getOriginalFilename());
-                    data.put("downloadUrl", properties.getOnlyOffice().getDownload() + "?id=" + info.getId());
-                    data.put("callbackUrl", properties.getOnlyOffice().getCallback() + "?id=" + info.getId());
-                    data.put("lang", "zh");
-                    data.put("userid", "file preview");
-                    data.put("username", "file preview");
-                    Page onlyofficePage = new Page("onlyoffice.ftl", data, resp);
-                    onlyofficePage.write();
-                } else {
-                    resp.setContentType(FileUtils.getMimeType(info.getFileName()));
-                    try (OutputStream os = resp.getOutputStream()) {
-                        IoUtils.writeToStream(fileStorage.get(info), os);
-                    }
-                    break;
-                }
+                defaultPreview(info, fileType, extName, contextPath, data, resp);
         }
 
         log.debug("预览文件-----结束");
         //super.doGet(req, resp);
+    }
+
+    private void defaultPreview(FilePreviewInfo info, String fileType, String extName, String contextPath, Map<String, Object> data, HttpServletResponse resp) throws IOException {
+        //处理onliyoffice
+        if ("only".equals(properties.getOfficeConverter()) && OFFICE_FILE_TYPES.contains(fileType)) {
+            data.put(CONTEXT_PATH, contextPath);
+            data.put("url", properties.getOnlyOffice().getApijs());
+            switch (fileType) {
+                case "word":
+                case "txt":
+                    data.put(DOCUMENT_TYPE, "word");
+                    break;
+                case "excel":
+                    data.put(DOCUMENT_TYPE, "cell");
+                    break;
+                case "power point":
+                    data.put(DOCUMENT_TYPE, "slide");
+                    break;
+            }
+            data.put("fileType", "txt".equals(fileType) ? "txt" : extName);
+            data.put("key", info.getId());
+            data.put("title", info.getOriginalFilename());
+            data.put("downloadUrl", properties.getOnlyOffice().getDownload() + "?id=" + info.getId());
+            data.put("callbackUrl", properties.getOnlyOffice().getCallback() + "?id=" + info.getId());
+            data.put("lang", "zh");
+            data.put("userid", "file preview");
+            data.put("username", "file preview");
+            Page onlyofficePage = new Page("onlyoffice.ftl", data, resp);
+            onlyofficePage.write();
+        }
+        //处理lool
+        else if ("lool".equals(properties.getOfficeConverter()) && OFFICE_FILE_TYPES.contains(fileType)) {
+            LibreOfficeProperties libreOffice = properties.getLibreOffice();
+            Path path = Paths.get(libreOffice.getStorage());
+            Files.deleteIfExists(path);
+            Files.write(path, fileStorage.get(info));
+            resp.sendRedirect(String.format("%s/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/%s&permission=readonly", libreOffice.getUrl(), info.getFileName()));
+        }
+        //默认处理文件，附件文件mime-type返回文件
+        else {
+            resp.setContentType(FileUtils.getMimeType(info.getFileName()));
+            try (OutputStream os = resp.getOutputStream()) {
+                IoUtils.writeToStream(fileStorage.get(info), os);
+            }
+        }
     }
 }
