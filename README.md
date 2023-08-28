@@ -106,7 +106,7 @@ file:
 #### onlyoffice
 
 > 使用[onlyoffice](https://www.onlyoffice.com/zh/)将不对office文件进行转换    
-> 直接预览word,excel,ppt类型的文件  
+> 直接预览word,excel,ppt,文本类型的文件  
 > 可以通过docker快速安装onlyoffice，命令如下
 
 ```bash
@@ -127,7 +127,7 @@ file:
   online:
     preview:
       onlyoffice:
-        domain: http://127.0.0.1 #OnlyOffice服务所在域
+        domain: http://ip:port #OnlyOffice服务所在域
         download: http://ip:port/file/preview/download #当前服务的文件下载接口，用于onlyoffice从当前服务下载文件
         callback: http://ip:port/file/preview/onlyoffice/callback #当前服务的回写文件服务，用于onlyoffice回写文件到当前服务
 ```
@@ -135,26 +135,41 @@ file:
 #### libreoffice online
 
 > 使用[libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/)将不对office文件进行转换    
-> 直接预览word,excel,ppt类型的文件  
+> 直接预览word,excel,ppt,文本类型的文件  
 > 可以通过docker快速安装libreoffice online，命令如下
 
 ```bash
+#安装并启动docker版本lool
 docker run --name lool -e “username=admin” -e “password=123456” -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
 
+#复制配置文件
 docker cp lool:/etc/loolwsd/loolwsd.xml D:/lool/
-docker cp D:/lool/loolwsd.xml lool:/etc/loolwsd/
 
-<filesystem allow="true" />
+#修改配置文件允许读取本地
+<filesystem allow="false" />  -> <filesystem allow="true" /> 
 
+#根据环境修改配置文件选择是否启动ssl
 <enable type="bool" desc="Controls whether SSL encryption between browser and loolwsd is enabled (do not disable for production deployment). If default is false, must first be compiled with SSL support to enable." default="true">false</enable>
 
-https://127.0.0.1:9980/loleaflet/dist/admin/admin.html
-https://127.0.0.1:9980/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/222.xlsx&permission=readonly
+#将配置文件复制回容器
+docker cp D:/lool/loolwsd.xml lool:/etc/loolwsd/
 
-https://xieshaohu.wordpress.com/2021/02/08/%E4%B8%80%E6%9D%A1%E5%91%BD%E4%BB%A4%E4%BD%93%E9%AA%8C%E5%9C%A8%E7%BA%BF%E6%96%87%E6%A1%A3%E7%BC%96%E8%BE%91%E8%83%BD%E5%8A%9B-libreoffice-online%E7%9A%84docker%E7%8E%AF%E5%A2%83/
-http://www.taodudu.cc/news/show-4449287.html?action=onClick
+#重启look容器
 ```
 
+> 容器启动成功后，打开https://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
+> ![img_18.png](img_18.png)
+> docker版本的lool安装成功后，在项目中添加配置信息
+
+```yaml
+file:
+  preview:
+    # 使用lool模式
+    officeConverter: lool
+    libreoffice:
+      domain: http://ip:port  #libreoffice online服务所在地址
+      storage: D:\lool #libreoffice online预览文件存储位置
+```
 
 ## 第六步 预览文件信息
 
@@ -166,7 +181,7 @@ http://www.taodudu.cc/news/show-4449287.html?action=onClick
 | 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                          |
 |----------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/)                     |                                                                                                                                               |
-| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       |                                                                                                                                               |
+| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       | <img src="img_20.png" width="30%" height="30%"><img src="img_19.png" width="30%" height="30%"><img src="img_21.png" width="30%" height="30%"> |
 | word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                                     | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%">    |
 | word/excel/ppt | [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/) | <img src="img_16.png" width="30%" height="30%"><img src="img_15.png" width="30%" height="30%"><img src="img_17.png" width="30%" height="30%"> |
 | pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
@@ -412,11 +427,3 @@ public class H2FileStroageRecordImpl implements IFileStroageRecord {
 
 - [ ] *扩展对LogicFlow文件的支持*
 
-- [ ] *扩展libreoffice online*
-
-[libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/)
-
-- [ ] *扩展Collabora Online*
-
-[Collabora Online](https://www.collaboraoffice.com/)  
-[docs](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html)
