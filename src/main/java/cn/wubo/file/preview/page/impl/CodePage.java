@@ -6,13 +6,14 @@ import cn.wubo.file.preview.page.AbstractPage;
 import cn.wubo.file.preview.storage.IFileStorage;
 import cn.wubo.file.preview.utils.IoUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MarkdownPage extends AbstractPage {
-    public MarkdownPage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
+public class CodePage extends AbstractPage {
+    public CodePage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
         super(fileType, extName, contextPath, info, fileStorage, properties, resp);
     }
     @Override

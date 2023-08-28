@@ -1,5 +1,8 @@
 package cn.wubo.file.preview.page;
 
+import cn.wubo.file.preview.config.FilePreviewProperties;
+import cn.wubo.file.preview.core.FilePreviewInfo;
+import cn.wubo.file.preview.storage.IFileStorage;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Data;
@@ -10,9 +13,29 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 @Data
-public abstract class AbstractPage<T> implements IPage<T> {
+public abstract class AbstractPage implements IPage {
 
-    protected void writePage(String templateName, Map<String, Object> data, HttpServletResponse resp) {
+    protected static final String CONTEXT_PATH = "contextPath";
+    protected static final String DOCUMENT_TYPE = "documentType";
+    private String fileType;
+    private String extName;
+    private String contextPath;
+    private FilePreviewInfo info;
+    private IFileStorage fileStorage;
+    private FilePreviewProperties properties;
+    private HttpServletResponse resp;
+
+    public AbstractPage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
+        this.fileType = fileType;
+        this.extName = extName;
+        this.contextPath = contextPath;
+        this.info = info;
+        this.fileStorage = fileStorage;
+        this.properties = properties;
+        this.resp = resp;
+    }
+
+    protected void writePage(String templateName, Map<String, Object> data) {
         try (PrintWriter printWriter = resp.getWriter()) {
             freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
             cfg.setClassForTemplateLoading(this.getClass(), "/template");
@@ -23,7 +46,7 @@ public abstract class AbstractPage<T> implements IPage<T> {
         }
     }
 
-    protected void sendRedirect(String url, HttpServletResponse resp) throws IOException {
+    protected void sendRedirect(String url) throws IOException {
         resp.sendRedirect(url);
     }
 }

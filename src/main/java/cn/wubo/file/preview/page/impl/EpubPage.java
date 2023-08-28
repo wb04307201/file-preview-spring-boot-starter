@@ -11,15 +11,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MarkdownPage extends AbstractPage {
-    public MarkdownPage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
+public class EpubPage extends AbstractPage {
+    public EpubPage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
         super(fileType, extName, contextPath, info, fileStorage, properties, resp);
     }
     @Override
     public void build() throws IOException {
         Map<String, Object> data = new HashMap<>();
         data.put(CONTEXT_PATH, getContextPath());
-        data.put("content", IoUtils.readByte(getFileStorage().get(getInfo()), getInfo().getFileName()));
-        writePage("code.ftl", data);
+        data.put("url", getContextPath() + "/file/preview/download?id=" + getInfo().getId());
+        writePage("epub.ftl", data);
     }
 }
