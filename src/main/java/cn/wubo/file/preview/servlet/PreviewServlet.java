@@ -1,7 +1,6 @@
 package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.config.FilePreviewProperties;
-import cn.wubo.file.preview.config.LibreOfficeProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
@@ -14,8 +13,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -110,7 +111,7 @@ public class PreviewServlet extends HttpServlet {
         //处理onliyoffice
         if ("only".equals(properties.getOfficeConverter()) && OFFICE_FILE_TYPES.contains(fileType)) {
             data.put(CONTEXT_PATH, contextPath);
-            data.put("url", properties.getOnlyOffice().getApijs());
+            data.put("url", String.format("%s/web-apps/apps/api/documents/api.js", properties.getOnlyOffice().getDomain()));
             switch (fileType) {
                 case "word":
                 case "txt":
@@ -136,11 +137,10 @@ public class PreviewServlet extends HttpServlet {
         }
         //处理lool
         else if ("lool".equals(properties.getOfficeConverter()) && OFFICE_FILE_TYPES.contains(fileType)) {
-            LibreOfficeProperties libreOffice = properties.getLibreOffice();
-            Path path = Paths.get(libreOffice.getStorage());
+            Path path = Paths.get(properties.getLibreOffice().getStorage() + File.separator + info.getFileName());
             Files.deleteIfExists(path);
             Files.write(path, fileStorage.get(info));
-            resp.sendRedirect(String.format("%s/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/%s&permission=readonly", libreOffice.getDomain(), info.getFileName()));
+            resp.sendRedirect(String.format("%s/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/%s&permission=readonly", properties.getLibreOffice().getDomain(), URLEncoder.encode(info.getFileName(), "UTF-8")));
         }
         //默认处理文件，附件文件mime-type返回文件
         else {

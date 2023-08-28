@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class OnlyOfficeProperties {
-    private String apijs;
+    private String domain;
     private String download;
     private String callback;
 }

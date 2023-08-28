@@ -127,9 +127,9 @@ file:
   online:
     preview:
       onlyoffice:
-        apijs: http://127.0.0.1/web-apps/apps/api/documents/api.js #OnlyOffice服务地址
-        download: http://ip:port/file/preview/download #当前服务的ip:port
-        callback: http://ip:port/file/preview/onlyoffice/callback #当前服务的ip:port
+        domain: http://127.0.0.1 #OnlyOffice服务所在域
+        download: http://ip:port/file/preview/download #当前服务的文件下载接口，用于onlyoffice从当前服务下载文件
+        callback: http://ip:port/file/preview/onlyoffice/callback #当前服务的回写文件服务，用于onlyoffice回写文件到当前服务
 ```
 
 #### libreoffice online
@@ -163,20 +163,20 @@ http://www.taodudu.cc/news/show-4449287.html?action=onClick
 > 如果配置了context-path,请在地址中同样添加  
 > 使用了一些开源组件帮助预览文件内容  
 
-| 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                       |
-|----------------|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/)                     |                                                                                                                                            |
-| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       |                                                                                                                                            |
-| word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                                     | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%"> |
-| word/excel/ppt | [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/) |                                                                                                                                            |
-| pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                            |
-| audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                             |
-| video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                             |
-| markdonw       | [Marked](https://marked.js.org/)                                                 | <img src="img.png" width="30%" height="30%">                                                                                               |
-| 代码             | [CodeMirror](https://codemirror.net/)                                            | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                              |
-| epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                            |
-| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                            |
-| 网页             | 直接渲染                                                                             | <img src="img_13.png" width="30%" height="30%">                                                                                            |
+| 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                          |
+|----------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/)                     |                                                                                                                                               |
+| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       |                                                                                                                                               |
+| word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                                     | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%">    |
+| word/excel/ppt | [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/) | <img src="img_16.png" width="30%" height="30%"><img src="img_15.png" width="30%" height="30%"><img src="img_17.png" width="30%" height="30%"> |
+| pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
+| audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                                |
+| video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                                |
+| markdonw       | [Marked](https://marked.js.org/)                                                 | <img src="img.png" width="30%" height="30%">                                                                                                  |
+| 代码             | [CodeMirror](https://codemirror.net/)                                            | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                                 |
+| epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                               |
+| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
+| 网页             | 直接渲染                                                                             | <img src="img_13.png" width="30%" height="30%">                                                                                               |
 
 
 ## 其他1：内置界面
