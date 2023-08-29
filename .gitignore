@@ -1,6 +1,2 @@
 /.idea/
 /target/
-/codeview/.idea/
-/codeview/dist/
-/codeview/node_modules/
-/codeview/package-lock.json
