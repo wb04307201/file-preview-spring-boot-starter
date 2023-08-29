@@ -20,6 +20,7 @@ public class CodePage extends AbstractPage {
     public void build() throws IOException {
         Map<String, Object> data = new HashMap<>();
         data.put(CONTEXT_PATH, getContextPath());
+        data.put("language", getFileType());
         data.put("content", IoUtils.readByte(getFileStorage().get(getInfo()), getInfo().getFileName()));
         writePage("code.ftl", data);
     }
