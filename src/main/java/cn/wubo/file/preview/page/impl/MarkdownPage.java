@@ -20,6 +20,6 @@ public class MarkdownPage extends AbstractPage {
         Map<String, Object> data = new HashMap<>();
         data.put(CONTEXT_PATH, getContextPath());
         data.put("content", IoUtils.readByte(getFileStorage().get(getInfo()), getInfo().getFileName()));
-        writePage("code.ftl", data);
+        writePage("markdown.ftl", data);
     }
 }
