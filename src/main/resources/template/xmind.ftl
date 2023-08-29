@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Xmind</title>
-    <link rel="stylesheet" type="text/css" href="${contextPath}/bootstrap/5.1.3/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="${contextPath}/bootstrap/5.1.3/js/bootstrap.bundle.js"></script>
-    <script type="text/javascript" src="${contextPath}/xmind-embed-viewer/1.1.0/xmind-embed-viewer.js"></script>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/bootstrap/5.3.1/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="${contextPath}/bootstrap/5.3.1/js/bootstrap.bundle.js"></script>
+    <script type="text/javascript" src="${contextPath}/xmind-embed-viewer/1.2.0/xmind-embed-viewer.js"></script>
     <script type="module" src="${contextPath}/fetch/3.6.2/fetch.js"></script>
     <style>
         #container-or-iframe-selector {

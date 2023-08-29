@@ -12,20 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Slf4j
 public class PreviewServlet extends HttpServlet {
 
-    private static final Set<String> OFFICE_FILE_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("word", "excel", "power point", "txt")));
     IFilePreviewRecord filePreviewRecord;
     IFileStorage fileStorage;
     FilePreviewProperties properties;
-    private static final String CONTEXT_PATH = "contextPath";
-    private static final String DOCUMENT_TYPE = "documentType";
 
     public PreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage, FilePreviewProperties properties) {
         this.filePreviewRecord = filePreviewRecord;

@@ -192,6 +192,7 @@ file:
 | epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                               |
 | xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
 | 网页             | 直接渲染                                                                             | <img src="img_13.png" width="30%" height="30%">                                                                                               |
+| 压缩文件           | [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)   | <img src="img_22.png" width="30%" height="30%">                                                                                               |
 
 
 ## 其他1：内置界面
@@ -423,7 +424,9 @@ public class H2FileStroageRecordImpl implements IFileStroageRecord {
 
 ## 未来可能的工作？
 
-- [ ] *扩展对压缩文件的支持*
+- [ ] *查看压缩文件的列表时，改成树结构展示*
+
+- [ ] *查看压缩文件的列表时，可对其中的文件进行预览和下载*
 
 - [ ] *扩展对LogicFlow文件的支持*
 

@@ -38,4 +38,7 @@ public class PageFactory {
             throw new PageRuntimeException(e.getMessage(), e);
         }
     }
+
+    private PageFactory() {
+    }
 }

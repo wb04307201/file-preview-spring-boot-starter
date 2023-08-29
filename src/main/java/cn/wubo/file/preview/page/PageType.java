@@ -7,7 +7,7 @@ import java.util.Map;
 
 public enum PageType {
 
-    Markdown(MarkdownPage.class), Code(CodePage.class), Epub(EpubPage.class), Video(VideoPage.class), Audio(AudioPage.class), Xmind(XmindPage.class), Pdf(PdfPage.class), Only(OnlyOfficePage.class), Lool(LoolPage.class),
+    Markdown(MarkdownPage.class), Code(CodePage.class), Epub(EpubPage.class), Video(VideoPage.class), Audio(AudioPage.class), Xmind(XmindPage.class), Pdf(PdfPage.class), Only(OnlyOfficePage.class), Lool(LoolPage.class), Compress(CompressPage.class),
     ;
 
     private static final String[] CODES = {"sql", "cpp", "java", "xml", "javascript", "json", "css", "python"};
@@ -25,13 +25,12 @@ public enum PageType {
         PREVIEW_TYPE_MAPPER.put("pdf", PageType.Pdf);
         PREVIEW_TYPE_MAPPER.put("only", PageType.Only);
         PREVIEW_TYPE_MAPPER.put("lool", PageType.Lool);
+        PREVIEW_TYPE_MAPPER.put("compressed file", PageType.Compress);
     }
 
     public static Class<? extends AbstractPage> getClass(String fileType) {
-        if(PREVIEW_TYPE_MAPPER.containsKey(fileType))
-            return PREVIEW_TYPE_MAPPER.get(fileType).clazz;
-        else
-            return CommomPage.class;
+        if (PREVIEW_TYPE_MAPPER.containsKey(fileType)) return PREVIEW_TYPE_MAPPER.get(fileType).clazz;
+        else return CommomPage.class;
     }
 
     private Class<? extends AbstractPage> clazz;
