@@ -1,6 +1,7 @@
 package cn.wubo.file.preview.record.impl;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
+import cn.wubo.file.preview.exception.RecordRuntimeException;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import org.springframework.util.StringUtils;
 
@@ -27,28 +28,21 @@ public class MemFilePreviewRecordImpl implements IFilePreviewRecord {
 
     @Override
     public List<FilePreviewInfo> list(FilePreviewInfo filePreviewInfo) {
-        return filePreviewInfos.stream()
-                .filter(e -> !StringUtils.hasLength(filePreviewInfo.getFileName()) || e.getFileName().contains(filePreviewInfo.getFileName()))
-                .filter(e -> !StringUtils.hasLength(filePreviewInfo.getFilePath()) || e.getFilePath().contains(filePreviewInfo.getFilePath()))
-                .collect(Collectors.toList());
+        return filePreviewInfos.stream().filter(e -> !StringUtils.hasLength(filePreviewInfo.getFileName()) || e.getFileName().contains(filePreviewInfo.getFileName())).filter(e -> !StringUtils.hasLength(filePreviewInfo.getFilePath()) || e.getFilePath().contains(filePreviewInfo.getFilePath())).collect(Collectors.toList());
     }
 
     @Override
     public FilePreviewInfo findById(String id) {
-        Optional<FilePreviewInfo> optionalFileInfo = filePreviewInfos.stream()
-                .filter(e -> e.getId().equals(id))
-                .findAny();
+        Optional<FilePreviewInfo> optionalFileInfo = filePreviewInfos.stream().filter(e -> e.getId().equals(id)).findAny();
         if (optionalFileInfo.isPresent()) return optionalFileInfo.get();
-        else throw new RuntimeException("文件记录未找到!");
+        else throw new RecordRuntimeException("文件记录未找到!");
     }
 
     @Override
     public Boolean deleteById(String id) {
-        Optional<FilePreviewInfo> optionalFileInfo = filePreviewInfos.stream()
-                .filter(e -> e.getId().equals(id))
-                .findAny();
+        Optional<FilePreviewInfo> optionalFileInfo = filePreviewInfos.stream().filter(e -> e.getId().equals(id)).findAny();
         if (optionalFileInfo.isPresent()) return filePreviewInfos.remove(optionalFileInfo.get());
-        else throw new RuntimeException("文件记录未找到!");
+        else throw new RecordRuntimeException("文件记录未找到!");
     }
 
     @Override

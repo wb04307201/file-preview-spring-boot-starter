@@ -1,6 +1,7 @@
 package cn.wubo.file.preview.storage.impl;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
+import cn.wubo.file.preview.exception.StorageRuntimeException;
 import cn.wubo.file.preview.storage.IFileStorage;
 
 import java.io.IOException;
@@ -21,12 +22,12 @@ public class LocalFileStorageImpl implements IFileStorage {
         filePreviewInfo.setFilePath(filePath.toString());
         try {
             Files.createDirectories(filePath.getParent());
-            if(Files.exists(filePath)) Files.delete(filePath);
+            if (Files.exists(filePath)) Files.delete(filePath);
             Files.createFile(filePath);
             Files.write(filePath, bytes);
             return filePreviewInfo;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new StorageRuntimeException(e.getMessage(), e);
         }
     }
 
@@ -36,7 +37,7 @@ public class LocalFileStorageImpl implements IFileStorage {
         try {
             Files.delete(filePath);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new StorageRuntimeException(e.getMessage(), e);
         }
         return true;
     }
@@ -46,7 +47,7 @@ public class LocalFileStorageImpl implements IFileStorage {
         try {
             return Files.readAllBytes(Paths.get(filePreviewInfo.getFilePath()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new StorageRuntimeException(e.getMessage(), e);
         }
     }
 }

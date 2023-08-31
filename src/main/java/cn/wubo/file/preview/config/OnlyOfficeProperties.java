@@ -7,4 +7,5 @@ public class OnlyOfficeProperties {
     private String domain;
     private String download;
     private String callback;
+    private String secret;
 }

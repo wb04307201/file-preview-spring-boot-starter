@@ -63,6 +63,13 @@
                 <artifactId>commons-compress</artifactId>
                 <version>1.23.0</version>
             </dependency>
+
+            <!-- JWT -->
+            <dependency>
+                <groupId>io.fusionauth</groupId>
+                <artifactId>fusionauth-jwt</artifactId>
+                <version>5.2.4</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -107,6 +114,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.fusionauth</groupId>
+            <artifactId>fusionauth-jwt</artifactId>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -114,6 +126,16 @@
             <id>com.e-iceblue</id>
             <name>e-iceblue</name>
             <url>https://repo.e-iceblue.cn/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>qm-public</id>
+            <url>https://starrepo.qm.cn/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

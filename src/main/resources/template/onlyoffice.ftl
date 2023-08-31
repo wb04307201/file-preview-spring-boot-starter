@@ -28,22 +28,23 @@
             "type": "desktop",
             "width": "100%",
             "height": "100%",
-            "documentType": "${documentType}",
+            "documentType": "${config.documentType}",
             "document": {
-                "fileType": "${fileType}",
-                "key": "${key}",
-                "title": "${title}",
-                "url": "${downloadUrl}"
+                "fileType": "${config.document.fileType}",
+                "key": "${config.document.key}",
+                "title": "${config.document.title}",
+                "url": "${config.document.url}"
             },
             "editorConfig": {
                 "mode": "view",
-                "callbackUrl": "${callbackUrl}",
-                "lang": "${lang}",
+                "callbackUrl": "${config.editorConfig.callbackUrl}",
+                "lang": "${config.editorConfig.lang}",
                 "user": {
-                    "id":"${userid}",
-                    "name":"${username}"
+                    "id": "${config.editorConfig.user.id}",
+                    "name": "${config.editorConfig.user.name}"
                 }
-            }
+            },
+            <#if (config.token!"")?trim?length gt 1>"token": "${config.token}"</#if>
         };
     </script>
 </head>
