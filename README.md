@@ -224,7 +224,7 @@ file:
     Boolean result = filePreviewService.delete(filePreviewInfo.getId());  
 ```
 
-## 其他3：实际使用中，可通过配置和实现接口方法将数据持久化到数据库中
+## 其他3：实际使用中，可通过配置和实现文件预览记录接口方法将数据持久化到数据库中
 
 ```yaml
 file:
@@ -233,6 +233,7 @@ file:
 ```
 
 ```java
+@Component
 public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 
     private static final String HISTORY = "file_preview_history";
@@ -325,7 +326,7 @@ public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 }
 ```
 
-## 其他4：实际使用中，可通过配置和实现接口方法将文件持久化到其他平台中
+## 其他4：实际使用中，可通过配置和实现文件存储记录接口方法将文件持久化到其他平台中
 
 ```yaml
 file:

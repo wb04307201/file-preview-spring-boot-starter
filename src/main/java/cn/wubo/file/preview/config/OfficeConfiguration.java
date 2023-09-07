@@ -1,6 +1,8 @@
 package cn.wubo.file.preview.config;
 
 import cn.wubo.file.preview.core.FilePreviewService;
+import cn.wubo.file.preview.exception.RecordRuntimeException;
+import cn.wubo.file.preview.exception.StorageRuntimeException;
 import cn.wubo.file.preview.office.IOfficeConverter;
 import cn.wubo.file.preview.office.impl.JodOfficeConverter;
 import cn.wubo.file.preview.office.impl.NoneConverter;
@@ -18,6 +20,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+
+import java.util.List;
 
 @EnableConfigurationProperties({FilePreviewProperties.class})
 public class OfficeConfiguration {
@@ -49,45 +53,31 @@ public class OfficeConfiguration {
     }
 
     @Bean
-    public IFilePreviewRecord filePreviewRecord() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Class<?> clazz = Class.forName(properties.getFilePreviewRecord());
-        IFilePreviewRecord filePreviewRecord = (IFilePreviewRecord) clazz.newInstance();
-        filePreviewRecord.init();
-        return filePreviewRecord;
+    public FilePreviewService filePreviewService(IOfficeConverter officeConverter, List<IFileStorage> fileStorageList, List<IFilePreviewRecord> filePreviewRecordList) {
+        return new FilePreviewService(officeConverter, fileStorageList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFileStorage())).findAny().orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage()))), filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord()))));
     }
 
     @Bean
-    public IFileStorage fileStorage() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Class<?> clazz = Class.forName(properties.getFileStorage());
-        return (IFileStorage) clazz.newInstance();
-    }
-
-    @Bean
-    public FilePreviewService filePreviewService(IOfficeConverter officeConverter, IFileStorage fileStorage, IFilePreviewRecord filePreviewRecord) {
-        return new FilePreviewService(officeConverter, fileStorage, filePreviewRecord);
-    }
-
-    @Bean
-    public ServletRegistrationBean<FileListServlet> filePreviewListServlet(IFilePreviewRecord filePreviewRecord) {
+    public ServletRegistrationBean<FileListServlet> filePreviewListServlet(List<IFilePreviewRecord> filePreviewRecordList) {
         ServletRegistrationBean<FileListServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new FileListServlet(filePreviewRecord));
+        registration.setServlet(new FileListServlet(filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord())))));
         registration.addUrlMappings("/file/preview/list");
         return registration;
     }
 
     @Bean
-    public ServletRegistrationBean<PreviewServlet> filePreviewServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+    public ServletRegistrationBean<PreviewServlet> filePreviewServlet(List<IFilePreviewRecord> filePreviewRecordList, List<IFileStorage> fileStorageList) {
         ServletRegistrationBean<PreviewServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new PreviewServlet(filePreviewRecord, fileStorage, properties));
+        registration.setServlet(new PreviewServlet(filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord()))), fileStorageList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFileStorage())).findAny().orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage()))), properties));
         registration.addUrlMappings("/file/preview");
         return registration;
     }
 
     @Bean
     @ConditionalOnExpression("#{'only'.equals(environment['file.preview.officeConverter'])}")
-    public ServletRegistrationBean<OnlyOfficeCallbackServlet> filePreviewCallbackServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+    public ServletRegistrationBean<OnlyOfficeCallbackServlet> filePreviewCallbackServlet(List<IFilePreviewRecord> filePreviewRecordList, List<IFileStorage> fileStorageList) {
         ServletRegistrationBean<OnlyOfficeCallbackServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new OnlyOfficeCallbackServlet(filePreviewRecord, fileStorage));
+        registration.setServlet(new OnlyOfficeCallbackServlet(filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord()))), fileStorageList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFileStorage())).findAny().orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage())))));
         registration.addUrlMappings("/file/preview/onlyoffice/callback");
         return registration;
     }
@@ -101,9 +91,9 @@ public class OfficeConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
+    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(List<IFilePreviewRecord> filePreviewRecordList, List<IFileStorage> fileStorageList) {
         ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new DownloadServlet(filePreviewRecord, fileStorage));
+        registration.setServlet(new DownloadServlet(filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord()))), fileStorageList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFileStorage())).findAny().orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage())))));
         registration.addUrlMappings("/file/preview/download");
         return registration;
     }

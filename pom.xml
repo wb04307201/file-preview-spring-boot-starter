@@ -127,16 +127,6 @@
             <name>e-iceblue</name>
             <url>https://repo.e-iceblue.cn/repository/maven-public/</url>
         </repository>
-        <repository>
-            <id>qm-public</id>
-            <url>https://starrepo.qm.cn/repository/maven-public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
     </repositories>
 
 </project>
