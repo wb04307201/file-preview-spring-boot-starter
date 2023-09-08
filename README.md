@@ -1,9 +1,10 @@
 # file-preview-spring-boot-starter
 
-[![](https://jitpack.io/v/com.gitee.wb04307201/file-preview-spring-boot-starter.svg)](https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter)
+[![](https://jitpack.io/v/wb04307201/file-preview-spring-boot-starter.svg)](https://jitpack.io/#wb04307201/file-preview-spring-boot-starter)
 [![star](https://gitee.com/wb04307201/file-preview-spring-boot-starter/badge/star.svg?theme=dark)](https://gitee.com/wb04307201/file-preview-spring-boot-starter)
 [![fork](https://gitee.com/wb04307201/file-preview-spring-boot-starter/badge/fork.svg?theme=dark)](https://gitee.com/wb04307201/file-preview-spring-boot-starter)
-
+[![star](https://img.shields.io/github/stars/wb04307201/file-preview-spring-boot-starter)](https://github.com/wb04307201/file-preview-spring-boot-starter)
+[![fork](https://img.shields.io/github/forks/wb04307201/file-preview-spring-boot-starter)](https://github.com/wb04307201/file-preview-spring-boot-starter)
 
 > 一个文档在线预览的中间件  
 > 可通过简单的配置即可集成到springboot中  
@@ -24,16 +25,15 @@
 ```
 
 ## 第二步 引入jar
+*1.1.7版本后，groupId更换为com.github.wb04307201*
 
 ```xml
-
 <dependency>
-    <groupId>com.gitee.wb04307201</groupId>
+    <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>Tag</version>
+    <version>1.1.7</version>
 </dependency>
 ```
-版本请从[jitpack](https://jitpack.io/#com.gitee.wb04307201/file-preview-spring-boot-starter)或者当前仓库发行版获取
 
 ## 第三步 在启动类上加上`@EnableFilePreview`注解
 
