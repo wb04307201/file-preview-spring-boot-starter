@@ -336,6 +336,7 @@ file:
 ```
 
 ```java
+@Component
 public class H2FileStroageRecordImpl implements IFileStroageRecord {
 
     private static final String HISTORY = "file_storage_history";
