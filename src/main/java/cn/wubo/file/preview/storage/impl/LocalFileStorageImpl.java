@@ -52,4 +52,9 @@ public class LocalFileStorageImpl implements IFileStorage {
             throw new StorageRuntimeException(e.getMessage(), e);
         }
     }
+
+    @Override
+    public void init() {
+
+    }
 }

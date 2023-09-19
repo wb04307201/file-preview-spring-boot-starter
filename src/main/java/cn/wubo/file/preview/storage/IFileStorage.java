@@ -25,4 +25,9 @@ public interface IFileStorage {
      * @return
      */
     byte[] get(FilePreviewInfo filePreviewInfo);
+
+    /**
+     * 初始化
+     */
+    void init();
 }
