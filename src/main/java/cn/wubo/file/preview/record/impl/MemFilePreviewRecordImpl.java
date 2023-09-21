@@ -3,7 +3,6 @@ package cn.wubo.file.preview.record.impl;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.exception.RecordRuntimeException;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Component
 public class MemFilePreviewRecordImpl implements IFilePreviewRecord {
 
     private static List<FilePreviewInfo> filePreviewInfos = new ArrayList<>();

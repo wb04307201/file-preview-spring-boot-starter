@@ -8,8 +8,10 @@ import cn.wubo.file.preview.office.impl.JodOfficeConverter;
 import cn.wubo.file.preview.office.impl.NoneConverter;
 import cn.wubo.file.preview.office.impl.SpireOfficeConverter;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
+import cn.wubo.file.preview.record.impl.MemFilePreviewRecordImpl;
 import cn.wubo.file.preview.servlet.*;
 import cn.wubo.file.preview.storage.IFileStorage;
+import cn.wubo.file.preview.storage.impl.LocalFileStorageImpl;
 import com.spire.doc.Document;
 import com.spire.presentation.Presentation;
 import com.spire.xls.Workbook;
@@ -30,6 +32,16 @@ public class OfficeConfiguration {
 
     public OfficeConfiguration(FilePreviewProperties properties) {
         this.properties = properties;
+    }
+
+    @Bean
+    public IFilePreviewRecord filePreviewRecord() {
+        return new MemFilePreviewRecordImpl();
+    }
+
+    @Bean
+    public IFileStorage fileStorage() {
+        return new LocalFileStorageImpl();
     }
 
     @Bean
