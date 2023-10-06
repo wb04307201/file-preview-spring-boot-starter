@@ -264,6 +264,8 @@ public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
             String sql = ModelSqlUtils.selectSql(HISTORY, new FileInfo());
 
             List<String> condition = new ArrayList<>();
+            if (StringUtils.hasLength(filePreviewInfo.getId()))
+                condition.add(" id  = '" + filePreviewInfo.getId() + "'");
             if (StringUtils.hasLength(filePreviewInfo.getFileName()))
                 condition.add(" fileName  like '%" + filePreviewInfo.getFileName() + "%'");
             if (StringUtils.hasLength(filePreviewInfo.getOriginalFilename()))
@@ -297,15 +299,21 @@ public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
     }
 
     @Override
-    public Boolean deleteById(String s) {
-        FilePreviewInfo delete = new FilePreviewInfo();
-        delete.setId(s);
-        String sql = ModelSqlUtils.deleteByIdSql(HISTORY, delete);
+    public Boolean delete(FilePreviewInfo filePreviewInfo) {
+        List<FilePreviewInfo> filePreviewInfos = list(filePreviewInfo);
         try {
             Connection conn = connectionPool.getConnection();
-            int count = ExecuteSqlUtils.executeUpdate(conn, sql, new HashMap<>());
+            conn.setAutoCommit(false);
+            AtomicInteger count = new AtomicInteger();
+            filePreviewInfos.stream().forEach(e -> {
+                FilePreviewInfo delete = new FilePreviewInfo();
+                delete.setId(e.getId());
+                String sql = ModelSqlUtils.deleteByIdSql(HISTORY, delete);
+                count.addAndGet(ExecuteSqlUtils.executeUpdate(conn, sql, new HashMap<>()));
+            });
+            conn.commit();
             connectionPool.returnConnection(conn);
-            return count == 1;
+            return count.get() > 0;
         } catch (SQLException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -313,10 +321,9 @@ public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 
     @Override
     public void init() {
-
         try {
             Connection conn = connectionPool.getConnection();
-            if (!ExecuteSqlUtils.isTableExists(conn, HISTORY, connectionPool.getDbType())) {
+            if (!ExecuteSqlUtils.isTableExists(conn, HISTORY, DbType.h2)) {
                 ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(HISTORY, new FilePreviewInfo()), new HashMap<>());
             }
         } catch (SQLException | InterruptedException e) {
@@ -337,93 +344,34 @@ file:
 
 ```java
 @Component
-public class H2FileStroageRecordImpl implements IFileStroageRecord {
+public class MinIOFileStorageImpl implements IFileStorage {
 
-    private static final String HISTORY = "file_storage_history";
-
-    private static ConnectionPool connectionPool = new ConnectionPool(new ConnectionParam());
+    @Resource
+    FileStorageService fileStorageService;
 
     @Override
-    public FileInfo save(FileInfo fileInfo) {
-        try {
-            Connection conn = connectionPool.getConnection();
-            if (!StringUtils.hasLength(fileInfo.getId())) {
-                fileInfo.setId(UUID.randomUUID().toString());
-                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.insertSql(HISTORY, fileInfo), new HashMap<>());
-            } else {
-                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.updateByIdSql(HISTORY, fileInfo), new HashMap<>());
-            }
-            connectionPool.returnConnection(conn);
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return fileInfo;
+    public FilePreviewInfo save(byte[] bytes, String fileName) {
+        FileInfo fileInfo = fileStorageService.save(new MultipartFileStorage(fileName, bytes).setAlias("minio-1").setPath("preview"));
+        FilePreviewInfo filePreviewInfo = new FilePreviewInfo();
+        filePreviewInfo.setFileName(fileInfo.getOriginalFilename());
+        filePreviewInfo.setFilePath(fileInfo.getId());
+        return filePreviewInfo;
     }
 
     @Override
-    public List<FileInfo> list(FileInfo fileInfo) {
-        try {
-            Connection conn = connectionPool.getConnection();
-            String sql = ModelSqlUtils.selectSql(HISTORY, new FileInfo());
-
-            List<String> condition = new ArrayList<>();
-            if (StringUtils.hasLength(fileInfo.getPlatform()))
-                condition.add(" platform = '" + fileInfo.getPlatform() + "'");
-            if (StringUtils.hasLength(fileInfo.getAlias()))
-                condition.add(" alias like '%" + fileInfo.getAlias() + "%'");
-            if (StringUtils.hasLength(fileInfo.getOriginalFilename()))
-                condition.add(" originalFilename like '%" + fileInfo.getOriginalFilename() + "%'");
-
-            if (!condition.isEmpty()) sql = sql + " where " + String.join("and", condition);
-
-            List<FileInfo> res = ExecuteSqlUtils.executeQuery(conn, sql, new HashMap<>(), FileInfo.class);
-            connectionPool.returnConnection(conn);
-            return res;
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public Boolean delete(FilePreviewInfo filePreviewInfo) {
+        return fileStorageService.delete(filePreviewInfo.getFilePath());
     }
 
     @Override
-    public FileInfo findById(String s) {
-        FileInfo fileInfo = new FileInfo();
-        fileInfo.setId(s);
-        String sql = ModelSqlUtils.selectSql(HISTORY, fileInfo);
-        try {
-            Connection conn = connectionPool.getConnection();
-            List<FileInfo> res = ExecuteSqlUtils.executeQuery(conn, sql, new HashMap<>(), FileInfo.class);
-            connectionPool.returnConnection(conn);
-            return res.get(0);
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Boolean delete(FileInfo fileInfo) {
-        FileInfo delete = new FileInfo();
-        delete.setId(fileInfo.getId());
-        String sql = ModelSqlUtils.deleteByIdSql(HISTORY, delete);
-        try {
-            Connection conn = connectionPool.getConnection();
-            int count = ExecuteSqlUtils.executeUpdate(conn, sql, new HashMap<>());
-            connectionPool.returnConnection(conn);
-            return count == 1;
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public byte[] getBytes(FilePreviewInfo filePreviewInfo) {
+        MultipartFileStorage file = fileStorageService.download(filePreviewInfo.getFilePath());
+        return file.getBytes();
     }
 
     @Override
     public void init() {
-        try {
-            Connection conn = connectionPool.getConnection();
-            if (!ExecuteSqlUtils.isTableExists(conn, HISTORY, connectionPool.getDbType())) {
-                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(HISTORY, new FileInfo()), new HashMap<>());
-            }
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
     }
 }
 ```
