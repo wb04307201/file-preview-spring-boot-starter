@@ -218,7 +218,8 @@ file:
 
 ```java
     //获取文件bytes
-    byte[] bytes = filePreviewService.download(filePreviewInfo.getId());
+    FilePreviewInfo filePreviewInfo = filePreviewService.findById(id);
+    byte[] bytes = filePreviewService.getBytes(filePreviewInfo);
 
     //删除预览文件
     Boolean result = filePreviewService.delete(filePreviewInfo.getId());  
