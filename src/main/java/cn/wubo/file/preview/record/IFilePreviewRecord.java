@@ -27,11 +27,11 @@ public interface IFilePreviewRecord {
     FilePreviewInfo findById(String id);
 
     /**
-     * 根据id阐述
-     * @param id
+     * 删除
+     * @param filePreviewInfo
      * @return
      */
-    Boolean deleteById(String id);
+    Boolean delete(FilePreviewInfo filePreviewInfo);
 
     /**
      * 初始化

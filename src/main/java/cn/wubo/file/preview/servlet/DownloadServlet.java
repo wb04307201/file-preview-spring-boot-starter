@@ -2,8 +2,6 @@ package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
-import cn.wubo.file.preview.record.IFilePreviewRecord;
-import cn.wubo.file.preview.storage.IFileStorage;
 import cn.wubo.file.preview.utils.FileUtils;
 import cn.wubo.file.preview.utils.IoUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +17,10 @@ import java.util.Objects;
 
 @Slf4j
 public class DownloadServlet extends HttpServlet {
-    IFilePreviewRecord filePreviewRecord;
-    IFileStorage fileStorage;
+    FilePreviewService filePreviewService;
 
-    public DownloadServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
-        this.filePreviewRecord = filePreviewRecord;
-        this.fileStorage = fileStorage;
+    public DownloadServlet(FilePreviewService filePreviewService) {
+        this.filePreviewService = filePreviewService;
     }
 
     @Override
@@ -32,8 +28,8 @@ public class DownloadServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         log.debug("下载文件-----开始");
         String id = req.getParameter("id");
-        FilePreviewInfo info = filePreviewRecord.findById(id);
-        byte[] bytes = fileStorage.get(info);
+        FilePreviewInfo info = filePreviewService.findById(id);
+        byte[] bytes = filePreviewService.getBytes(info);
         resp.setContentType(FileUtils.getMimeType(info.getFileName()));
         resp.addHeader("Content-Length", String.valueOf(bytes.length));
         resp.addHeader("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1));

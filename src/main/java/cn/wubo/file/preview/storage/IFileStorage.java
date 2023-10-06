@@ -24,7 +24,7 @@ public interface IFileStorage {
      * @param filePreviewInfo
      * @return
      */
-    byte[] get(FilePreviewInfo filePreviewInfo);
+    byte[] getBytes(FilePreviewInfo filePreviewInfo);
 
     /**
      * 初始化

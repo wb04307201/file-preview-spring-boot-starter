@@ -8,6 +8,7 @@ import org.springframework.util.FastByteArrayOutputStream;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 预览文件服务
@@ -43,16 +44,20 @@ public class FilePreviewService {
         return filePreviewInfo;
     }
 
-    public Boolean delete(String id) {
-        //1 调用查询
-        FilePreviewInfo filePreviewInfo = filePreviewRecord.findById(id);
-        //2 删除文件
-        //3 删除记录
-        return fileStorage.delete(filePreviewInfo) && filePreviewRecord.deleteById(id);
+    public List<FilePreviewInfo> list(FilePreviewInfo filePreviewInfo) {
+        return filePreviewRecord.list(filePreviewInfo);
     }
 
-    public byte[] download(String id) {
-        FilePreviewInfo info = filePreviewRecord.findById(id);
-        return fileStorage.get(info);
+    public Boolean delete(String id) {
+        FilePreviewInfo filePreviewInfo = filePreviewRecord.findById(id);
+        return fileStorage.delete(filePreviewInfo) && filePreviewRecord.delete(filePreviewInfo);
+    }
+
+    public FilePreviewInfo findById(String id) {
+        return filePreviewRecord.findById(id);
+    }
+
+    public byte[] getBytes(FilePreviewInfo filePreviewInfo) {
+        return fileStorage.getBytes(filePreviewInfo);
     }
 }

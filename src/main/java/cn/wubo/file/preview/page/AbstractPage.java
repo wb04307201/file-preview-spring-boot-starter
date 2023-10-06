@@ -2,7 +2,7 @@ package cn.wubo.file.preview.page;
 
 import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
-import cn.wubo.file.preview.storage.IFileStorage;
+import cn.wubo.file.preview.core.FilePreviewService;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Data;
@@ -21,16 +21,16 @@ public abstract class AbstractPage implements IPage {
     private String extName;
     private String contextPath;
     private FilePreviewInfo info;
-    private IFileStorage fileStorage;
+    private FilePreviewService filePreviewService;
     private FilePreviewProperties properties;
     private HttpServletResponse resp;
 
-    public AbstractPage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
+    protected AbstractPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
         this.fileType = fileType;
         this.extName = extName;
         this.contextPath = contextPath;
         this.info = info;
-        this.fileStorage = fileStorage;
+        this.filePreviewService = filePreviewService;
         this.properties = properties;
         this.resp = resp;
     }

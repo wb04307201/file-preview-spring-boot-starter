@@ -1,8 +1,7 @@
 package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
-import cn.wubo.file.preview.record.IFilePreviewRecord;
-import cn.wubo.file.preview.storage.IFileStorage;
+import cn.wubo.file.preview.core.FilePreviewService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -22,15 +21,13 @@ import java.util.Map;
 @Slf4j
 public class OnlyOfficeCallbackServlet extends HttpServlet {
 
-    IFilePreviewRecord filePreviewRecord;
-    IFileStorage fileStorage;
+    FilePreviewService filePreviewService;
+
+    public OnlyOfficeCallbackServlet(FilePreviewService filePreviewService) {
+        this.filePreviewService = filePreviewService;
+    }
 
     private static final String STATUS = "status";
-
-    public OnlyOfficeCallbackServlet(IFilePreviewRecord filePreviewRecord, IFileStorage fileStorage) {
-        this.filePreviewRecord = filePreviewRecord;
-        this.fileStorage = fileStorage;
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,7 +36,7 @@ public class OnlyOfficeCallbackServlet extends HttpServlet {
         Map<String, String[]> paramMap = req.getParameterMap();
         if (paramMap.containsKey(STATUS) && (Integer.parseInt(paramMap.get(STATUS)[0]) == 2 || Integer.parseInt(paramMap.get(STATUS)[0]) == 3)) {
             String id = paramMap.get("id")[0];
-            FilePreviewInfo info = filePreviewRecord.findById(id);
+            FilePreviewInfo info = filePreviewService.findById(id);
 
             //取回修改后文件
             //byte[] fileBytes = downloadFromOnlyOffice(paramMap.get("url")[0]);

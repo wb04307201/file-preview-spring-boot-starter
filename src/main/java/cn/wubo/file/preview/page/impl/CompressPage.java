@@ -2,9 +2,9 @@ package cn.wubo.file.preview.page.impl;
 
 import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
+import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.exception.PageRuntimeException;
 import cn.wubo.file.preview.page.AbstractPage;
-import cn.wubo.file.preview.storage.IFileStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -23,8 +23,9 @@ import java.util.Map;
 
 @Slf4j
 public class CompressPage extends AbstractPage {
-    public CompressPage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
-        super(fileType, extName, contextPath, info, fileStorage, properties, resp);
+
+    protected CompressPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
+        super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class CompressPage extends AbstractPage {
         Map<String, Object> data = new HashMap<>();
         data.put(CONTEXT_PATH, getContextPath());
         Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), getInfo().getFileName());
-        Files.write(path, getFileStorage().get(getInfo()));
+        Files.write(path, getFilePreviewService().getBytes(getInfo()));
         List<Map<String, Object>> list = new ArrayList<>();
         try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(Files.newInputStream(path)))) {
             ArchiveEntry entry;

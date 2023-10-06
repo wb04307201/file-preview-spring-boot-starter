@@ -2,7 +2,9 @@ package cn.wubo.file.preview.page;
 
 import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
+import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.exception.PageRuntimeException;
+import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
 import cn.wubo.file.preview.utils.FileUtils;
 
@@ -18,7 +20,7 @@ public class PageFactory {
 
     private static final Set<String> OFFICE_FILE_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("word", "excel", "power point", "txt")));
 
-    public static AbstractPage create(FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletRequest req, HttpServletResponse resp) {
+    public static AbstractPage create(FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletRequest req, HttpServletResponse resp) {
         try {
             String contextPath = req.getContextPath();
             String extName = FileUtils.extName(info.getFileName());
@@ -32,7 +34,7 @@ public class PageFactory {
             } else {
                 clazz = PageType.getClass(fileType);
             }
-            return clazz.getConstructor(String.class, String.class, String.class, FilePreviewInfo.class, IFileStorage.class, FilePreviewProperties.class, HttpServletResponse.class).newInstance(fileType, extName, contextPath, info, fileStorage, properties, resp);
+            return clazz.getConstructor(String.class, String.class, String.class, FilePreviewInfo.class, FilePreviewService.class, FilePreviewProperties.class, HttpServletResponse.class).newInstance(fileType, extName, contextPath, info, filePreviewService, properties, resp);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                  InvocationTargetException e) {
             throw new PageRuntimeException(e.getMessage(), e);

@@ -2,8 +2,8 @@ package cn.wubo.file.preview.page.impl;
 
 import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
+import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.page.AbstractPage;
-import cn.wubo.file.preview.storage.IFileStorage;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VideoPage extends AbstractPage {
-    public VideoPage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
-        super(fileType, extName, contextPath, info, fileStorage, properties, resp);
+
+    protected VideoPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
+        super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
     }
 
     @Override

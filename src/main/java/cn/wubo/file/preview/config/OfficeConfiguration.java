@@ -74,26 +74,26 @@ public class OfficeConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<FileListServlet> filePreviewListServlet(List<IFilePreviewRecord> filePreviewRecordList) {
+    public ServletRegistrationBean<FileListServlet> filePreviewListServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<FileListServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new FileListServlet(filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord())))));
+        registration.setServlet(new FileListServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/list");
         return registration;
     }
 
     @Bean
-    public ServletRegistrationBean<PreviewServlet> filePreviewServlet(List<IFilePreviewRecord> filePreviewRecordList, List<IFileStorage> fileStorageList) {
+    public ServletRegistrationBean<PreviewServlet> filePreviewServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<PreviewServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new PreviewServlet(filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord()))), fileStorageList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFileStorage())).findAny().orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage()))), properties));
+        registration.setServlet(new PreviewServlet(filePreviewService, properties));
         registration.addUrlMappings("/file/preview");
         return registration;
     }
 
     @Bean
     @ConditionalOnExpression("#{'only'.equals(environment['file.preview.officeConverter'])}")
-    public ServletRegistrationBean<OnlyOfficeCallbackServlet> filePreviewCallbackServlet(List<IFilePreviewRecord> filePreviewRecordList, List<IFileStorage> fileStorageList) {
+    public ServletRegistrationBean<OnlyOfficeCallbackServlet> filePreviewCallbackServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<OnlyOfficeCallbackServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new OnlyOfficeCallbackServlet(filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord()))), fileStorageList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFileStorage())).findAny().orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage())))));
+        registration.setServlet(new OnlyOfficeCallbackServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/onlyoffice/callback");
         return registration;
     }
@@ -107,9 +107,9 @@ public class OfficeConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(List<IFilePreviewRecord> filePreviewRecordList, List<IFileStorage> fileStorageList) {
+    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new DownloadServlet(filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord()))), fileStorageList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFileStorage())).findAny().orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage())))));
+        registration.setServlet(new DownloadServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/download");
         return registration;
     }

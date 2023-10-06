@@ -43,7 +43,7 @@ public class LocalFileStorageImpl implements IFileStorage {
     }
 
     @Override
-    public byte[] get(FilePreviewInfo filePreviewInfo) {
+    public byte[] getBytes(FilePreviewInfo filePreviewInfo) {
         try {
             return Files.readAllBytes(Paths.get(filePreviewInfo.getFilePath()));
         } catch (IOException e) {

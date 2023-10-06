@@ -2,8 +2,8 @@ package cn.wubo.file.preview.page.impl;
 
 import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
+import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.page.AbstractPage;
-import cn.wubo.file.preview.storage.IFileStorage;
 import io.fusionauth.jwt.Signer;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACSigner;
@@ -21,8 +21,9 @@ import java.util.Map;
  * https://api.onlyoffice.com/editors/signature/#java
  */
 public class OnlyOfficePage extends AbstractPage {
-    public OnlyOfficePage(String fileType, String extName, String contextPath, FilePreviewInfo info, IFileStorage fileStorage, FilePreviewProperties properties, HttpServletResponse resp) {
-        super(fileType, extName, contextPath, info, fileStorage, properties, resp);
+
+    protected OnlyOfficePage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
+        super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
     }
 
     @Override
@@ -30,27 +31,6 @@ public class OnlyOfficePage extends AbstractPage {
         Map<String, Object> data = new HashMap<>();
         data.put(CONTEXT_PATH, getContextPath());
         data.put("url", String.format("%s/web-apps/apps/api/documents/api.js", getProperties().getOnlyOffice().getDomain()));
-
-        /*switch (getFileType()) {
-            case "word":
-            case "txt":
-                data.put(DOCUMENT_TYPE, "word");
-                break;
-            case "excel":
-                data.put(DOCUMENT_TYPE, "cell");
-                break;
-            case "power point":
-                data.put(DOCUMENT_TYPE, "slide");
-                break;
-        }
-        data.put("fileType", "txt".equals(getFileType()) ? "txt" : getExtName());
-        data.put("key", getInfo().getId());
-        data.put("title", getInfo().getOriginalFilename());
-        data.put("downloadUrl", getProperties().getOnlyOffice().getDownload() + "?id=" + getInfo().getId());
-        data.put("callbackUrl", getProperties().getOnlyOffice().getCallback() + "?id=" + getInfo().getId());
-        data.put("lang", "zh");
-        data.put("userid", "file preview");
-        data.put("username", "file preview");*/
 
         Map<String, Object> config = new HashMap<>();
         config.put("type", "desktop");

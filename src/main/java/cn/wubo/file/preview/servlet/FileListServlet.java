@@ -1,6 +1,7 @@
 package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
+import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.utils.Page;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 
@@ -14,10 +15,10 @@ import java.util.Map;
 
 public class FileListServlet extends HttpServlet {
 
-    IFilePreviewRecord filePreviewRecord;
+    FilePreviewService filePreviewService;
 
-    public FileListServlet(IFilePreviewRecord filePreviewRecord) {
-        this.filePreviewRecord = filePreviewRecord;
+    public FileListServlet(FilePreviewService filePreviewService) {
+        this.filePreviewService = filePreviewService;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class FileListServlet extends HttpServlet {
 
         Map<String, Object> data = new HashMap<>();
         data.put("contextPath", req.getContextPath());
-        data.put("list", filePreviewRecord.list(filePreviewInfo));
+        data.put("list", filePreviewService.list(filePreviewInfo));
         data.put("query", filePreviewInfo);
 
         Page listPage = new Page("previewlist.ftl", data, resp);
