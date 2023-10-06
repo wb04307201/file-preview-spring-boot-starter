@@ -1,11 +1,15 @@
 package cn.wubo.file.preview.core;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FilePreviewInfo implements Serializable {
     private String id;
     /**
