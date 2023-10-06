@@ -2,10 +2,11 @@ package cn.wubo.file.preview.core;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class FilePreviewInfo {
+public class FilePreviewInfo implements Serializable {
     private String id;
     /**
      * 原文件名
