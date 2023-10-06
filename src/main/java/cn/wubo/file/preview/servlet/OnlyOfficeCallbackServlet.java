@@ -21,7 +21,7 @@ import java.util.Map;
 @Slf4j
 public class OnlyOfficeCallbackServlet extends HttpServlet {
 
-    FilePreviewService filePreviewService;
+    private final FilePreviewService filePreviewService;
 
     public OnlyOfficeCallbackServlet(FilePreviewService filePreviewService) {
         this.filePreviewService = filePreviewService;

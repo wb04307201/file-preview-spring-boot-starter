@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @Slf4j
 public class DownloadServlet extends HttpServlet {
-    FilePreviewService filePreviewService;
+    private final FilePreviewService filePreviewService;
 
     public DownloadServlet(FilePreviewService filePreviewService) {
         this.filePreviewService = filePreviewService;

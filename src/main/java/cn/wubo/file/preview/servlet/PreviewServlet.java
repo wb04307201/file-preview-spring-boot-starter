@@ -16,8 +16,8 @@ import java.io.IOException;
 @Slf4j
 public class PreviewServlet extends HttpServlet {
 
-    FilePreviewService filePreviewService;
-    FilePreviewProperties properties;
+    private final FilePreviewService filePreviewService;
+    private final FilePreviewProperties properties;
 
     public PreviewServlet(FilePreviewService filePreviewService, FilePreviewProperties properties) {
         this.filePreviewService = filePreviewService;

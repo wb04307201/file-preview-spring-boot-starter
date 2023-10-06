@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class FileListServlet extends HttpServlet {
 
-    FilePreviewService filePreviewService;
+    private final FilePreviewService filePreviewService;
 
     public FileListServlet(FilePreviewService filePreviewService) {
         this.filePreviewService = filePreviewService;

@@ -12,7 +12,7 @@ import java.io.IOException;
 @Slf4j
 public class DeleteServlet extends HttpServlet {
 
-    FilePreviewService filePreviewService;
+    private final FilePreviewService filePreviewService;
 
     public DeleteServlet(FilePreviewService filePreviewService) {
         this.filePreviewService = filePreviewService;
