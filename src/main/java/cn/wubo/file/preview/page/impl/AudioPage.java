@@ -11,9 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AudioPage extends AbstractPage {
-
-
-    protected AudioPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
+    public AudioPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
         super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
     }
 

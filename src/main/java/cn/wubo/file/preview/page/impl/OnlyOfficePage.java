@@ -21,8 +21,7 @@ import java.util.Map;
  * https://api.onlyoffice.com/editors/signature/#java
  */
 public class OnlyOfficePage extends AbstractPage {
-
-    protected OnlyOfficePage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
+    public OnlyOfficePage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
         super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
     }
 

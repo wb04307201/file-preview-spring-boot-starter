@@ -14,8 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class LoolPage extends AbstractPage {
-
-    protected LoolPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
+    public LoolPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
         super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
     }
 

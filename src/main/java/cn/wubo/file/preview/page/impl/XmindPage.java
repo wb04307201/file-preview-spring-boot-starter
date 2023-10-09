@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class XmindPage extends AbstractPage {
-    protected XmindPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
+    public XmindPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
         super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
     }
 
