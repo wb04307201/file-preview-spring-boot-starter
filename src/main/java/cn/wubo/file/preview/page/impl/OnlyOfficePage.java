@@ -8,9 +8,8 @@ import io.fusionauth.jwt.Signer;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACSigner;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.function.ServerResponse;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,12 +20,12 @@ import java.util.Map;
  * https://api.onlyoffice.com/editors/signature/#java
  */
 public class OnlyOfficePage extends AbstractPage {
-    public OnlyOfficePage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
-        super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
+    public OnlyOfficePage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties) {
+        super(fileType, extName, contextPath, info, filePreviewService, properties);
     }
 
     @Override
-    public void build() throws IOException {
+    public ServerResponse build() {
         Map<String, Object> data = new HashMap<>();
         data.put(CONTEXT_PATH, getContextPath());
         data.put("url", String.format("%s/web-apps/apps/api/documents/api.js", getProperties().getOnlyOffice().getDomain()));
@@ -68,6 +67,6 @@ public class OnlyOfficePage extends AbstractPage {
 
         data.put("config", config);
 
-        writePage("onlyoffice.ftl", data);
+        return writePage("onlyoffice.ftl", data);
     }
 }

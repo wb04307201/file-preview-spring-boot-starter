@@ -10,8 +10,8 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.springframework.web.servlet.function.ServerResponse;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,35 +23,39 @@ import java.util.Map;
 
 @Slf4j
 public class CompressPage extends AbstractPage {
-    public CompressPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
-        super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
+    public CompressPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties) {
+        super(fileType, extName, contextPath, info, filePreviewService, properties);
     }
 
     @Override
-    public void build() throws IOException {
-        Map<String, Object> data = new HashMap<>();
-        data.put(CONTEXT_PATH, getContextPath());
-        Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), getInfo().getFileName());
-        Files.write(path, getFilePreviewService().getBytes(getInfo()));
-        List<Map<String, Object>> list = new ArrayList<>();
-        try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(Files.newInputStream(path)))) {
-            ArchiveEntry entry;
-            while ((entry = ais.getNextEntry()) != null) {
-                Map<String, Object> map = new HashMap<>();
-                if (entry.isDirectory()) {
-                    log.debug("directory: " + entry.getName());
-                    map.put("fileType", "directory");
-                } else {
-                    log.debug("file: " + entry.getName());
-                    map.put("fileType", "file");
+    public ServerResponse build() {
+        try {
+            Map<String, Object> data = new HashMap<>();
+            data.put(CONTEXT_PATH, getContextPath());
+            Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), getInfo().getFileName());
+            Files.write(path, getFilePreviewService().getBytes(getInfo()));
+            List<Map<String, Object>> list = new ArrayList<>();
+            try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(Files.newInputStream(path)))) {
+                ArchiveEntry entry;
+                while ((entry = ais.getNextEntry()) != null) {
+                    Map<String, Object> map = new HashMap<>();
+                    if (entry.isDirectory()) {
+                        log.debug("directory: " + entry.getName());
+                        map.put("fileType", "directory");
+                    } else {
+                        log.debug("file: " + entry.getName());
+                        map.put("fileType", "file");
+                    }
+                    map.put("fileName", entry.getName());
+                    list.add(map);
                 }
-                map.put("fileName", entry.getName());
-                list.add(map);
+            } catch (ArchiveException e) {
+                throw new PageRuntimeException(e.getMessage(), e);
             }
-        } catch (ArchiveException e) {
-            throw new PageRuntimeException(e.getMessage(), e);
+            data.put("list", list);
+            return writePage("compress.ftl", data);
+        } catch (IOException e) {
+            throw new PageRuntimeException(e.getMessage(),e);
         }
-        data.put("list", list);
-        writePage("compress.ftl", data);
     }
 }

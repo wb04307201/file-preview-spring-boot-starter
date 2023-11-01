@@ -2,8 +2,7 @@ package cn.wubo.file.preview.servlet;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
-import cn.wubo.file.preview.utils.Page;
-import cn.wubo.file.preview.record.IFilePreviewRecord;
+import cn.wubo.file.preview.utils.PageUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,7 +36,7 @@ public class FileListServlet extends HttpServlet {
         data.put("list", filePreviewService.list(filePreviewInfo));
         data.put("query", filePreviewInfo);
 
-        Page listPage = new Page("previewlist.ftl", data, resp);
+        PageUtils listPage = new PageUtils("previewlist.ftl", data, resp);
         listPage.write();
         //super.doGet(req, resp);
     }

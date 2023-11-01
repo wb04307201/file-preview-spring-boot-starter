@@ -4,24 +4,22 @@ import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.page.AbstractPage;
-import cn.wubo.file.preview.utils.IoUtils;
+import org.springframework.web.servlet.function.ServerResponse;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CodePage extends AbstractPage {
-    public CodePage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
-        super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
+    public CodePage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties) {
+        super(fileType, extName, contextPath, info, filePreviewService, properties);
     }
 
     @Override
-    public void build() throws IOException {
+    public ServerResponse build() {
         Map<String, Object> data = new HashMap<>();
         data.put(CONTEXT_PATH, getContextPath());
         data.put("language", getFileType());
-        data.put("content", IoUtils.readByte(getFilePreviewService().getBytes(getInfo()), getInfo().getFileName()));
-        writePage("code.ftl", data);
+        data.put("content", readLines());
+        return writePage("code.ftl", data);
     }
 }

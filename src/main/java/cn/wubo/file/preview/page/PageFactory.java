@@ -20,9 +20,8 @@ public class PageFactory {
 
     private static final Set<String> OFFICE_FILE_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("word", "excel", "power point", "txt")));
 
-    public static AbstractPage create(FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletRequest req, HttpServletResponse resp) {
+    public static AbstractPage create(FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, String contextPath) {
         try {
-            String contextPath = req.getContextPath();
             String extName = FileUtils.extName(info.getFileName());
             String fileType = FileUtils.fileType(extName);
 
@@ -34,7 +33,7 @@ public class PageFactory {
             } else {
                 clazz = PageType.getClass(fileType);
             }
-            return clazz.getConstructor(String.class, String.class, String.class, FilePreviewInfo.class, FilePreviewService.class, FilePreviewProperties.class, HttpServletResponse.class).newInstance(fileType, extName, contextPath, info, filePreviewService, properties, resp);
+            return clazz.getConstructor(String.class, String.class, String.class, FilePreviewInfo.class, FilePreviewService.class, FilePreviewProperties.class).newInstance(fileType, extName, contextPath, info, filePreviewService, properties);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                  InvocationTargetException e) {
             throw new PageRuntimeException(e.getMessage(), e);

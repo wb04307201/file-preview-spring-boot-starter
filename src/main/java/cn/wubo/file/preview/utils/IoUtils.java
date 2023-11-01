@@ -68,7 +68,7 @@ public class IoUtils {
         }
     }
 
-    public static String readByte(byte[] bytes, String fileName) throws IOException {
+    public static String readLines(byte[] bytes, String fileName) throws IOException {
         Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), fileName);
         Files.write(path, bytes);
         try (Stream<String> lines = Files.lines(path)) {

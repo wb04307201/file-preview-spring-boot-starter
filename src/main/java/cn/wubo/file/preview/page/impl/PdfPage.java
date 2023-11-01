@@ -4,17 +4,15 @@ import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.page.AbstractPage;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.web.servlet.function.ServerResponse;
 
 public class PdfPage extends AbstractPage {
-    public PdfPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
-        super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
+    public PdfPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties) {
+        super(fileType, extName, contextPath, info, filePreviewService, properties);
     }
 
     @Override
-    public void build() throws IOException {
-        sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", getContextPath(), getContextPath(), getInfo().getId()));
+    public ServerResponse build() {
+        return sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", getContextPath(), getContextPath(), getInfo().getId()));
     }
 }

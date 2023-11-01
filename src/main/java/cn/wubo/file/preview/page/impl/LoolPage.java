@@ -4,6 +4,7 @@ import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.page.AbstractPage;
+import org.springframework.web.servlet.function.ServerResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -14,15 +15,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class LoolPage extends AbstractPage {
-    public LoolPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, HttpServletResponse resp) {
-        super(fileType, extName, contextPath, info, filePreviewService, properties, resp);
+    public LoolPage(String fileType, String extName, String contextPath, FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties) {
+        super(fileType, extName, contextPath, info, filePreviewService, properties);
     }
 
     @Override
-    public void build() throws IOException {
+    public ServerResponse build() {
         Path path = Paths.get(getProperties().getLibreOffice().getStorage() + File.separator + getInfo().getFileName());
         Files.deleteIfExists(path);
         Files.write(path, getFilePreviewService().getBytes(getInfo()));
-        sendRedirect(String.format("%s/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/%s&permission=readonly", getProperties().getLibreOffice().getDomain(), URLEncoder.encode(getInfo().getFileName(), "UTF-8")));
+        return sendRedirect(String.format("%s/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/%s&permission=readonly", getProperties().getLibreOffice().getDomain(), URLEncoder.encode(getInfo().getFileName(), "UTF-8")));
     }
 }
