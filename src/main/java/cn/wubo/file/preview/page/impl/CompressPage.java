@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class CompressPage extends AbstractPage {
@@ -40,6 +41,7 @@ public class CompressPage extends AbstractPage {
                 try (BufferedInputStream bis = new BufferedInputStream(is)) {
                     try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
                         ArchiveEntry entry;
+                        AtomicInteger atomicInteger = new AtomicInteger(0);
                         while ((entry = ais.getNextEntry()) != null) {
                             Map<String, Object> map = new HashMap<>();
                             if (entry.isDirectory()) {
@@ -50,6 +52,7 @@ public class CompressPage extends AbstractPage {
                                 map.put("fileType", "file");
                             }
                             map.put("fileName", entry.getName());
+                            map.put("id",atomicInteger.addAndGet(1));
                             list.add(map);
                         }
                     }

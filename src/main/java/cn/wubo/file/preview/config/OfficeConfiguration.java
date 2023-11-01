@@ -12,21 +12,18 @@ import cn.wubo.file.preview.office.impl.SpireOfficeConverter;
 import cn.wubo.file.preview.page.PageFactory;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.record.impl.MemFilePreviewRecordImpl;
-import cn.wubo.file.preview.servlet.*;
 import cn.wubo.file.preview.storage.IFileStorage;
 import cn.wubo.file.preview.storage.impl.LocalFileStorageImpl;
+import cn.wubo.file.preview.utils.FileUtils;
 import cn.wubo.file.preview.utils.PageUtils;
 import com.spire.doc.Document;
 import com.spire.presentation.Presentation;
 import com.spire.xls.Workbook;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.jodconverter.core.DocumentConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -35,9 +32,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.function.*;
 import org.springframework.web.util.HtmlUtils;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,13 +119,10 @@ public class OfficeConfiguration {
             return PageFactory.create(info, filePreviewService, properties, contextPath).build();
         };
 
-        RouterFunctions.Builder builder = RouterFunctions.route()
-                .GET("/file/preview/list", RequestPredicates.accept(MediaType.TEXT_HTML), request -> listFunction.apply(request, filePreviewService))
-                .POST("/file/preview/list", RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED), request -> listFunction.apply(request, filePreviewService))
-                .GET("/file/preview", request -> previewFunction.apply(request, filePreviewService));
+        RouterFunctions.Builder builder = RouterFunctions.route().GET("/file/preview/list", RequestPredicates.accept(MediaType.TEXT_HTML), request -> listFunction.apply(request, filePreviewService)).POST("/file/preview/list", RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED), request -> listFunction.apply(request, filePreviewService)).GET("/file/preview", request -> previewFunction.apply(request, filePreviewService));
 
         if ("only".equals(properties.getOfficeConverter())) {
-            Function<String, byte[]> downloadFunction = (url) -> {
+            Function<String, byte[]> downloadFunction = url -> {
                 RestTemplate restTemplate = new RestTemplate();
                 HttpHeaders headers = new HttpHeaders();
                 HttpEntity<Resource> httpEntity = new HttpEntity<>(headers);
@@ -151,47 +146,18 @@ public class OfficeConfiguration {
             });
         }
 
+        builder.GET("/file/preview/delete", request -> {
+            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException("请求参数id丢失!"));
+            filePreviewService.delete(id);
+            return ServerResponse.permanentRedirect(new URI(request.requestPath().contextPath().value() + "/file/preview/list")).build();
+        }).GET("/file/preview/download", request -> {
+            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException("请求参数id丢失!"));
+            FilePreviewInfo info = filePreviewService.findById(id);
+            try (InputStream is = new ByteArrayInputStream(filePreviewService.getBytes(info))) {
+                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).body(is);
+            }
+        });
+
         return builder.build();
-    }
-
-    /*@Bean
-    public ServletRegistrationBean<FileListServlet> filePreviewListServlet(FilePreviewService filePreviewService) {
-        ServletRegistrationBean<FileListServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new FileListServlet(filePreviewService));
-        registration.addUrlMappings("/file/preview/list");
-        return registration;
-    }*/
-
-   /* @Bean
-    public ServletRegistrationBean<PreviewServlet> filePreviewServlet(FilePreviewService filePreviewService) {
-        ServletRegistrationBean<PreviewServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new PreviewServlet(filePreviewService, properties));
-        registration.addUrlMappings("/file/preview");
-        return registration;
-    }*/
-
-    /*@Bean
-    @ConditionalOnExpression("#{'only'.equals(environment['file.preview.officeConverter'])}")
-    public ServletRegistrationBean<OnlyOfficeCallbackServlet> filePreviewCallbackServlet(FilePreviewService filePreviewService) {
-        ServletRegistrationBean<OnlyOfficeCallbackServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new OnlyOfficeCallbackServlet(filePreviewService));
-        registration.addUrlMappings("/file/preview/onlyoffice/callback");
-        return registration;
-    }*/
-
-    @Bean
-    public ServletRegistrationBean<DeleteServlet> filePreviewDeleteServlet(FilePreviewService filePreviewService) {
-        ServletRegistrationBean<DeleteServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new DeleteServlet(filePreviewService));
-        registration.addUrlMappings("/file/preview/delete");
-        return registration;
-    }
-
-    @Bean
-    public ServletRegistrationBean<DownloadServlet> filePreviewDownloadServlet(FilePreviewService filePreviewService) {
-        ServletRegistrationBean<DownloadServlet> registration = new ServletRegistrationBean<>();
-        registration.setServlet(new DownloadServlet(filePreviewService));
-        registration.addUrlMappings("/file/preview/download");
-        return registration;
     }
 }
