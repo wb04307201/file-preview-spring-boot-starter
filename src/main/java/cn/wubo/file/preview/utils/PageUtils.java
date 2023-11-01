@@ -16,7 +16,7 @@ public class PageUtils {
     public static String write(String templateName, Map<String, Object> params) {
         try (StringWriter sw = new StringWriter()) {
             freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
-            cfg.setClassForTemplateLoading(this.getClass(), "/template");
+            cfg.setClassForTemplateLoading(PageUtils.class, "/template");
             Template template = cfg.getTemplate(templateName, "UTF-8");
             template.process(params, sw);
             return sw.toString();

@@ -118,11 +118,13 @@ public class OfficeConfiguration {
             return PageFactory.create(info, filePreviewService, properties, contextPath).build();
         };
 
-        return RouterFunctions.route()
+        RouterFunctions.Builder builder = RouterFunctions.route()
                 .GET("/file/preview/list", RequestPredicates.accept(MediaType.TEXT_HTML), request -> listFunction.apply(request, filePreviewService))
                 .POST("/file/preview/list", RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED), request -> listFunction.apply(request, filePreviewService))
-                .GET("/file/preview", request -> previewFunction.apply(request, filePreviewService))
-                .build();
+                .GET("/file/preview", request -> previewFunction.apply(request, filePreviewService));
+
+
+        return builder.build();
     }
 
     /*@Bean
