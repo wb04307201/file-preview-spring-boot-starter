@@ -14,6 +14,7 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -35,27 +36,29 @@ public class CompressPage extends AbstractPage {
             Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), getInfo().getFileName());
             Files.write(path, getFilePreviewService().getBytes(getInfo()));
             List<Map<String, Object>> list = new ArrayList<>();
-            try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(Files.newInputStream(path)))) {
-                ArchiveEntry entry;
-                while ((entry = ais.getNextEntry()) != null) {
-                    Map<String, Object> map = new HashMap<>();
-                    if (entry.isDirectory()) {
-                        log.debug("directory: " + entry.getName());
-                        map.put("fileType", "directory");
-                    } else {
-                        log.debug("file: " + entry.getName());
-                        map.put("fileType", "file");
+            try (InputStream is = Files.newInputStream(path)) {
+                try (BufferedInputStream bis = new BufferedInputStream(is)) {
+                    try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
+                        ArchiveEntry entry;
+                        while ((entry = ais.getNextEntry()) != null) {
+                            Map<String, Object> map = new HashMap<>();
+                            if (entry.isDirectory()) {
+                                log.debug("directory: " + entry.getName());
+                                map.put("fileType", "directory");
+                            } else {
+                                log.debug("file: " + entry.getName());
+                                map.put("fileType", "file");
+                            }
+                            map.put("fileName", entry.getName());
+                            list.add(map);
+                        }
                     }
-                    map.put("fileName", entry.getName());
-                    list.add(map);
                 }
-            } catch (ArchiveException e) {
-                throw new PageRuntimeException(e.getMessage(), e);
             }
             data.put("list", list);
             return writePage("compress.ftl", data);
-        } catch (IOException e) {
-            throw new PageRuntimeException(e.getMessage(),e);
+        } catch (IOException | ArchiveException e) {
+            throw new PageRuntimeException(e.getMessage(), e);
         }
     }
 }

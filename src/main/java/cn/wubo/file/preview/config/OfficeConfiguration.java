@@ -28,9 +28,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.function.*;
 import org.springframework.web.util.HtmlUtils;
 
@@ -40,7 +41,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @EnableConfigurationProperties({FilePreviewProperties.class})
 public class OfficeConfiguration {
@@ -108,7 +111,7 @@ public class OfficeConfiguration {
             filePreviewInfo.setFilePath(HtmlUtils.htmlEscape(filePreviewInfo.getFilePath() == null ? "" : filePreviewInfo.getFilePath()));
             data.put("query", filePreviewInfo);
 
-            return ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(PageUtils.write("list.ftl",data));
+            return ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(PageUtils.write("list.ftl", data));
         };
 
         BiFunction<ServerRequest, FilePreviewService, ServerResponse> previewFunction = (request, service) -> {
@@ -123,6 +126,30 @@ public class OfficeConfiguration {
                 .POST("/file/preview/list", RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED), request -> listFunction.apply(request, filePreviewService))
                 .GET("/file/preview", request -> previewFunction.apply(request, filePreviewService));
 
+        if ("only".equals(properties.getOfficeConverter())) {
+            Function<String, byte[]> downloadFunction = (url) -> {
+                RestTemplate restTemplate = new RestTemplate();
+                HttpHeaders headers = new HttpHeaders();
+                HttpEntity<Resource> httpEntity = new HttpEntity<>(headers);
+                ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, byte[].class);
+                return response.getBody();
+            };
+
+            builder.POST("/file/preview/onlyoffice/callback", request -> {
+                MultiValueMap<String, String> params = request.params();
+                Integer status = 0;
+                if (params.containsKey("status"))
+                    status = Integer.parseInt(Objects.requireNonNull(params.getFirst("status")));
+                if (status == 2 || status == 3) {
+                    String id = params.getFirst("id");
+                    // 取回修改后文件
+                    byte[] fileBytes = downloadFunction.apply(params.getFirst("url"));
+                    // 变更记录下载
+                    byte[] changeBytes = downloadFunction.apply(params.getFirst("changesurl"));
+                }
+                return ServerResponse.ok().body("{\"error\":0}");
+            });
+        }
 
         return builder.build();
     }
@@ -143,14 +170,14 @@ public class OfficeConfiguration {
         return registration;
     }*/
 
-    @Bean
+    /*@Bean
     @ConditionalOnExpression("#{'only'.equals(environment['file.preview.officeConverter'])}")
     public ServletRegistrationBean<OnlyOfficeCallbackServlet> filePreviewCallbackServlet(FilePreviewService filePreviewService) {
         ServletRegistrationBean<OnlyOfficeCallbackServlet> registration = new ServletRegistrationBean<>();
         registration.setServlet(new OnlyOfficeCallbackServlet(filePreviewService));
         registration.addUrlMappings("/file/preview/onlyoffice/callback");
         return registration;
-    }
+    }*/
 
     @Bean
     public ServletRegistrationBean<DeleteServlet> filePreviewDeleteServlet(FilePreviewService filePreviewService) {

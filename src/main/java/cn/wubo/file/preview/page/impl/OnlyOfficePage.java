@@ -54,14 +54,12 @@ public class OnlyOfficePage extends AbstractPage {
         editorConfig.put("user", user);
         config.put("editorConfig", editorConfig);
 
-
         String secret = getProperties().getOnlyOffice().getSecret();
         if (StringUtils.hasText(secret)) {
             Signer signer = HMACSigner.newSHA256Signer(secret);
             JWT jwt = new JWT();
-            for (String key : config.keySet()) {
-                jwt.addClaim(key, config.get(key));
-            }
+            for (Map.Entry<String, Object> entry : config.entrySet())
+                jwt.addClaim(entry.getKey(), entry.getValue());
             config.put("token", JWT.getEncoder().encode(jwt, signer));
         }
 

@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 
 public class FileUtils {
 
+    private FileUtils() {
+    }
+
     /**
      * 特殊后缀
      */
