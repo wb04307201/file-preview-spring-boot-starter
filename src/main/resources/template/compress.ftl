@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Compressed File</title>
-    <link rel="stylesheet" type="text/css" href="${contextPath}/bootstrap/5.3.1/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="${contextPath}/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
-
-    <link href="${contextPath}/layui/2.8.18/layui.css" rel="stylesheet">
+    <link href="${contextPath}/layui/2.8.18/css/layui.css" rel="stylesheet">
     <script src="${contextPath}/layui/2.8.18/layui.js"></script>
 </head>
 <body>
