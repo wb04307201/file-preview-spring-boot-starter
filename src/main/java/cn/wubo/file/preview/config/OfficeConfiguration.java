@@ -2,6 +2,7 @@ package cn.wubo.file.preview.config;
 
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
+import cn.wubo.file.preview.exception.PageRuntimeException;
 import cn.wubo.file.preview.exception.PreviewRuntimeException;
 import cn.wubo.file.preview.exception.RecordRuntimeException;
 import cn.wubo.file.preview.exception.StorageRuntimeException;
@@ -15,6 +16,7 @@ import cn.wubo.file.preview.record.impl.MemFilePreviewRecordImpl;
 import cn.wubo.file.preview.storage.IFileStorage;
 import cn.wubo.file.preview.storage.impl.LocalFileStorageImpl;
 import cn.wubo.file.preview.utils.FileUtils;
+import cn.wubo.file.preview.utils.IoUtils;
 import cn.wubo.file.preview.utils.PageUtils;
 import com.spire.doc.Document;
 import com.spire.presentation.Presentation;
@@ -29,11 +31,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.function.*;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -153,8 +158,16 @@ public class OfficeConfiguration {
         }).GET("/file/preview/download", request -> {
             String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException("请求参数id丢失!"));
             FilePreviewInfo info = filePreviewService.findById(id);
+            byte[] bytes = filePreviewService.getBytes(info);
             try (InputStream is = new ByteArrayInputStream(filePreviewService.getBytes(info))) {
-                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).body(is);
+                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).build((res, req) -> {
+                    try (OutputStream os = req.getOutputStream()) {
+                        IoUtils.writeToStream(bytes, os);
+                    } catch (IOException e) {
+                        throw new PageRuntimeException(e.getMessage(), e);
+                    }
+                    return new ModelAndView();
+                });
             }
         });
 

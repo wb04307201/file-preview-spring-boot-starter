@@ -7,14 +7,13 @@ import cn.wubo.file.preview.exception.PageRuntimeException;
 import cn.wubo.file.preview.utils.FileUtils;
 import cn.wubo.file.preview.utils.IoUtils;
 import cn.wubo.file.preview.utils.PageUtils;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.Data;
 import org.springframework.http.MediaType;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.function.ServerResponse;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -53,8 +52,16 @@ public abstract class AbstractPage implements IPage {
     }
 
     protected ServerResponse commonOutputStream() {
-        try (InputStream is = new ByteArrayInputStream(filePreviewService.getBytes(info))) {
-            return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(getInfo().getFileName()))).body(is);
+        byte[] bytes = filePreviewService.getBytes(info);
+        try {
+            return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(getInfo().getFileName()))).contentLength(bytes.length).build((res, req) -> {
+                try (OutputStream os = req.getOutputStream()) {
+                    IoUtils.writeToStream(bytes, os);
+                } catch (IOException e) {
+                    throw new PageRuntimeException(e.getMessage(), e);
+                }
+                return new ModelAndView();
+            });
         } catch (IOException e) {
             throw new PageRuntimeException(e.getMessage(), e);
         }
@@ -64,7 +71,7 @@ public abstract class AbstractPage implements IPage {
         try {
             return IoUtils.readLines(getFilePreviewService().getBytes(getInfo()), getInfo().getFileName());
         } catch (IOException e) {
-            throw new PageRuntimeException(e.getMessage(),e);
+            throw new PageRuntimeException(e.getMessage(), e);
         }
     }
 }
