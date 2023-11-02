@@ -15,94 +15,77 @@
         <div id="compress-tree"></div>
     </div>
     <div class="layui-body">
-        <table class="table table-bordered table-striped table-sm">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">文件名</th>
-                <th scope="col">类型</th>
-                <th scope="col">预览</th>
-                <th scope="col">下载</th>
-            </tr>
-            </thead>
-            <tbody>
-            <#if list?? && (list?size > 0)>
-                <#list list as row>
-                    <tr>
-                        <th scope="row">${row_index + 1}</th>
-                        <td>${row.fileName}</td>
-                        <td>${(row.fileType == 'directory')?string('文件夹','文件')}</td>
-                        <td>${(row.fileType == 'directory')?string('-','待实现')}</td>
-                        <td>${(row.fileType == 'directory')?string('-','待实现')}</td>
-                    </tr>
-                </#list>
-            </#if>
-            </tbody>
+        <table class="layui-hide" id="compress-table" lay-filter="compress-table">
         </table>
     </div>
 </div>
 <script>
-    let tree = layui.tree;
-    let treeData = [
+    const tree = layui.tree;
+    const table = layui.table;
+    const data = [
         <#list list as row>
-        {"fileName": ${row.fileName}, "fileType": ${row.fileType}},
+        {fileName: "${row.fileName}", fileType: "${row.fileType}", id: "id"},
         </#list>
     ]
 
-    console.log("treeData", treeData)
-
     function buildTree(parent, deep) {
-        if ("根目录" === parent.name)
-            parent.children = treeData.filter(item => item.fileType === "directory" && item.split("/").length === deep + 1).map(item => {
-                return buildTree(item, deep + 1)
+        if ("根目录" === parent.title)
+            parent.children = data.filter(item => item.fileType === "directory" && item.fileName.split("/").length === deep + 2).map(item => {
+                return buildTree({title: item.fileName, id: item.id}, deep + 1)
             })
         else
-            parent.children = treeData.filter(item => item.fileType === "directory" && item.fileName.startsWith(parent.fileName) && item.split("/").length === deep + 1).map(item => {
-                return buildTree(item, deep + 1)
+            parent.children = data.filter(item => item.fileType === "directory" && item.fileName.startsWith(parent.fileName) && item.fileName.split("/").length === deep + 2).map(item => {
+                return buildTree({title: item.fileName, id: item.id}, deep + 1)
             })
         return parent;
     }
 
+    function buildData(title) {
+        if ("根目录" === title) {
+            return data.filter(item => item.fileType === "file").map(item => {
+                return {...item, preview: "待实现", download: "待实现"}
+            })
+        } else {
+            return data.filter(item => item.fileType === "file" && item.fileName.startsWith(title)).map(item => {
+                return {...item, preview: "待实现", download: "待实现"}
+            })
+        }
+    }
+
     layui.use(function () {
-        let root = {
-            title: '根节点',
-            id: 1,
-            children: []
-        }
-
-        buildTree(parent, deep)
-        {
-
-            if ("根目录" === parent.name) {
-                parent.children = list.filter(item => item.split("/").length == deep + 1).map(item => buildTree(item, deep + 1)
-            } else {
-                parent.children = list.filter(item => item.startWith(parent.fileName) && item.split("/").length == deep + 1).map(item => buildTree(item, deep + 1)
-            }
-
-            return parent;
-        }
-
-        treeData.filter(item => item.fileType === 'directory');
-
-        // 模拟数据
-        var data = [{
-            title: '江西',
-            id: 1,
-            children: [{
-                title: '南昌',
-                id: 1000,
-                children: [{title: '青山湖区', id: 10001}, {title: '高新区', id: 10002}]
-            }, {title: '九江', id: 1001}, {title: '赣州', id: 1002}]
-        }, {title: '广西', id: 2, children: [{title: '南宁', id: 2000}, {title: '桂林', id: 2001}]}, {
-            title: '陕西',
-            id: 3,
-            children: [{title: '西安', id: 3000}, {title: '延安', id: 3001}]
-        }, {title: '山西', id: 3, children: [{title: '太原', id: 4000}, {title: '长治', id: 4001}]}];
+        let treeData = buildTree({
+            title: '根目录',
+            id: "root",
+            spread: true,
+        }, 0)
         // 渲染
         tree.render({
             elem: '#compress-tree',
-            data: data,
-            showLine: false  // 是否开启连接线
+            data: [treeData],
+            onlyIconControl: true,  // 是否仅允许节点左侧图标控制展开收缩
+            showLine: false,  // 是否开启连接线
+            click: function (obj) {
+                table.reload("compress-table", {
+                    data: buildData(obj.data.title)
+                });
+            }
+        });
+
+        table.render({
+            elem: '#compress-table',
+            cols: [[ //标题栏
+                {field: 'id', title: 'ID', width: 80},
+                {field: 'fileName', title: '文件名', minWidth: 300},
+                /*{field: 'fileType', title: '类型', width: 100},*/
+                {field: 'preview', title: '预览', width: 80},
+                {field: 'download', title: '下载', width: 80}
+            ]],
+            data: buildData("根目录"),
+            //skin: 'line', // 表格风格
+            //even: true,
+            //page: true, // 是否显示分页
+            //limits: [5, 10, 15],
+            //limit: 5 // 每页默认显示的数量
         });
     });
 </script>
