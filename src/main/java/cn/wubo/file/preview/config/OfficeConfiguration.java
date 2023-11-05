@@ -13,6 +13,7 @@ import cn.wubo.file.preview.office.impl.SpireOfficeConverter;
 import cn.wubo.file.preview.page.PageFactory;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.record.impl.MemFilePreviewRecordImpl;
+import cn.wubo.file.preview.render.IRenderPage;
 import cn.wubo.file.preview.storage.IFileStorage;
 import cn.wubo.file.preview.storage.impl.LocalFileStorageImpl;
 import cn.wubo.file.preview.utils.FileUtils;
@@ -29,6 +30,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
@@ -96,8 +98,11 @@ public class OfficeConfiguration {
         return new FilePreviewService(officeConverter, fileStorage, filePreviewRecord);
     }
 
+    private static final String FILE_PREVIEW_LIST = "/file/preview/list";
+    private static final String LOST_ID = "请求参数id丢失!";
+
     @Bean("wb04307201_file_preview_router")
-    public RouterFunction<ServerResponse> filePreviewRouter(FilePreviewService filePreviewService) {
+    public RouterFunction<ServerResponse> filePreviewRouter(FilePreviewService filePreviewService, List<IRenderPage> renderPages) {
         BiFunction<ServerRequest, FilePreviewService, ServerResponse> listFunction = (request, service) -> {
             String contextPath = request.requestPath().contextPath().value();
             FilePreviewInfo filePreviewInfo = new FilePreviewInfo();
@@ -118,13 +123,16 @@ public class OfficeConfiguration {
         };
 
         BiFunction<ServerRequest, FilePreviewService, ServerResponse> previewFunction = (request, service) -> {
-            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException("请求参数id丢失!"));
+            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
             FilePreviewInfo info = filePreviewService.findById(id);
+            if (!CollectionUtils.isEmpty(renderPages))
+                renderPages.stream().filter(rp -> rp.support(filePreviewService, info)).findAny().ifPresent(rp -> rp.render(filePreviewService, info));
+
             String contextPath = request.requestPath().contextPath().value();
             return PageFactory.create(info, filePreviewService, properties, contextPath).build();
         };
 
-        RouterFunctions.Builder builder = RouterFunctions.route().GET("/file/preview/list", RequestPredicates.accept(MediaType.TEXT_HTML), request -> listFunction.apply(request, filePreviewService)).POST("/file/preview/list", RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED), request -> listFunction.apply(request, filePreviewService)).GET("/file/preview", request -> previewFunction.apply(request, filePreviewService));
+        RouterFunctions.Builder builder = RouterFunctions.route().GET(FILE_PREVIEW_LIST, RequestPredicates.accept(MediaType.TEXT_HTML), request -> listFunction.apply(request, filePreviewService)).POST(FILE_PREVIEW_LIST, RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED), request -> listFunction.apply(request, filePreviewService)).GET("/file/preview", request -> previewFunction.apply(request, filePreviewService));
 
         if ("only".equals(properties.getOfficeConverter())) {
             Function<String, byte[]> downloadFunction = url -> {
@@ -152,11 +160,11 @@ public class OfficeConfiguration {
         }
 
         builder.GET("/file/preview/delete", request -> {
-            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException("请求参数id丢失!"));
+            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
             filePreviewService.delete(id);
-            return ServerResponse.permanentRedirect(new URI(request.requestPath().contextPath().value() + "/file/preview/list")).build();
+            return ServerResponse.permanentRedirect(new URI(request.requestPath().contextPath().value() + FILE_PREVIEW_LIST)).build();
         }).GET("/file/preview/download", request -> {
-            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException("请求参数id丢失!"));
+            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
             FilePreviewInfo info = filePreviewService.findById(id);
             byte[] bytes = filePreviewService.getBytes(info);
             try (InputStream is = new ByteArrayInputStream(filePreviewService.getBytes(info))) {

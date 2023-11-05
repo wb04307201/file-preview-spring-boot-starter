@@ -6,7 +6,6 @@ import cn.wubo.file.preview.utils.FileUtils;
 import cn.wubo.file.preview.utils.IoUtils;
 import org.jodconverter.core.DocumentConverter;
 import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.InputStream;
 import java.io.OutputStream;
