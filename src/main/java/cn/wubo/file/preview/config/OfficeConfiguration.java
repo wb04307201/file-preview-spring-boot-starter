@@ -43,10 +43,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -125,7 +122,11 @@ public class OfficeConfiguration {
         BiFunction<ServerRequest, FilePreviewService, ServerResponse> previewFunction = (request, service) -> {
             String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
             FilePreviewInfo info = filePreviewService.findById(id);
-            if (!CollectionUtils.isEmpty(renderPages))
+            if (!CollectionUtils.isEmpty(renderPages)){
+                Optional<IRenderPage> optionalIRenderPage = renderPages.stream().filter(rp -> rp.support(filePreviewService, info)).findAny();
+                if(optionalIRenderPage.isPresent())
+                    return optionalIRenderPage.get().render(filePreviewService, info);
+            }
                 renderPages.stream().filter(rp -> rp.support(filePreviewService, info)).findAny().ifPresent(rp -> rp.render(filePreviewService, info));
 
             String contextPath = request.requestPath().contextPath().value();

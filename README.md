@@ -31,7 +31,7 @@
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.1.12</version>
+    <version>1.1.13</version>
 </dependency>
 ```
 
@@ -379,6 +379,32 @@ public class MinIOFileStorageImpl implements IFileStorage {
 
 *注意：
 文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
+
+## 其他5：自定义预览界面渲染
+在实际使用minio作为对象存储，想直接使用minio的url播放视频  
+可通过集成IRenderPage并实现support和render方法的方式自定义页面渲染的方式
+```java
+@Service
+public class MinIORenderPage implements IRenderPage {
+    @Override
+    public Boolean support(FilePreviewService filePreviewService, FilePreviewInfo filePreviewInfo) {
+        if ("life goes on.mp4".equals(filePreviewInfo.getOriginalFilename())) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    @Override
+    public ServerResponse render(FilePreviewService filePreviewService, FilePreviewInfo filePreviewInfo) {
+        try {
+            return ServerResponse.permanentRedirect(new URI("http://127.0.0.1:9000/testfilestorage/temp/preview/50236952-e8c5-4e67-afe9-ff39e3eac8ca.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=MJC7FWTK56VPHS6SUZQL%2F20231106%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231106T004949Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJNSkM3RldUSzU2VlBIUzZTVVpRTCIsImV4cCI6MTY5OTI3NDk3NiwicGFyZW50IjoiUk9PVFVTRVIifQ.DHAPkWUuPpy7-EVcQOh9VN6FOIbtsZiIX5THR3n7ds72zRpn9EY23BdCqf1wBYwjOel9a8IHF3qi-6z0PAAC0g&X-Amz-SignedHeaders=host&versionId=null&X-Amz-Signature=acf50009a980667d5084236bcb4993a42a57b2419b0ec1955f5eef8f2e7f982c")).build();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+```
+
 
 ## 待办
 
