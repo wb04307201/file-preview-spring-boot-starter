@@ -147,7 +147,12 @@ file:
 
 ```bash
 #安装并启动docker版本lool
-docker run --name lool -e “username=admin” -e “password=123456” -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
+docker run --name lool -e "username=admin" -e "password=123456" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
+docker run --name lool -e "username=admin" -e "password=123456" -e "extra_params=--o:ssl.enable=false" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
+docker run --name lool -e “username=admin” -e “password=123456” -e 'domain=10.133.61.38' -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 -d libreoffice/online:master
+docker run --name lool -e “username=admin” -e “password=123456” -e 'domain=10.133.61.38:8090' -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 -d libreoffice/online:master
+
+https://ralph.blog.imixs.com/2021/05/07/libreoffice-online-how-to-integrate/
 
 #复制配置文件
 docker cp lool:/etc/loolwsd/loolwsd.xml D:/lool/
@@ -161,7 +166,7 @@ docker cp lool:/etc/loolwsd/loolwsd.xml D:/lool/
 #将配置文件复制回容器
 docker cp D:/lool/loolwsd.xml lool:/etc/loolwsd/
 
-#重启look容器
+#重启lool容器
 ```
 
 > 容器启动成功后，打开https://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面

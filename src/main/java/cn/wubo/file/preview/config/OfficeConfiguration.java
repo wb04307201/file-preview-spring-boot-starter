@@ -37,9 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.function.*;
 import org.springframework.web.util.HtmlUtils;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -122,12 +120,11 @@ public class OfficeConfiguration {
         BiFunction<ServerRequest, FilePreviewService, ServerResponse> previewFunction = (request, service) -> {
             String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
             FilePreviewInfo info = filePreviewService.findById(id);
-            if (!CollectionUtils.isEmpty(renderPages)){
+            if (!CollectionUtils.isEmpty(renderPages)) {
                 Optional<IRenderPage> optionalIRenderPage = renderPages.stream().filter(rp -> rp.support(filePreviewService, info)).findAny();
-                if(optionalIRenderPage.isPresent())
-                    return optionalIRenderPage.get().render(filePreviewService, info);
+                if (optionalIRenderPage.isPresent()) return optionalIRenderPage.get().render(filePreviewService, info);
             }
-                renderPages.stream().filter(rp -> rp.support(filePreviewService, info)).findAny().ifPresent(rp -> rp.render(filePreviewService, info));
+            renderPages.stream().filter(rp -> rp.support(filePreviewService, info)).findAny().ifPresent(rp -> rp.render(filePreviewService, info));
 
             String contextPath = request.requestPath().contextPath().value();
             return PageFactory.create(info, filePreviewService, properties, contextPath).build();
@@ -158,6 +155,29 @@ public class OfficeConfiguration {
                 }
                 return ServerResponse.ok().body("{\"error\":0}");
             });
+        } else if ("lool".equals(properties.getOfficeConverter())) {
+            builder.GET("/wopi/files/{id}", request -> {
+                String id = request.pathVariable("id");
+                FilePreviewInfo info = filePreviewService.findById(id);
+                byte[] bytes = filePreviewService.getBytes(info);
+                Map<String, Object> map = new HashMap<>();
+                //{ "BaseFileName": "test.txt", "Size": 11 }
+                map.put("BaseFileName", info.getFileName());
+                map.put("Size", bytes.length);
+                return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(map);
+            }).GET("/wopi/files/{id}/contents", request -> {
+                String id = request.pathVariable("id");
+                FilePreviewInfo info = filePreviewService.findById(id);
+                byte[] bytes = filePreviewService.getBytes(info);
+                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).build((res, req) -> {
+                    try (OutputStream os = req.getOutputStream()) {
+                        IoUtils.writeToStream(bytes, os);
+                    } catch (IOException e) {
+                        throw new PageRuntimeException(e.getMessage(), e);
+                    }
+                    return new ModelAndView();
+                });
+            });
         }
 
         builder.GET("/file/preview/delete", request -> {
@@ -168,16 +188,14 @@ public class OfficeConfiguration {
             String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
             FilePreviewInfo info = filePreviewService.findById(id);
             byte[] bytes = filePreviewService.getBytes(info);
-            try (InputStream is = new ByteArrayInputStream(filePreviewService.getBytes(info))) {
-                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).build((res, req) -> {
-                    try (OutputStream os = req.getOutputStream()) {
-                        IoUtils.writeToStream(bytes, os);
-                    } catch (IOException e) {
-                        throw new PageRuntimeException(e.getMessage(), e);
-                    }
-                    return new ModelAndView();
-                });
-            }
+            return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).build((res, req) -> {
+                try (OutputStream os = req.getOutputStream()) {
+                    IoUtils.writeToStream(bytes, os);
+                } catch (IOException e) {
+                    throw new PageRuntimeException(e.getMessage(), e);
+                }
+                return new ModelAndView();
+            });
         });
 
         return builder.build();
