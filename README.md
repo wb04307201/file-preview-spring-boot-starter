@@ -149,8 +149,10 @@ file:
 #安装并启动docker版本lool
 docker run --name lool -e "username=admin" -e "password=123456" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
 docker run --name lool -e "username=admin" -e "password=123456" -e "extra_params=--o:ssl.enable=false" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
-docker run --name lool -e “username=admin” -e “password=123456” -e 'domain=10.133.61.38' -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 -d libreoffice/online:master
-docker run --name lool -e “username=admin” -e “password=123456” -e 'domain=10.133.61.38:8090' -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 -d libreoffice/online:master
+docker run --name lool -e "username=admin" -e "password=123456" -e 'domain=192\\.168\\.31\\.216' -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 -d libreoffice/online:master
+docker run --name lool -e "username=admin" -e "password=123456" -e 'domain=10.133.61.38:8090' -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 -d libreoffice/online:master
+
+https://localhost:9980/{libreoffice-editor}.html?WOPISrc=http://wopi-app:8080/api/wopi/files/{your-file}
 
 https://ralph.blog.imixs.com/2021/05/07/libreoffice-online-how-to-integrate/
 
@@ -167,6 +169,11 @@ docker cp lool:/etc/loolwsd/loolwsd.xml D:/lool/
 docker cp D:/lool/loolwsd.xml lool:/etc/loolwsd/
 
 #重启lool容器
+
+code
+docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasgroup1=http://192.168.31.216:8090" -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 collabora/code
+http://127.0.0.1:9980/browser/dist/cool.html?WOPISrc=http://192.168.31.216:8090/wopi/files/5ff00d9e-4e0e-41ef-94a2-c88582a89792
+docker cp lool:/etc/coolwsd/coolwsd.xml D:/lool/
 ```
 
 > 容器启动成功后，打开https://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
