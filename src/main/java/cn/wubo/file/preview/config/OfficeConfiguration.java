@@ -72,7 +72,7 @@ public class OfficeConfiguration {
     }
 
     @Bean
-    @ConditionalOnExpression("'only'.equals('${file.preview.officeConverter}') || 'lool'.equals('${file.preview.officeConverter}')")
+    @ConditionalOnExpression("'only'.equals('${file.preview.officeConverter}') || 'lool'.equals('${file.preview.officeConverter}') || 'cool'.equals('${file.preview.officeConverter}')")
     public IOfficeConverter noneConverter() {
         return new NoneConverter();
     }
@@ -155,13 +155,12 @@ public class OfficeConfiguration {
                 }
                 return ServerResponse.ok().body("{\"error\":0}");
             });
-        } else if ("lool".equals(properties.getOfficeConverter())) {
+        } else if ("cool".equals(properties.getOfficeConverter())) {
             builder.GET("/wopi/files/{id}", request -> {
                 String id = request.pathVariable("id");
                 FilePreviewInfo info = filePreviewService.findById(id);
                 byte[] bytes = filePreviewService.getBytes(info);
                 Map<String, Object> map = new HashMap<>();
-                //{ "BaseFileName": "test.txt", "Size": 11 }
                 map.put("BaseFileName", info.getFileName());
                 map.put("Size", bytes.length);
                 return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(map);

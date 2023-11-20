@@ -11,4 +11,5 @@ public class FilePreviewProperties {
     private String fileStorage = "cn.wubo.file.preview.storage.impl.LocalFileStorageImpl";
     private OnlyOfficeProperties onlyOffice = new OnlyOfficeProperties();
     private LibreOfficeProperties libreOffice = new LibreOfficeProperties();
+    private CollaboraProperties collabora = new CollaboraProperties();
 }

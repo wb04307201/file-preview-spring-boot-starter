@@ -31,7 +31,7 @@
                             <td>${row.fileName!'-'}</td>
                             <td>${row.filePath!'-'}</td>
                             <td><a href="${contextPath}/file/preview/delete?id=${row.id}" class="link-primary">@删除</a></td>
-                            <td><a href="${contextPath}/file/preview?id=${row.id}" class="link-primary">@预览</a></td>
+                            <td><a href="${contextPath}/file/preview?id=${row.id}" rel="noopener" target="_blank" class="link-primary">@预览</a></td>
                             <td><a href="${contextPath}/file/preview/download?id=${row.id}" class="link-primary">@下载</a></td>
                         </tr>
                     </#list>

@@ -31,7 +31,7 @@
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.1.13</version>
+    <version>1.1.14</version>
 </dependency>
 ```
 
@@ -63,7 +63,7 @@ public class FilePreviewDemoApplication {
     FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
 ```
 
-### 在针对word，excel，ppt文件的处理上，支持3种模式
+### 在针对word，excel，ppt文件的预览上支持5种模式
 
 #### jodconverter
 
@@ -139,7 +139,7 @@ file:
 
 ```
 
-#### libreoffice online
+#### LibreOffice Online
 
 > 使用[libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/)将不对office文件进行转换    
 > 直接预览word,excel,ppt,文本类型的文件  
@@ -147,47 +147,55 @@ file:
 
 ```bash
 #安装并启动docker版本lool
-docker run --name lool -e "username=admin" -e "password=123456" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
-docker run --name lool -e "username=admin" -e "password=123456" -e "extra_params=--o:ssl.enable=false" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
-docker run --name lool -e "username=admin" -e "password=123456" -e 'domain=192\\.168\\.31\\.216' -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 -d libreoffice/online:master
-docker run --name lool -e "username=admin" -e "password=123456" -e 'domain=10.133.61.38:8090' -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 -d libreoffice/online:master
+docker run --name lool -e "username=admin" -e "password=123456" -e "extra_params=--o:ssl.enable=false --o:storage.filesystem[@allow]=true" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
+-e "extra_params=--o:ssl.enable=false --o:storage.filesystem[@allow]=true"
 
-https://localhost:9980/{libreoffice-editor}.html?WOPISrc=http://wopi-app:8080/api/wopi/files/{your-file}
-
-https://ralph.blog.imixs.com/2021/05/07/libreoffice-online-how-to-integrate/
-
-#复制配置文件
-docker cp lool:/etc/loolwsd/loolwsd.xml D:/lool/
-
-#修改配置文件允许读取本地
-<filesystem allow="false" />  -> <filesystem allow="true" /> 
-
-#根据环境修改配置文件选择是否启动ssl
-<enable type="bool" desc="Controls whether SSL encryption between browser and loolwsd is enabled (do not disable for production deployment). If default is false, must first be compiled with SSL support to enable." default="true">false</enable>
-
-#将配置文件复制回容器
-docker cp D:/lool/loolwsd.xml lool:/etc/loolwsd/
-
-#重启lool容器
-
-code
-docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasgroup1=http://192.168.31.216:8090" -e "extra_params=--o:ssl.enable=false --o:net.post_allow.host[0]=.{1,99}" -p 9980:9980 collabora/code
-http://127.0.0.1:9980/browser/dist/cool.html?WOPISrc=http://192.168.31.216:8090/wopi/files/5ff00d9e-4e0e-41ef-94a2-c88582a89792
-docker cp lool:/etc/coolwsd/coolwsd.xml D:/lool/
+# extra_params=--o:ssl.enable=false 关闭ssl
+# --o:storage.filesystem[@allow]=true 允许读取本地文件
 ```
 
-> 容器启动成功后，打开https://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
+> 容器启动成功后，打开http://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
 > ![img_18.png](img_18.png)
 > docker版本的lool安装成功后，在项目中添加配置信息
 
 ```yaml
 file:
   preview:
-    # 使用lool模式
+    # 使用LibreOffice Online模式
     officeConverter: lool
-    libreoffice:
+    collabora:
       domain: http://ip:port  #libreoffice online服务所在地址
-      storage: D:\lool #libreoffice online预览文件存储位置
+      download: D:\lool #libreoffice online预览文件存储位置
+```
+
+#### Collabora Online
+
+> 使用[Collabora Online](https://www.collaboraoffice.com/)将不对office文件进行转换    
+> 直接预览word,excel,ppt,文本类型的文件  
+> 可以通过docker快速安装Collabora Online，命令如下
+
+```bash
+docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasgroup1=http://192.168.31.216:8090" -e "extra_params=--o:ssl.enable=false" -p 9980:9980 collabora/code
+
+# extra_params=--o:ssl.enable=false 关闭ssl
+# aliasgroup1=http://192.168.31.216:8090 配置允许wopi访问地址
+
+http://127.0.0.1:9980/browser/dist/cool.html?WOPISrc=http://192.168.31.216:8090/wopi/files/5ff00d9e-4e0e-41ef-94a2-c88582a89792
+```
+
+> 容器启动成功后，打开http://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
+> ![img_18.png](img_18.png)
+> docker版本的cool安装成功后，在项目中添加配置信息
+
+
+```yaml
+file:
+  preview:
+    # 使用Collabora Online模式
+    officeConverter: ccol
+    collabora:
+      domain: http://ip:port  #Collabora Online服务所在地址
+      storageDomain: http://ip:port #当前服务的域名，用于Collabora Online从当前服务下载文件
 ```
 
 ## 第六步 预览文件信息
@@ -203,6 +211,7 @@ file:
 | word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       | <img src="img_20.png" width="30%" height="30%"><img src="img_19.png" width="30%" height="30%"><img src="img_21.png" width="30%" height="30%"> |
 | word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                                     | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%">    |
 | word/excel/ppt | [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/) | <img src="img_16.png" width="30%" height="30%"><img src="img_15.png" width="30%" height="30%"><img src="img_17.png" width="30%" height="30%"> |
+| word/excel/ppt | [Collabora Online](https://www.collaboraoffice.com/)                             | <img src="img_24.png" width="30%" height="30%"><img src="img_23.png" width="30%" height="30%"><img src="img_25.png" width="30%" height="30%"> |
 | pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
 | audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                                |
 | video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                                |
@@ -420,7 +429,7 @@ public class MinIORenderPage implements IRenderPage {
 
 ## 待办
 
-- [ ] *查看压缩文件的列表时，改成树结构展示*
+- [ ] *LibreOffice Online WOPI方式*
 
 - [ ] *查看压缩文件的列表时，可对其中的文件进行预览和下载*
 

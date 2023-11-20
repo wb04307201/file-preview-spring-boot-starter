@@ -26,6 +26,8 @@ public class PageFactory {
                 clazz = PageType.getClass("only");
             } else if ("lool".equals(properties.getOfficeConverter()) && OFFICE_FILE_TYPES.contains(fileType)) {
                 clazz = PageType.getClass("lool");
+            } else if ("cool".equals(properties.getOfficeConverter()) && OFFICE_FILE_TYPES.contains(fileType)) {
+                clazz = PageType.getClass("cool");
             } else {
                 clazz = PageType.getClass(fileType);
             }

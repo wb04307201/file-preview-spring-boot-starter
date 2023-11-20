@@ -7,7 +7,7 @@ import java.util.Map;
 
 public enum PageType {
 
-    Markdown(MarkdownPage.class), Code(CodePage.class), Epub(EpubPage.class), Video(VideoPage.class), Audio(AudioPage.class), Xmind(XmindPage.class), Pdf(PdfPage.class), Only(OnlyOfficePage.class), Lool(LoolPage.class), Compress(CompressPage.class),
+    Markdown(MarkdownPage.class), Code(CodePage.class), Epub(EpubPage.class), Video(VideoPage.class), Audio(AudioPage.class), Xmind(XmindPage.class), Pdf(PdfPage.class), Only(OnlyOfficePage.class), Lool(LoolPage.class), Cool(CoolPage.class), Compress(CompressPage.class),
     ;
 
     private static final String[] CODES = {"sql", "cpp", "java", "xml", "javascript", "json", "css", "python"};
@@ -25,6 +25,7 @@ public enum PageType {
         PREVIEW_TYPE_MAPPER.put("pdf", PageType.Pdf);
         PREVIEW_TYPE_MAPPER.put("only", PageType.Only);
         PREVIEW_TYPE_MAPPER.put("lool", PageType.Lool);
+        PREVIEW_TYPE_MAPPER.put("cool", PageType.Cool);
         PREVIEW_TYPE_MAPPER.put("compressed file", PageType.Compress);
     }
 
