@@ -175,18 +175,15 @@ file:
 > 可以通过docker快速安装Collabora Online，命令如下
 
 ```bash
-docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasgroup1=http://192.168.31.216:8090" -e "extra_params=--o:ssl.enable=false" -p 9980:9980 collabora/code
+docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasgroup1=http://10.133.61.38:8090" -e "extra_params=--o:ssl.enable=false" -p 9980:9980 collabora/code
 
 # extra_params=--o:ssl.enable=false 关闭ssl
-# aliasgroup1=http://192.168.31.216:8090 配置允许wopi访问地址
-
-http://127.0.0.1:9980/browser/dist/cool.html?WOPISrc=http://192.168.31.216:8090/wopi/files/5ff00d9e-4e0e-41ef-94a2-c88582a89792
+# aliasgroup1=http://10.133.61.38:8090 配置允许wopi访问地址
 ```
 
 > 容器启动成功后，打开http://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
 > ![img_18.png](img_18.png)
 > docker版本的cool安装成功后，在项目中添加配置信息
-
 
 ```yaml
 file:
