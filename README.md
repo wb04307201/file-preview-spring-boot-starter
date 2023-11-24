@@ -164,7 +164,7 @@ file:
     officeConverter: lool
     libreoffice:
       domain: http://ip:port  #libreoffice online服务所在地址
-      download: D:\lool #libreoffice online预览文件存储位置
+      download: D:\lool #libreoffice online预览文件存储位置，需要和上面docker创建的容器映射到本地的目录一致
 ```
 
 #### Collabora Online
