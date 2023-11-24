@@ -148,7 +148,6 @@ file:
 ```bash
 #安装并启动docker版本lool
 docker run --name lool -e "username=admin" -e "password=123456" -e "extra_params=--o:ssl.enable=false --o:storage.filesystem[@allow]=true" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
--e "extra_params=--o:ssl.enable=false --o:storage.filesystem[@allow]=true"
 
 # extra_params=--o:ssl.enable=false 关闭ssl
 # --o:storage.filesystem[@allow]=true 允许读取本地文件
