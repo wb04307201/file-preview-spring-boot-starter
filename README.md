@@ -162,7 +162,7 @@ file:
   preview:
     # 使用LibreOffice Online模式
     officeConverter: lool
-    collabora:
+    libreoffice:
       domain: http://ip:port  #libreoffice online服务所在地址
       download: D:\lool #libreoffice online预览文件存储位置
 ```
