@@ -10,7 +10,8 @@
 > 可通过简单的配置即可集成到springboot中  
 > 支持word、excel、ppt、pdf、图片、视频、音频、markdown、代码、网页、epub电子书、Xmind脑图、压缩文件等格式文件的在线预览
 
-## [代码示例](https://gitee.com/wb04307201/file-preview-demo)
+## 代码示例
+1. 使用[文档在线预览](https://gitee.com/wb04307201/file-preview-spring-boot-starter)、[多平台文件存储](https://gitee.com/wb04307201/file-storage-spring-boot-starter)、[实体SQL工具类](https://gitee.com/wb04307201/sql-util)实现的[文件预览Demo](https://gitee.com/wb04307201/file-preview-demo)
 
 ## 第一步 增加 JitPack 仓库
 
