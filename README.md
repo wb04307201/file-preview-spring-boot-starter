@@ -26,7 +26,7 @@
 ```
 
 ## 第二步 引入jar
-1.1.7版本后groupId更换为com.github.wb04307201
+1.1.7版本后groupId更换为com.github.wb04307201  
 1.2.0版本后升级到jdk 17 SpringBoot 3.2.0
 ```xml
 <dependency>
