@@ -25,13 +25,13 @@
 ```
 
 ## 第二步 引入jar
-*1.1.7版本后，groupId更换为com.github.wb04307201*
-
+1.1.7版本后groupId更换为com.github.wb04307201
+1.2.0版本后升级到jdk 17 SpringBoot 3.2.0
 ```xml
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.1.14</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -180,7 +180,7 @@ docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasg
 # aliasgroup1=http://10.133.61.38:8090 配置允许wopi访问地址
 ```
 
-> 容器启动成功后，打开http://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
+> 容器启动成功后，打开http://127.0.0.1:9980/browser/dist/admin/admin.html可以看到控制台界面
 > ![img_18.png](img_18.png)
 > docker版本的cool安装成功后，在项目中添加配置信息
 
@@ -188,7 +188,7 @@ docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasg
 file:
   preview:
     # 使用Collabora Online模式
-    officeConverter: ccol
+    officeConverter: cool
     collabora:
       domain: http://ip:port  #Collabora Online服务所在地址
       storageDomain: http://ip:port #当前服务的域名，用于Collabora Online从当前服务下载文件

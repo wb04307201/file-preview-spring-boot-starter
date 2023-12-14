@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class MemFilePreviewRecordImpl implements IFilePreviewRecord {
 
@@ -28,11 +27,7 @@ public class MemFilePreviewRecordImpl implements IFilePreviewRecord {
 
     @Override
     public List<FilePreviewInfo> list(FilePreviewInfo filePreviewInfo) {
-        return filePreviewInfos.stream()
-                .filter(e -> !StringUtils.hasLength(filePreviewInfo.getId()) || e.getId().equals(filePreviewInfo.getId()))
-                .filter(e -> !StringUtils.hasLength(filePreviewInfo.getFileName()) || e.getFileName().contains(filePreviewInfo.getFileName()))
-                .filter(e -> !StringUtils.hasLength(filePreviewInfo.getFilePath()) || e.getFilePath().contains(filePreviewInfo.getFilePath()))
-                .collect(Collectors.toList());
+        return filePreviewInfos.stream().filter(e -> !StringUtils.hasLength(filePreviewInfo.getId()) || e.getId().equals(filePreviewInfo.getId())).filter(e -> !StringUtils.hasLength(filePreviewInfo.getFileName()) || e.getFileName().contains(filePreviewInfo.getFileName())).filter(e -> !StringUtils.hasLength(filePreviewInfo.getFilePath()) || e.getFilePath().contains(filePreviewInfo.getFilePath())).toList();
     }
 
     @Override

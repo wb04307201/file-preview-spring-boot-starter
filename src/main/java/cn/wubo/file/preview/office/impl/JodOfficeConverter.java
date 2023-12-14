@@ -21,25 +21,24 @@ public class JodOfficeConverter implements IOfficeConverter {
     public String convert(InputStream is, OutputStream os, String fileName) {
         String extName = FileUtils.extName(fileName);
         String fileType = FileUtils.fileType(extName);
-        String newFileName = fileName;
         try {
-            switch (fileType) {
-                case "word":
-                case "power point":
+            return switch (fileType) {
+                case "word", "power point" -> {
                     converter.convert(is).to(os).as(DefaultDocumentFormatRegistry.PDF).execute();
-                    newFileName = newFileName.replace(extName, "pdf");
-                    break;
-                case "excel":
+                    yield fileName.replace(extName, "pdf");
+                }
+                case "excel" -> {
                     converter.convert(is).to(os).as(DefaultDocumentFormatRegistry.HTML).execute();
-                    newFileName = newFileName.replace(extName, "html");
-                    break;
-                default:
+                    yield fileName.replace(extName, "html");
+
+                }
+                default -> {
                     IoUtils.copy(is, os);
-                    break;
-            }
+                    yield fileName;
+                }
+            };
         } catch (Exception e) {
             throw new ConvertRuntimeException(e.getMessage(), e);
         }
-        return newFileName;
     }
 }

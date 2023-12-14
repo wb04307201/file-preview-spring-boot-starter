@@ -89,112 +89,31 @@ public class FileUtils {
      * @return
      */
     public static String fileType(String extName) {
-        switch (extName.toLowerCase()) {
-            case "doc":
-            case "docm":
-            case "docx":
-            case "dot":
-            case "dotm":
-                return "word";
-            case "xls":
-            case "xlt":
-            case "xlsx":
-            case "xlsm":
-            case "xltx":
-            case "xltm":
-            case "csv":
-                return "excel";
-            case "ppt":
-            case "pot":
-            case "pps":
-            case "pptx":
-            case "pptm":
-            case "potx":
-            case "ppsx":
-            case "ppsm":
-                return "power point";
-            case "gif":
-            case "jpg":
-            case "jpeg":
-            case "bmp":
-            case "tiff":
-            case "tif":
-            case "png":
-            case "svg":
-                return "image";
-            case "ogg":
-            case "webm":
-            case "3gp":
-            case "asf":
-            case "avi":
-            case "m4u":
-            case "m4v":
-            case "mov":
-            case "mp4":
-            case "mpe":
-            case "mpeg":
-            case "mpg":
-            case "mpg4":
-                return "video";
-            case "mp3":
-            case "wav":
-            case "m4a":
-            case "m3u":
-            case "m4b":
-            case "m4p":
-            case "mp2":
-            case "mpga":
-            case "rmvb":
-            case "wma":
-            case "wmv":
-                return "audio";
-            case "zip":
-            case "rar":
-            case "7z":
-            case "gzip":
-                return "compressed file";
-            case "pdf":
-                return "pdf";
-            case "htm":
-            case "html":
-                return "html";
-            case "md":
-                return "markdown";
-            case "sql":
-                return "sql";
-            case "c":
-            case "cpp":
-            case "c++":
-            case "h":
-                return "cpp";
-            case "java":
-                return "java";
-            case "xml":
-                return "xml";
-            case "js":
-                return "javascript";
-            case "json":
-                return "json";
-            case "css":
-                return "css";
-            case "py":
-            case "py3":
-                return "python";
-            case "epub":
-                return "epub";
-            case "xmind":
-                return "xmind";
-            case "txt":
-            case "log":
-            case "conf":
-            case "prop":
-            case "rc":
-            case "sh":
-            case "yaml":
-            case "properties":
-            default:
-                return "txt";
-        }
+        return switch (extName.toLowerCase()) {
+            case "doc", "docm", "docx", "dot", "dotm" -> "word";
+            case "xls", "xlt", "xlsx", "xlsm", "xltx", "xltm", "csv" -> "excel";
+            case "ppt", "pot", "pps", "pptx", "pptm", "potx", "ppsx", "ppsm" -> "power point";
+            case "gif", "jpg", "jpeg", "bmp", "tiff", "tif", "png", "svg" -> "image";
+            case "ogg", "webm", "3gp", "asf", "avi", "m4u", "m4v", "mov", "mp4", "mpe", "mpeg", "mpg", "mpg4" ->
+                    "video";
+            case "mp3", "wav", "m4a", "m3u", "m4b", "m4p", "mp2", "mpga", "rmvb", "wma", "wmv" -> "audio";
+            case "zip", "rar", "7z", "gzip" -> "compressed file";
+            case "pdf" -> "pdf";
+            case "htm", "html" -> "html";
+            case "md" -> "markdown";
+            case "sql" -> "sql";
+            case "c", "cpp", "c++", "h" -> "cpp";
+            case "java" -> "java";
+            case "xml" -> "xml";
+            case "js" -> "javascript";
+            case "json" -> "json";
+            case "css" -> "css";
+            case "py", "py3" -> "python";
+            case "epub" -> "epub";
+            case "xmind" -> "xmind";
+            case "txt", "log", "conf", "prop", "rc", "sh", "yaml", "properties" -> "text";
+            default -> "txt";
+        };
     }
 
     /**

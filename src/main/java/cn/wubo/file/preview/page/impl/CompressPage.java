@@ -39,7 +39,7 @@ public class CompressPage extends AbstractPage {
             List<Map<String, Object>> list = new ArrayList<>();
             try (InputStream is = Files.newInputStream(path)) {
                 try (BufferedInputStream bis = new BufferedInputStream(is)) {
-                    try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
+                    try (ArchiveInputStream<ArchiveEntry> ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
                         ArchiveEntry entry;
                         AtomicInteger atomicInteger = new AtomicInteger(0);
                         while ((entry = ais.getNextEntry()) != null) {

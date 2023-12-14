@@ -34,7 +34,7 @@ public class OnlyOfficePage extends AbstractPage {
         config.put("type", "desktop");
         config.put("width", "100%");
         config.put("height", "100%");
-        config.put(DOCUMENT_TYPE, "word".equals(getFileType()) || "txt".equals(getFileType()) ? "word" : ("excel".equals(getFileType()) ? "cell" : "slide"));
+        config.put(DOCUMENT_TYPE, getDoucmentType(getFileType()));
 
         Map<String, Object> document = new HashMap<>();
         document.put("fileType", getExtName());
@@ -66,5 +66,10 @@ public class OnlyOfficePage extends AbstractPage {
         data.put("config", config);
 
         return writePage("onlyoffice.ftl", data);
+    }
+
+    private String getDoucmentType(String fileType) {
+        if ("word".equals(fileType) || "txt".equals(fileType)) return "word";
+        return "excel".equals(fileType) ? "cell" : "slide";
     }
 }
