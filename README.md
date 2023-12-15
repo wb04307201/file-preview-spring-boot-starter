@@ -14,9 +14,7 @@
 1. 使用[文档在线预览](https://gitee.com/wb04307201/file-preview-spring-boot-starter)、[多平台文件存储](https://gitee.com/wb04307201/file-storage-spring-boot-starter)、[实体SQL工具类](https://gitee.com/wb04307201/sql-util)实现的[文件预览Demo](https://gitee.com/wb04307201/file-preview-demo)
 
 ## 第一步 增加 JitPack 仓库
-
 ```xml
-
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -37,9 +35,7 @@
 ```
 
 ## 第三步 在启动类上加上`@EnableFilePreview`注解
-
 ```java
-
 @EnableFilePreview
 @SpringBootApplication
 public class FilePreviewDemoApplication {
