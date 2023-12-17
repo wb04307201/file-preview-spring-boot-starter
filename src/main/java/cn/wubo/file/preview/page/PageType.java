@@ -15,9 +15,8 @@ public enum PageType {
 
     static {
         PREVIEW_TYPE_MAPPER.put("markdown", PageType.Markdown);
-        for (String code : CODES) {
+        for (String code : CODES)
             PREVIEW_TYPE_MAPPER.put(code, PageType.Code);
-        }
         PREVIEW_TYPE_MAPPER.put("epub", PageType.Epub);
         PREVIEW_TYPE_MAPPER.put("video", PageType.Video);
         PREVIEW_TYPE_MAPPER.put("audio", PageType.Audio);

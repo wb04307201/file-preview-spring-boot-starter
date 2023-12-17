@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Audio</title>
-    <script type="text/javascript" src="${contextPath}/audio.js/1.0.1/audio.min.js"></script>
+    <script type="text/javascript" src="${contextPath}/file/preview/static/audio.js/1.0.1/audio.min.js"></script>
 </head>
 <body>
 <audio src="${url}" preload="auto" autoplay/>

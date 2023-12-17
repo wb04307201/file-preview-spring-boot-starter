@@ -69,7 +69,7 @@ public class OnlyOfficePage extends AbstractPage {
     }
 
     private String getDoucmentType(String fileType) {
-        if ("word".equals(fileType) || "txt".equals(fileType)) return "word";
+        if ("word".equals(fileType) || "text".equals(fileType)) return "word";
         return "excel".equals(fileType) ? "cell" : "slide";
     }
 }
