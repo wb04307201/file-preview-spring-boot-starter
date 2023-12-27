@@ -407,8 +407,5 @@ public class MinIORenderPage implements IRenderPage {
 
 ## 待办
 
-- ~~[ ] *LibreOffice Online WOPI方式*~~
 - [ ] *查看压缩文件的列表时，可对其中的文件进行预览和下载*
-- [ ] *扩展对LogicFlow文件的支持*
-- [x] *扩展对bpmn,cmmn,dmn文件的支持*
 
