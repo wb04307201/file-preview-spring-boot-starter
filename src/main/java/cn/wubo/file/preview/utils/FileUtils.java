@@ -111,6 +111,9 @@ public class FileUtils {
             case "py", "py3" -> "python";
             case "epub" -> "epub";
             case "xmind" -> "xmind";
+            case "bpmn" -> "bpmn";
+            case "cmmn" -> "cmmn";
+            case "dmn" -> "dmn";
             case "txt", "log", "conf", "prop", "rc", "sh", "yaml", "properties" -> "text";
             default -> "txt";
         };
