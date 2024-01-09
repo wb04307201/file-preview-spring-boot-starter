@@ -8,15 +8,14 @@
 
 > 一个文档在线预览的中间件  
 > 可通过简单的配置即可集成到springboot中  
-> 支持word、excel、ppt、pdf、图片、视频、音频、markdown、代码、网页、epub电子书、Xmind脑图、压缩文件等格式文件的在线预览
+> 支持word、excel、ppt、pdf、图片、视频、音频、markdown、代码、网页、epub电子书、Xmind脑图、压缩文件、bpmn(业务流程管理和符号)、cmmn(案例管理模型和符号)、dmn(决策管理和符号)等格式文件的在线预览
 
 ## 代码示例
 1. 使用[文档在线预览](https://gitee.com/wb04307201/file-preview-spring-boot-starter)、[多平台文件存储](https://gitee.com/wb04307201/file-storage-spring-boot-starter)、[实体SQL工具类](https://gitee.com/wb04307201/sql-util)实现的[文件预览Demo](https://gitee.com/wb04307201/file-preview-demo)
+2. 使用[文档在线预览](https://gitee.com/wb04307201/file-preview-spring-boot-starter)、[多平台文件存储](https://gitee.com/wb04307201/file-storage-spring-boot-starter)、[实体SQL工具类](https://gitee.com/wb04307201/sql-util)实现的[文件预览VUE Demo](https://gitee.com/wb04307201/file-preview-vue)
 
 ## 第一步 增加 JitPack 仓库
-
 ```xml
-
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -27,19 +26,16 @@
 
 ## 第二步 引入jar
 *1.1.7版本后，groupId更换为com.github.wb04307201*
-
 ```xml
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.1.14</version>
+    <version>1.1.15</version>
 </dependency>
 ```
 
 ## 第三步 在启动类上加上`@EnableFilePreview`注解
-
 ```java
-
 @EnableFilePreview
 @SpringBootApplication
 public class FilePreviewDemoApplication {
@@ -52,10 +48,8 @@ public class FilePreviewDemoApplication {
 ```
 
 ## 第四步 注入IFilePreviewService，并对文件进行转换
-
 > 目的是将 word，ppt转换成pdf excel转换成html，并存储所有的预览文件
 > 也可以只记录源文件的位置
-
 ```java
     @Autowired
     FilePreviewService filePreviewService;
@@ -65,12 +59,9 @@ public class FilePreviewDemoApplication {
 ```
 
 ### 在针对word，excel，ppt文件的预览上支持5种模式
-
 #### jodconverter
-
 > 安装[libroffice](https://zh-cn.libreoffice.org/)并添加配置  
 > 详细配置内容请查看[jodconverter](https://github.com/sbraconnier/jodconverter/)
-
 ```yaml
 file:
   preview:
@@ -92,11 +83,9 @@ jodconverter:
 ```
 
 #### spire.office
-
 > 项目中使用的spire.office为免费版本，转换office文件存在一定限制
 > 如要使用收费版本，请排除免费版本的依赖并添加正式版本  
 > [Spire.Office](https://www.e-iceblue.com/)
-
 ```yaml
 file:
   preview:
@@ -105,11 +94,9 @@ file:
 ```
 
 #### onlyoffice
-
 > 使用[onlyoffice](https://www.onlyoffice.com/zh/)将不对office文件进行转换    
 > 直接预览word,excel,ppt,文本类型的文件  
 > 可以通过docker快速安装onlyoffice，命令如下
-
 ```bash
 docker run --name onlyoffice -i -t -d -p 80:80 -e JWT_ENABLED=false onlyoffice/documentserver
 #如果需要使用JWT
@@ -118,13 +105,11 @@ docker run --name onlyoffice -i -t -d -p 80:80 -e JWT_SECRET=my_jwt_secret onlyo
 可参考官方文档  
 [Installing ONLYOFFICE Docs Community Edition for Docker on a local server](https://helpcenter.onlyoffice.com/installation/docs-community-install-docker.aspx)  
 [Configuring JWT for ONLYOFFICE Docs](https://helpcenter.onlyoffice.com/installation/docs-configure-jwt.aspx)
-
 > 容器启动成功后，打开http://127.0.0.1/可以看到欢迎页面
 > 如果需要使用onlyoffice自带的测试页面，可以找页面中如下部分，并分别在终端中执行1，2的命令，然后点击按钮3    
 > ![img_3.png](img_3.png)   
 > ![img_7.png](img_7.png)  
 > docker版本的onlyoffice安装成功后，在项目中添加配置信息
-
 ```yaml
 file:
   preview:
@@ -141,11 +126,9 @@ file:
 ```
 
 #### LibreOffice Online
-
 > 使用[libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/)将不对office文件进行转换    
 > 直接预览word,excel,ppt,文本类型的文件  
 > 可以通过docker快速安装libreoffice online，命令如下
-
 ```bash
 #安装并启动docker版本lool
 docker run --name lool -e "username=admin" -e "password=123456" -e "extra_params=--o:ssl.enable=false --o:storage.filesystem[@allow]=true" -v D:/lool:/srv/data:Z -p 9980:9980 -d libreoffice/online:master
@@ -153,11 +136,9 @@ docker run --name lool -e "username=admin" -e "password=123456" -e "extra_params
 # extra_params=--o:ssl.enable=false 关闭ssl
 # --o:storage.filesystem[@allow]=true 允许读取本地文件
 ```
-
 > 容器启动成功后，打开http://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
 > ![img_18.png](img_18.png)
 > docker版本的lool安装成功后，在项目中添加配置信息
-
 ```yaml
 file:
   preview:
@@ -169,34 +150,29 @@ file:
 ```
 
 #### Collabora Online
-
 > 使用[Collabora Online](https://www.collaboraoffice.com/)将不对office文件进行转换    
 > 直接预览word,excel,ppt,文本类型的文件  
 > 可以通过docker快速安装Collabora Online，命令如下
-
 ```bash
 docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasgroup1=http://10.133.61.38:8090" -e "extra_params=--o:ssl.enable=false" -p 9980:9980 collabora/code
 
 # extra_params=--o:ssl.enable=false 关闭ssl
 # aliasgroup1=http://10.133.61.38:8090 配置允许wopi访问地址
 ```
-
-> 容器启动成功后，打开http://127.0.0.1:9980/loleaflet/dist/admin/admin.html可以看到控制台界面
+> 容器启动成功后，打开http://127.0.0.1:9980/browser/dist/admin/admin.html可以看到控制台界面
 > ![img_18.png](img_18.png)
 > docker版本的cool安装成功后，在项目中添加配置信息
-
 ```yaml
 file:
   preview:
     # 使用Collabora Online模式
-    officeConverter: ccol
+    officeConverter: cool
     collabora:
       domain: http://ip:port  #Collabora Online服务所在地址
       storageDomain: http://ip:port #当前服务的域名，用于Collabora Online从当前服务下载文件
 ```
 
 ## 第六步 预览文件信息
-
 > 可通过第四步返回的文件信息中的id  
 > 访问http://ip:port/file/preview?id=??进行文件预览  
 > 如果配置了context-path,请在地址中同样添加  
@@ -218,6 +194,10 @@ file:
 | xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
 | 网页             | 直接渲染                                                                             | <img src="img_13.png" width="30%" height="30%">                                                                                               |
 | 压缩文件           | [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)   | <img src="img_22.png" width="30%" height="30%">                                                                                               |
+| bpmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_26.png" width="30%" height="30%">                                                                                               |
+| cmmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_27.png" width="30%" height="30%">                                                                                               |
+| dmn            | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_28.png" width="30%" height="30%">                                                                                               |
+
 
 
 ## 其他1：内置界面
@@ -426,9 +406,5 @@ public class MinIORenderPage implements IRenderPage {
 
 ## 待办
 
-- [ ] *LibreOffice Online WOPI方式*
-
 - [ ] *查看压缩文件的列表时，可对其中的文件进行预览和下载*
-
-- [ ] *扩展对LogicFlow文件的支持*
 

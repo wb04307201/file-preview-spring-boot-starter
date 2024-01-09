@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class PageFactory {
 
-    private static final Set<String> OFFICE_FILE_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("word", "excel", "power point", "txt")));
+    private static final Set<String> OFFICE_FILE_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("word", "excel", "power point", "text")));
 
     public static AbstractPage create(FilePreviewInfo info, FilePreviewService filePreviewService, FilePreviewProperties properties, String contextPath) {
         try {

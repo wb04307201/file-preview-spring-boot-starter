@@ -3,9 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Video</title>
-    <script type="text/javascript" src="${contextPath}/video.js/7.10.2/video.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="${contextPath}/video.js/7.10.2/video-js.min.css"/>
-    <link rel="stylesheet" type="text/css" href="${contextPath}/video.js/7.10.2/fantasy/index.css"/>
+    <script type="text/javascript" src="${contextPath}/file/preview/static/video.js/7.10.2/video.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/file/preview/static/video.js/7.10.2/video-js.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/file/preview/static/video.js/7.10.2/fantasy/index.css"/>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
 <video
@@ -15,7 +27,8 @@
         preload="auto"
         autoplay
         <#--poster="//vjs.zencdn.net/v/oceans.png"-->
-        data-setup='{}'>
+        data-setup='{}'
+        style="height: 100%;width: 100%">
     <source src="${url}" type="video/mp4"/>
     <source src="${url}" type="video/webm"/>
     <source src="${url}" type="video/ogg"/>

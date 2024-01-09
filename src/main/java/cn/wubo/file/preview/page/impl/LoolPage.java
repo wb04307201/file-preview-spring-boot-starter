@@ -7,10 +7,8 @@ import cn.wubo.file.preview.exception.PageRuntimeException;
 import cn.wubo.file.preview.page.AbstractPage;
 import org.springframework.web.servlet.function.ServerResponse;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,13 +21,13 @@ public class LoolPage extends AbstractPage {
 
     @Override
     public ServerResponse build() {
-        try{
+        try {
             Path path = Paths.get(getProperties().getLibreOffice().getStorage() + File.separator + getInfo().getFileName());
             Files.deleteIfExists(path);
             Files.write(path, getFilePreviewService().getBytes(getInfo()));
             return sendRedirect(String.format("%s/loleaflet/dist/loleaflet.html?file_path=file:///srv/data/%s&permission=readonly", getProperties().getLibreOffice().getDomain(), URLEncoder.encode(getInfo().getFileName(), "UTF-8")));
         } catch (IOException e) {
-            throw new PageRuntimeException(e.getMessage(),e);
+            throw new PageRuntimeException(e.getMessage(), e);
         }
     }
 }

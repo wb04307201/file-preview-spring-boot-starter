@@ -184,6 +184,12 @@ public class FileUtils {
                 return "epub";
             case "xmind":
                 return "xmind";
+            case "bpmn":
+                return "bpmn";
+            case "cmmn":
+                return "cmmn";
+            case "dmn":
+                return "dmn";
             case "txt":
             case "log":
             case "conf":

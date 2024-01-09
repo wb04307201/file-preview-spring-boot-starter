@@ -6,6 +6,7 @@ import cn.wubo.file.preview.exception.PageRuntimeException;
 import cn.wubo.file.preview.exception.PreviewRuntimeException;
 import cn.wubo.file.preview.exception.RecordRuntimeException;
 import cn.wubo.file.preview.exception.StorageRuntimeException;
+import cn.wubo.file.preview.function.PreviewFunction;
 import cn.wubo.file.preview.office.IOfficeConverter;
 import cn.wubo.file.preview.office.impl.JodOfficeConverter;
 import cn.wubo.file.preview.office.impl.NoneConverter;
@@ -96,88 +97,111 @@ public class OfficeConfiguration {
     private static final String FILE_PREVIEW_LIST = "/file/preview/list";
     private static final String LOST_ID = "请求参数id丢失!";
 
-    @Bean("wb04307201_file_preview_router")
-    public RouterFunction<ServerResponse> filePreviewRouter(FilePreviewService filePreviewService, List<IRenderPage> renderPages) {
-        BiFunction<ServerRequest, FilePreviewService, ServerResponse> listFunction = (request, service) -> {
-            String contextPath = request.requestPath().contextPath().value();
-            FilePreviewInfo filePreviewInfo = new FilePreviewInfo();
-            if (HttpMethod.POST.equals(request.method())) {
-                MultiValueMap<String, String> params = request.params();
-                filePreviewInfo.setFileName(params.getFirst("fileName"));
-                filePreviewInfo.setFilePath(params.getFirst("filePath"));
-            }
-
-            Map<String, Object> data = new HashMap<>();
-            data.put("contextPath", contextPath);
-            data.put("list", service.list(filePreviewInfo));
-            filePreviewInfo.setFileName(HtmlUtils.htmlEscape(filePreviewInfo.getFileName() == null ? "" : filePreviewInfo.getFileName()));
-            filePreviewInfo.setFilePath(HtmlUtils.htmlEscape(filePreviewInfo.getFilePath() == null ? "" : filePreviewInfo.getFilePath()));
-            data.put("query", filePreviewInfo);
-
-            return ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(PageUtils.write("list.ftl", data));
-        };
-
-        BiFunction<ServerRequest, FilePreviewService, ServerResponse> previewFunction = (request, service) -> {
-            String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
-            FilePreviewInfo info = filePreviewService.findById(id);
-            if (!CollectionUtils.isEmpty(renderPages)) {
-                Optional<IRenderPage> optionalIRenderPage = renderPages.stream().filter(rp -> rp.support(filePreviewService, info)).findAny();
-                if (optionalIRenderPage.isPresent()) return optionalIRenderPage.get().render(filePreviewService, info);
-            }
-            renderPages.stream().filter(rp -> rp.support(filePreviewService, info)).findAny().ifPresent(rp -> rp.render(filePreviewService, info));
-
-            String contextPath = request.requestPath().contextPath().value();
-            return PageFactory.create(info, filePreviewService, properties, contextPath).build();
-        };
-
-        RouterFunctions.Builder builder = RouterFunctions.route().GET(FILE_PREVIEW_LIST, RequestPredicates.accept(MediaType.TEXT_HTML), request -> listFunction.apply(request, filePreviewService)).POST(FILE_PREVIEW_LIST, RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED), request -> listFunction.apply(request, filePreviewService)).GET("/file/preview", request -> previewFunction.apply(request, filePreviewService));
-
-        if ("only".equals(properties.getOfficeConverter())) {
-            Function<String, byte[]> downloadFunction = url -> {
-                RestTemplate restTemplate = new RestTemplate();
-                HttpHeaders headers = new HttpHeaders();
-                HttpEntity<Resource> httpEntity = new HttpEntity<>(headers);
-                ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, byte[].class);
-                return response.getBody();
-            };
-
-            builder.POST("/file/preview/onlyoffice/callback", request -> {
-                MultiValueMap<String, String> params = request.params();
-                Integer status = 0;
-                if (params.containsKey("status"))
-                    status = Integer.parseInt(Objects.requireNonNull(params.getFirst("status")));
-                if (status == 2 || status == 3) {
-                    String id = params.getFirst("id");
-                    // 取回修改后文件
-                    byte[] fileBytes = downloadFunction.apply(params.getFirst("url"));
-                    // 变更记录下载
-                    byte[] changeBytes = downloadFunction.apply(params.getFirst("changesurl"));
-                }
-                return ServerResponse.ok().body("{\"error\":0}");
-            });
-        } else if ("cool".equals(properties.getOfficeConverter())) {
-            builder.GET("/wopi/files/{id}", request -> {
-                String id = request.pathVariable("id");
-                FilePreviewInfo info = filePreviewService.findById(id);
-                byte[] bytes = filePreviewService.getBytes(info);
-                Map<String, Object> map = new HashMap<>();
-                map.put("BaseFileName", info.getFileName());
-                map.put("Size", bytes.length);
-                return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(map);
-            }).GET("/wopi/files/{id}/contents", request -> {
-                String id = request.pathVariable("id");
-                FilePreviewInfo info = filePreviewService.findById(id);
-                byte[] bytes = filePreviewService.getBytes(info);
-                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).build((res, req) -> {
-                    try (OutputStream os = req.getOutputStream()) {
-                        IoUtils.writeToStream(bytes, os);
-                    } catch (IOException e) {
-                        throw new PageRuntimeException(e.getMessage(), e);
-                    }
-                    return new ModelAndView();
-                });
-            });
+    private final BiFunction<ServerRequest, FilePreviewService, ServerResponse> listFunction = (request, service) -> {
+        String contextPath = request.requestPath().contextPath().value();
+        FilePreviewInfo filePreviewInfo = new FilePreviewInfo();
+        if (HttpMethod.POST.equals(request.method())) {
+            MultiValueMap<String, String> params = request.params();
+            filePreviewInfo.setFileName(params.getFirst("fileName"));
+            filePreviewInfo.setFilePath(params.getFirst("filePath"));
         }
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("contextPath", contextPath);
+        data.put("list", service.list(filePreviewInfo));
+        filePreviewInfo.setFileName(HtmlUtils.htmlEscape(filePreviewInfo.getFileName() == null ? "" : filePreviewInfo.getFileName()));
+        filePreviewInfo.setFilePath(HtmlUtils.htmlEscape(filePreviewInfo.getFilePath() == null ? "" : filePreviewInfo.getFilePath()));
+        data.put("query", filePreviewInfo);
+
+        return ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(PageUtils.write("list.ftl", data));
+    };
+
+    private final PreviewFunction<ServerRequest, FilePreviewService, List<IRenderPage>, ServerResponse> previewFunction = (request, service, rps) -> {
+        String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
+        FilePreviewInfo info = service.findById(id);
+        if (!CollectionUtils.isEmpty(rps)) {
+            Optional<IRenderPage> optionalIRenderPage = rps.stream().filter(rp -> rp.support(service, info)).findAny();
+            if (optionalIRenderPage.isPresent()) return optionalIRenderPage.get().render(service, info);
+        }
+        rps.stream().filter(rp -> rp.support(service, info)).findAny().ifPresent(rp -> rp.render(service, info));
+
+        String contextPath = request.requestPath().contextPath().value();
+        return PageFactory.create(info, service, properties, contextPath).build();
+    };
+
+    private final Function<String, byte[]> downloadFunction = url -> {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Resource> httpEntity = new HttpEntity<>(headers);
+        ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, byte[].class);
+        return response.getBody();
+    };
+
+    private void addOnlyOfficeCallback(RouterFunctions.Builder builder) {
+        // 添加onlyoffice回调路由函数
+        builder.POST("/file/preview/onlyoffice/callback", request -> {
+            // 获取请求参数
+            MultiValueMap<String, String> params = request.params();
+            Integer status = 0;
+            if (params.containsKey("status"))
+                // 解析状态参数
+                status = Integer.parseInt(Objects.requireNonNull(params.getFirst("status")));
+            if (status == 2 || status == 3) {
+                // 获取文件id
+                String id = params.getFirst("id");
+                // 取回修改后文件
+                byte[] fileBytes = downloadFunction.apply(params.getFirst("url"));
+                // 变更记录下载
+                byte[] changeBytes = downloadFunction.apply(params.getFirst("changesurl"));
+            }
+            // 返回响应
+            return ServerResponse.ok().body("{\"error\":0}");
+        });
+    }
+
+
+    // 添加Wopi路由函数
+    private void addWopi(RouterFunctions.Builder builder, FilePreviewService filePreviewService) {
+        // 获取文件信息
+        builder.GET("/wopi/files/{id}", request -> {
+            String id = request.pathVariable("id"); // 获取文件id
+            FilePreviewInfo info = filePreviewService.findById(id); // 根据id获取文件预览信息
+            byte[] bytes = filePreviewService.getBytes(info); // 根据文件信息获取文件内容
+            Map<String, Object> map = new HashMap<>(); // 创建一个HashMap用于存储文件信息
+            map.put("BaseFileName", info.getFileName()); // 添加文件名到map中
+            map.put("Size", bytes.length); // 添加文件大小到map中
+            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(map); // 返回文件信息
+        }).GET("/wopi/files/{id}/contents", request -> {
+            String id = request.pathVariable("id"); // 获取文件id
+            FilePreviewInfo info = filePreviewService.findById(id); // 根据id获取文件预览信息
+            byte[] bytes = filePreviewService.getBytes(info); // 根据文件信息获取文件内容
+            return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length) // 设置响应内容类型和内容长度
+                    .header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)) // 设置响应头的Content-Disposition字段，指定下载文件名
+                    .build((res, req) -> {
+                        try (OutputStream os = req.getOutputStream()) {
+                            IoUtils.writeToStream(bytes, os); // 将文件内容写入响应体
+                        } catch (IOException e) {
+                            throw new PageRuntimeException(e.getMessage(), e); // 抛出异常
+                        }
+                        return new ModelAndView(); // 返回空的结果
+                    });
+        });
+    }
+
+
+    /**
+     * 文件预览路由
+     *
+     * @param filePreviewService 文件预览服务
+     * @param renderPages        渲染页面列表
+     * @return 路由器功能
+     */
+    @Bean("wb04307201FilePreviewRouter")
+    public RouterFunction<ServerResponse> filePreviewRouter(FilePreviewService filePreviewService, List<IRenderPage> renderPages) {
+        RouterFunctions.Builder builder = RouterFunctions.route().GET(FILE_PREVIEW_LIST, RequestPredicates.accept(MediaType.TEXT_HTML), request -> listFunction.apply(request, filePreviewService)).POST(FILE_PREVIEW_LIST, RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED), request -> listFunction.apply(request, filePreviewService)).GET("/file/preview", request -> previewFunction.apply(request, filePreviewService, renderPages));
+
+        if ("only".equals(properties.getOfficeConverter())) addOnlyOfficeCallback(builder);
+        else if ("cool".equals(properties.getOfficeConverter())) addWopi(builder, filePreviewService);
 
         builder.GET("/file/preview/delete", request -> {
             String id = request.param("id").orElseThrow(() -> new PreviewRuntimeException(LOST_ID));
@@ -199,4 +223,5 @@ public class OfficeConfiguration {
 
         return builder.build();
     }
+
 }

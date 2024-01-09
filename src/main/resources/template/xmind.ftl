@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Xmind</title>
-    <link rel="stylesheet" type="text/css" href="${contextPath}/bootstrap/5.3.1/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="${contextPath}/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="${contextPath}/xmind-embed-viewer/1.2.0/xmind-embed-viewer.js"></script>
-    <script type="module" src="${contextPath}/fetch/3.6.2/fetch.js"></script>
+    <script type="text/javascript"
+            src="${contextPath}/file/preview/static/xmind-embed-viewer/1.2.0/xmind-embed-viewer.js"></script>
     <style>
-        #container-or-iframe-selector {
+        html {
+            height: 100%;
             width: 100%;
-            height: 500px;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+
+        #xmind-container {
+            height: 100%;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div id="container-or-iframe-selector"></div>
-</div>
+<div id="xmind-container"></div>
 <script>
     const viewer = new XMindEmbedViewer({
-        el: '#container-or-iframe-selector', // HTMLElement | HTMLIFrameElement | string
+        el: '#xmind-container', // HTMLElement | HTMLIFrameElement | string
         styles: {height: "100%", width: "100%"},
     });
     fetch('${url}')

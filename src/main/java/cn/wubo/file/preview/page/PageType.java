@@ -7,17 +7,15 @@ import java.util.Map;
 
 public enum PageType {
 
-    Markdown(MarkdownPage.class), Code(CodePage.class), Epub(EpubPage.class), Video(VideoPage.class), Audio(AudioPage.class), Xmind(XmindPage.class), Pdf(PdfPage.class), Only(OnlyOfficePage.class), Lool(LoolPage.class), Cool(CoolPage.class), Compress(CompressPage.class),
-    ;
+    Markdown(MarkdownPage.class), Code(CodePage.class), Epub(EpubPage.class), Video(VideoPage.class), Audio(AudioPage.class), Xmind(XmindPage.class), Pdf(PdfPage.class), Only(OnlyOfficePage.class), Lool(LoolPage.class), Cool(CoolPage.class), Compress(CompressPage.class), Bpmn(BpmnPage.class), Cmmn(CmmnPage.class), Dmn(DmnPage.class);
 
     private static final String[] CODES = {"sql", "cpp", "java", "xml", "javascript", "json", "css", "python"};
     private static final Map<String, PageType> PREVIEW_TYPE_MAPPER = new HashMap<>();
 
     static {
         PREVIEW_TYPE_MAPPER.put("markdown", PageType.Markdown);
-        for (String code : CODES) {
+        for (String code : CODES)
             PREVIEW_TYPE_MAPPER.put(code, PageType.Code);
-        }
         PREVIEW_TYPE_MAPPER.put("epub", PageType.Epub);
         PREVIEW_TYPE_MAPPER.put("video", PageType.Video);
         PREVIEW_TYPE_MAPPER.put("audio", PageType.Audio);
@@ -27,6 +25,9 @@ public enum PageType {
         PREVIEW_TYPE_MAPPER.put("lool", PageType.Lool);
         PREVIEW_TYPE_MAPPER.put("cool", PageType.Cool);
         PREVIEW_TYPE_MAPPER.put("compressed file", PageType.Compress);
+        PREVIEW_TYPE_MAPPER.put("bpmn", PageType.Bpmn);
+        PREVIEW_TYPE_MAPPER.put("cmmn", PageType.Cmmn);
+        PREVIEW_TYPE_MAPPER.put("dmn", PageType.Dmn);
     }
 
     public static Class<? extends AbstractPage> getClass(String fileType) {
