@@ -13,6 +13,6 @@ public class PdfPage extends AbstractPage {
 
     @Override
     public ServerResponse build() {
-        return sendRedirect(String.format("%s/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", getContextPath(), getContextPath(), getInfo().getId()));
+        return sendRedirect(String.format("%s/file/preview/static/pdfjs/3.0.279/web/viewer.html?file=%s/file/preview/download?id=%s", getContextPath(), getContextPath(), getInfo().getId()));
     }
 }
