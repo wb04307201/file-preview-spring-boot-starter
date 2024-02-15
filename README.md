@@ -237,99 +237,45 @@ file:
 @Component
 public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 
-    private static final String HISTORY = "file_preview_history";
-
-    private static ConnectionPool connectionPool = new ConnectionPool(new ConnectionParam());
+    static {
+        MutilConnectionPool.init("main", "jdbc:h2:file:./data/demo;AUTO_SERVER=TRUE", "sa", "");
+    }
 
     @Override
     public FilePreviewInfo save(FilePreviewInfo filePreviewInfo) {
-        try {
-            Connection conn = connectionPool.getConnection();
-            if (!StringUtils.hasLength(filePreviewInfo.getId())) {
-                filePreviewInfo.setId(UUID.randomUUID().toString());
-                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.insertSql(HISTORY, filePreviewInfo), new HashMap<>());
-            } else {
-                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.updateByIdSql(HISTORY, filePreviewInfo), new HashMap<>());
-            }
-            connectionPool.returnConnection(conn);
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return filePreviewInfo;
+        FilePreviewRecord filePreviewRecord = FilePreviewRecord.trans(filePreviewInfo);
+        if (!StringUtils.hasLength(filePreviewRecord.getId())) {
+            filePreviewRecord.setId(UUID.randomUUID().toString());
+            MutilConnectionPool.run("main", conn -> ModelSqlUtils.insertSql(filePreviewRecord).executeUpdate(conn));
+        } else MutilConnectionPool.run("main", conn -> ModelSqlUtils.updateSql(filePreviewRecord).executeUpdate(conn));
+        return filePreviewRecord.getFilePreviewInfo();
     }
 
     @Override
     public List<FilePreviewInfo> list(FilePreviewInfo filePreviewInfo) {
-        try {
-            Connection conn = connectionPool.getConnection();
-            String sql = ModelSqlUtils.selectSql(HISTORY, new FileInfo());
-
-            List<String> condition = new ArrayList<>();
-            if (StringUtils.hasLength(filePreviewInfo.getId()))
-                condition.add(" id  = '" + filePreviewInfo.getId() + "'");
-            if (StringUtils.hasLength(filePreviewInfo.getFileName()))
-                condition.add(" fileName  like '%" + filePreviewInfo.getFileName() + "%'");
-            if (StringUtils.hasLength(filePreviewInfo.getOriginalFilename()))
-                condition.add(" originalFilename like '%" + filePreviewInfo.getOriginalFilename() + "%'");
-            if (StringUtils.hasLength(filePreviewInfo.getFilePath()))
-                condition.add(" filePath like '%" + filePreviewInfo.getFilePath() + "%'");
-
-            if (!condition.isEmpty()) sql = sql + " where " + String.join("and", condition);
-
-            List<FilePreviewInfo> res = ExecuteSqlUtils.executeQuery(conn, sql, new HashMap<>(), FilePreviewInfo.class);
-            connectionPool.returnConnection(conn);
-            return res;
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        FilePreviewRecord filePreviewRecord = FilePreviewRecord.trans(filePreviewInfo);
+        return MutilConnectionPool.run("main", conn -> ModelSqlUtils.selectSql(filePreviewRecord).executeQuery(conn)).stream().map(FilePreviewRecord::getFilePreviewInfo).collect(Collectors.toList());
     }
 
     @Override
     public FilePreviewInfo findById(String s) {
         FilePreviewInfo query = new FilePreviewInfo();
         query.setId(s);
-        String sql = ModelSqlUtils.selectSql(HISTORY, query);
-        try {
-            Connection conn = connectionPool.getConnection();
-            List<FilePreviewInfo> res = ExecuteSqlUtils.executeQuery(conn, sql, new HashMap<>(), FilePreviewInfo.class);
-            connectionPool.returnConnection(conn);
-            return res.get(0);
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        List<FilePreviewInfo> list = list(query);
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
     public Boolean delete(FilePreviewInfo filePreviewInfo) {
-        List<FilePreviewInfo> filePreviewInfos = list(filePreviewInfo);
-        try {
-            Connection conn = connectionPool.getConnection();
-            conn.setAutoCommit(false);
-            AtomicInteger count = new AtomicInteger();
-            filePreviewInfos.stream().forEach(e -> {
-                FilePreviewInfo delete = new FilePreviewInfo();
-                delete.setId(e.getId());
-                String sql = ModelSqlUtils.deleteByIdSql(HISTORY, delete);
-                count.addAndGet(ExecuteSqlUtils.executeUpdate(conn, sql, new HashMap<>()));
-            });
-            conn.commit();
-            connectionPool.returnConnection(conn);
-            return count.get() > 0;
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        FilePreviewRecord filePreviewRecord = FilePreviewRecord.trans(filePreviewInfo);
+        return MutilConnectionPool.run("main", conn -> ModelSqlUtils.deleteSql(filePreviewRecord).executeUpdate(conn)) > 0;
     }
 
     @Override
     public void init() {
-        try {
-            Connection conn = connectionPool.getConnection();
-            if (!ExecuteSqlUtils.isTableExists(conn, HISTORY, DbType.h2)) {
-                ExecuteSqlUtils.executeUpdate(conn, ModelSqlUtils.createSql(HISTORY, new FilePreviewInfo()), new HashMap<>());
-            }
-        } catch (SQLException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        if (Boolean.FALSE.equals(MutilConnectionPool.run("main", conn -> new SQL<FilePreviewRecord>() {
+        }.isTableExists(conn)))) MutilConnectionPool.run("main", conn -> new SQL<FilePreviewRecord>() {
+        }.create().parse().createTable(conn));
     }
 }
 ```
