@@ -25,12 +25,12 @@
 ```
 
 ## 第二步 引入jar
-*1.1.7版本后，groupId更换为com.github.wb04307201*
+1.1.7版本后，groupId更换为com.github.wb04307201
 ```xml
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.1.16</version>
+    <version>1.1.17</version>
 </dependency>
 ```
 
