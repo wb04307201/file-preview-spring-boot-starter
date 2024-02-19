@@ -2,76 +2,75 @@
 <html lang="zh-cmn-Hans">
 <head>
     <meta charset="UTF-8">
-    <title>Audio</title>
-    <link rel="stylesheet" type="text/css" href="${contextPath}/file/preview/static/bootstrap/5.3.1/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="${contextPath}/file/preview/static/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
+    <title>Epub</title>
+    <link href="${contextPath}/file/preview/static/layui/2.9.6/css/layui.css" rel="stylesheet">
+    <script type="text/javascript" src="${contextPath}/file/preview/static/layui/2.9.6/layui.js"></script>
     <script type="text/javascript" src="${contextPath}/file/preview/static/jszip/3.10.1/jszip.min.js"></script>
     <script type="text/javascript" src="${contextPath}/file/preview/static/epub.js/0.3.88/epub.min.js"></script>
     <style>
-        html{
+        html {
             height: 100%;
             overflow-y: hidden;
         }
-        body, .container-fluid, .row, .col-3, .col-9, #area {
+
+        body, .layui-row, .layui-col-xs3, .layui-col-xs9, #epub-tree, #area {
             height: 100%;
         }
-        .list-group{
-            height: 100%;
+
+        #epub-tree {
             overflow-y: auto;
         }
     </style>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-3">
-            <ul class="list-group list-group-flush">
-            </ul>
-        </div>
-        <div class="col-9">
-            <div id="area"></div>
-        </div>
+<div class="layui-row">
+    <div class="layui-col-xs3">
+        <div id="epub-tree"></div>
+    </div>
+    <div class="layui-col-xs9">
+        <div id="area"></div>
     </div>
 </div>
-<div id="area"></div>
 <script>
-    var book = ePub("${url}", {openAs: "epub"});
-    var rendition = book.renderTo("area", {method: "continuous", flow: "scrolled", width: "100%", height: "100%"});
-    var displayed = rendition.display();
+    let book = ePub("${url}", {openAs: "epub"});
+    let rendition = book.renderTo("area", {method: "continuous", flow: "scrolled", width: "100%", height: "100%"});
+    let displayed = rendition.display();
 
-    book.loaded.navigation.then(function (toc) {
-        /*// 方式一 toc是一个多维数组，下面这种只能显示第一级的目录
-        var catalogItme = '';
-        toc.forEach(function(chapter) {
-            catalogItme += '<p class="catalog-itme" data-catalog="'+ chapter.href +'">'+ chapter.label +'</p>'
-        });
-        // 将拼接好的目录渲染到页面里
-        document.querySelector('catalog').innerHTML = catalogItme*/
+    layui.use(['tree'], function () {
+        let tree = layui.tree;
 
-        // 方式二 将所有的目录全部显示出来
-        // 第一级的catalog-itme-0
-        // 第二级的catalog-itme-1 以此类推...
-        document.querySelector('.list-group').innerHTML = recursionHandle(toc.toc, [], 0).join('')
-    })
+        book.loaded.navigation.then(function (toc) {
+            let treeData = [];
+            toc.forEach(function (chapter) {
+                let node = {
+                    title: chapter.label,
+                    id: chapter.href,
+                    spread: true,
+                }
+                if (chapter.subitems && chapter.subitems.length) {
+                    node.children = []
+                    chapter.subitems.forEach(function (subitem) {
+                        node.children.push({
+                            title: subitem.label,
+                            id: subitem.href
+                        })
+                    })
+                }
+                treeData.push(node)
+            })
 
-    function recursionHandle(toc, doc, i) {
-        toc.forEach(function (chapter) {
-            // doc.push('<p class="catalog-itme catalog-itme-'+ i +'" data-catalog="'+ chapter.href +'">'+ chapter.label +'</p>')
-            doc.push('<button type="button" class="list-group-item list-group-item-action" onclick="renditionTo(\'' + chapter.href + '\')">' + chapter.label + '</button>')
-            if (chapter.subitems && chapter.subitems.length) {
-                i++
-                recursionHandle(chapter.subitems, doc, i)
-                i > 0 && i--
-            }
+            // 渲染
+            tree.render({
+                elem: '#epub-tree',
+                data: treeData,
+                onlyIconControl: true,  // 是否仅允许节点左侧图标控制展开收缩
+                showLine: false,  // 是否开启连接线
+                click: function (obj) {
+                    rendition.display(obj.data.id)
+                }
+            });
         })
-
-        return doc
-    }
-
-    // 点击跳转
-    function renditionTo(url) {
-        rendition.display(url)
-    }
+    })
 </script>
 </body>
 </html>

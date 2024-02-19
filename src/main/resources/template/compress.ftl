@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Compressed File</title>
     <link href="${contextPath}/file/preview/static/layui/2.9.6/css/layui.css" rel="stylesheet">
-    <script src="${contextPath}/file/preview/static/layui/2.9.6/layui.js"></script>
+    <script type="text/javascript" src="${contextPath}/file/preview/static/layui/2.9.6/layui.js"></script>
 </head>
 <body>
 <div class="layui-layout layui-layout-admin">
