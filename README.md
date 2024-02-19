@@ -168,61 +168,8 @@ file:
 注意：如配置了context-path需要在地址中对应添加  
 ![img_9.png](img_9.png)
 
-## 其他1：预览文件使用的开源项目
 
-| 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                          |
-|----------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/)                     |                                                                                                                                               |
-| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       | <img src="img_20.png" width="30%" height="30%"><img src="img_19.png" width="30%" height="30%"><img src="img_21.png" width="30%" height="30%"> |
-| word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                                     | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%">    |
-| word/excel/ppt | [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/) | <img src="img_16.png" width="30%" height="30%"><img src="img_15.png" width="30%" height="30%"><img src="img_17.png" width="30%" height="30%"> |
-| word/excel/ppt | [Collabora Online](https://www.collaboraoffice.com/)                             | <img src="img_24.png" width="30%" height="30%"><img src="img_23.png" width="30%" height="30%"><img src="img_25.png" width="30%" height="30%"> |
-| pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
-| audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                                |
-| video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                                |
-| markdonw       | [vditor](https://github.com/Vanessa219/vditor)                                                 | <img src="img.png" width="30%" height="30%">                                                                                                  |
-| 代码             | [CodeMirror](https://codemirror.net/)                                            | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                                 |
-| epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                               |
-| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
-| 网页             | 直接渲染                                                                             | <img src="img_13.png" width="30%" height="30%">                                                                                               |
-| 压缩文件           | [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)   | <img src="img_22.png" width="30%" height="30%">                                                                                               |
-| bpmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_26.png" width="30%" height="30%">                                                                                               |
-| cmmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_27.png" width="30%" height="30%">                                                                                               |
-| dmn            | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_28.png" width="30%" height="30%">                                                                                               |
-
-
-
-## 第四步 注入IFilePreviewService，并对文件进行转换
-> 目的是将 word，ppt转换成pdf excel转换成html，并存储所有的预览文件
-> 也可以只记录源文件的位置
-```java
-    @Autowired
-    FilePreviewService filePreviewService;
-
-    //预览文件转换
-    FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
-```
-
-
-## 其他2：下载文件、删除文件
-
-> 可通过第四步返回的文件信息中的id  
-> 访问http://ip:port/file/preview/download?id=??进行文件下载  
-> 访问http://ip:port/file/preview/delete?id=??进行文件删除  
-> 如果配置了context-path,请在地址中同样添加  
-> 也可以调用IFilePreviewService服务中方法自行处理下载和删除
-
-```java
-    //获取文件bytes
-    FilePreviewInfo filePreviewInfo = filePreviewService.findById(id);
-    byte[] bytes = filePreviewService.getBytes(filePreviewInfo);
-
-    //删除预览文件
-    Boolean result = filePreviewService.delete(filePreviewInfo.getId());  
-```
-
-## 其他3：实际使用中，可通过配置和实现文件预览记录接口方法将数据持久化到数据库中
-
+## 其他1：实际使用中，可通过配置和实现文件预览记录接口方法将数据持久化到数据库中
 ```yaml
 file:
   preview:
@@ -276,8 +223,7 @@ public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 }
 ```
 
-## 其他4：实际使用中，可通过配置和实现文件存储记录接口方法将文件持久化到其他平台中
-
+## 其他2：实际使用中，可通过配置和实现文件存储记录接口方法将文件持久化到其他平台中
 ```yaml
 file:
   preview:
@@ -318,9 +264,66 @@ public class MinIOFileStorageImpl implements IFileStorage {
     }
 }
 ```
+*注意： 文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
 
-*注意：
-文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
+## 其他3：通过内置Rest接口实现自定义页面
+
+
+## 其他4：通过注入FileStorageService实现自定义Rest接口和自定义页面
+
+
+## 其他1：预览文件使用的开源项目
+
+| 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                          |
+|----------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/)                     |                                                                                                                                               |
+| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       | <img src="img_20.png" width="30%" height="30%"><img src="img_19.png" width="30%" height="30%"><img src="img_21.png" width="30%" height="30%"> |
+| word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                                     | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%">    |
+| word/excel/ppt | [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/) | <img src="img_16.png" width="30%" height="30%"><img src="img_15.png" width="30%" height="30%"><img src="img_17.png" width="30%" height="30%"> |
+| word/excel/ppt | [Collabora Online](https://www.collaboraoffice.com/)                             | <img src="img_24.png" width="30%" height="30%"><img src="img_23.png" width="30%" height="30%"><img src="img_25.png" width="30%" height="30%"> |
+| pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
+| audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                                |
+| video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                                |
+| markdonw       | [vditor](https://github.com/Vanessa219/vditor)                                                 | <img src="img.png" width="30%" height="30%">                                                                                                  |
+| 代码             | [CodeMirror](https://codemirror.net/)                                            | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                                 |
+| epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                               |
+| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
+| 网页             | 直接渲染                                                                             | <img src="img_13.png" width="30%" height="30%">                                                                                               |
+| 压缩文件           | [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)   | <img src="img_22.png" width="30%" height="30%">                                                                                               |
+| bpmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_26.png" width="30%" height="30%">                                                                                               |
+| cmmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_27.png" width="30%" height="30%">                                                                                               |
+| dmn            | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_28.png" width="30%" height="30%">                                                                                               |
+
+
+
+## 第四步 注入IFilePreviewService，并对文件进行转换
+> 目的是将 word，ppt转换成pdf excel转换成html，并存储所有的预览文件
+> 也可以只记录源文件的位置
+```java
+    @Autowired
+    FilePreviewService filePreviewService;
+
+    //预览文件转换
+    FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
+```
+
+
+## 其他2：下载文件、删除文件
+
+> 可通过第四步返回的文件信息中的id  
+> 访问http://ip:port/file/preview/download?id=??进行文件下载  
+> 访问http://ip:port/file/preview/delete?id=??进行文件删除  
+> 如果配置了context-path,请在地址中同样添加  
+> 也可以调用IFilePreviewService服务中方法自行处理下载和删除
+
+```java
+    //获取文件bytes
+    FilePreviewInfo filePreviewInfo = filePreviewService.findById(id);
+    byte[] bytes = filePreviewService.getBytes(filePreviewInfo);
+
+    //删除预览文件
+    Boolean result = filePreviewService.delete(filePreviewInfo.getId());  
+```
 
 ## 其他5：自定义预览界面渲染
 在实际使用minio作为对象存储，想直接使用minio的url播放视频  
