@@ -65,8 +65,7 @@
 </script>
 <script>
     layui.use(['table', 'form', 'util'], function () {
-        let table = layui.table, form = layui.form, layer = layui.layer, $ = layui.$, laydate = layui.laydate,
-            upload = layui.upload;
+        let table = layui.table, form = layui.form, layer = layui.layer, upload = layui.upload;
 
         // 搜索提交
         form.on('submit(table-search)', function (data) {
@@ -90,7 +89,7 @@
             }
         });
 
-        var inst = table.render({
+        table.render({
             elem: '#table',
             cols: [[ //标题栏
                 {type: 'numbers', fixed: 'left'},
