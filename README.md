@@ -49,7 +49,14 @@ public class FilePreviewDemoApplication {
 }
 ```
 
-## 第四步 配置word，excel，ppt文件的预览方式，支持5种模式
+## 第四步 添加相关配置
+```yaml
+file:
+  preview:
+    enableWeb: true  # 默认为true，加载内置页面
+    enableRest: true  # 默认为true, 加载内置接口
+```
+#### 配置word，excel，ppt文件的预览方式，支持5种模式
 #### jodconverter
 > 安装[libroffice](https://zh-cn.libreoffice.org/)并添加配置  
 > 详细配置内容请查看[jodconverter](https://github.com/sbraconnier/jodconverter/)
