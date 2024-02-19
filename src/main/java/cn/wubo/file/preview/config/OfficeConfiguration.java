@@ -186,36 +186,41 @@ public class OfficeConfiguration {
      */
     @Bean("wb04307201FilePreviewRouter")
     public RouterFunction<ServerResponse> filePreviewRouter(FilePreviewService filePreviewService, List<IRenderPage> renderPages) {
-        RouterFunctions.Builder builder = RouterFunctions.route().GET("/file/preview/list", RequestPredicates.accept(MediaType.TEXT_HTML), request -> {
-            Map<String, Object> data = new HashMap<>();
-            data.put("contextPath", request.requestPath().contextPath().value());
-            return ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(PageUtils.write("list.ftl", data));
-        }).POST("/file/preview/list", request -> {
-            FilePreviewInfo filePreviewInfo = request.body(FilePreviewInfo.class);
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.list(filePreviewInfo)));
-        }).POST("/file/preview/upload", request -> {
-            Part part = request.multipartData().getFirst("file");
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.covert(part.getInputStream(), part.getSubmittedFileName())));
-        }).GET("/file/preview/delete", request -> {
-            String id = request.param("id").orElseThrow(() -> new IllegalArgumentException(LOST_ID));
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.delete(id)));
-        }).GET("/file/preview/download", request -> {
-            String id = request.param("id").orElseThrow(() -> new IllegalArgumentException(LOST_ID));
-            FilePreviewInfo info = filePreviewService.findById(id);
-            byte[] bytes = filePreviewService.getBytes(info);
-            return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).build((res, req) -> {
-                try (OutputStream os = req.getOutputStream()) {
-                    IoUtils.writeToStream(bytes, os);
-                } catch (IOException e) {
-                    throw new PageRuntimeException(e.getMessage(), e);
-                }
-                return null;
+        RouterFunctions.Builder builder = RouterFunctions.route();
+        if (properties.getEnableWeb() && properties.getEnableRest()) {
+            builder.GET("/file/preview/list", RequestPredicates.accept(MediaType.TEXT_HTML), request -> {
+                Map<String, Object> data = new HashMap<>();
+                data.put("contextPath", request.requestPath().contextPath().value());
+                return ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(PageUtils.write("list.ftl", data));
             });
-        }).GET("/file/preview", request -> previewFunction.apply(request, filePreviewService, renderPages));
-
+        }
+        if (properties.getEnableRest()) {
+            builder.POST("/file/preview/list", request -> {
+                FilePreviewInfo filePreviewInfo = request.body(FilePreviewInfo.class);
+                return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.list(filePreviewInfo)));
+            }).POST("/file/preview/upload", request -> {
+                Part part = request.multipartData().getFirst("file");
+                return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.covert(part.getInputStream(), part.getSubmittedFileName())));
+            }).GET("/file/preview/delete", request -> {
+                String id = request.param("id").orElseThrow(() -> new IllegalArgumentException(LOST_ID));
+                return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.delete(id)));
+            }).GET("/file/preview/download", request -> {
+                String id = request.param("id").orElseThrow(() -> new IllegalArgumentException(LOST_ID));
+                FilePreviewInfo info = filePreviewService.findById(id);
+                byte[] bytes = filePreviewService.getBytes(info);
+                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).build((res, req) -> {
+                    try (OutputStream os = req.getOutputStream()) {
+                        IoUtils.writeToStream(bytes, os);
+                    } catch (IOException e) {
+                        throw new PageRuntimeException(e.getMessage(), e);
+                    }
+                    return null;
+                });
+            });
+        }
+        builder.GET("/file/preview", request -> previewFunction.apply(request, filePreviewService, renderPages));
         if ("only".equals(properties.getOfficeConverter())) addOnlyOfficeCallback(builder);
         else if ("cool".equals(properties.getOfficeConverter())) addWopi(builder, filePreviewService);
-
         return builder.build();
     }
 
