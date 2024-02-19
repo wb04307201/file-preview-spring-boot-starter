@@ -118,6 +118,7 @@ public class OfficeConfiguration {
 
     /**
      * 添加onlyoffice回调路由函数
+     *
      * @param builder 路由函数构建器
      */
     private void addOnlyOfficeCallback(RouterFunctions.Builder builder) {
@@ -144,7 +145,8 @@ public class OfficeConfiguration {
 
     /**
      * 添加WOPi路由函数
-     * @param builder 路由函数构建器
+     *
+     * @param builder            路由函数构建器
      * @param filePreviewService 文件预览服务
      */
     private void addWopi(RouterFunctions.Builder builder, FilePreviewService filePreviewService) {
@@ -187,13 +189,13 @@ public class OfficeConfiguration {
         RouterFunctions.Builder builder = RouterFunctions.route().GET("/file/preview/list", RequestPredicates.accept(MediaType.TEXT_HTML), request -> {
             Map<String, Object> data = new HashMap<>();
             data.put("contextPath", request.requestPath().contextPath().value());
-            return ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(PageUtils.write("list1.ftl", data));
+            return ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(PageUtils.write("list.ftl", data));
         }).POST("/file/preview/list", request -> {
             FilePreviewInfo filePreviewInfo = request.body(FilePreviewInfo.class);
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.list(filePreviewInfo)));
         }).POST("/file/preview/upload", request -> {
             Part part = request.multipartData().getFirst("file");
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(filePreviewService.covert(part.getInputStream(), part.getSubmittedFileName()));
+            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.covert(part.getInputStream(), part.getSubmittedFileName())));
         }).GET("/file/preview/delete", request -> {
             String id = request.param("id").orElseThrow(() -> new IllegalArgumentException(LOST_ID));
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Result.success(filePreviewService.delete(id)));

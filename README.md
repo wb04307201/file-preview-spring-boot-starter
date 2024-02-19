@@ -47,18 +47,7 @@ public class FilePreviewDemoApplication {
 }
 ```
 
-## 第四步 注入IFilePreviewService，并对文件进行转换
-> 目的是将 word，ppt转换成pdf excel转换成html，并存储所有的预览文件
-> 也可以只记录源文件的位置
-```java
-    @Autowired
-    FilePreviewService filePreviewService;
-
-    //预览文件转换
-    FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
-```
-
-### 在针对word，excel，ppt文件的预览上支持5种模式
+## 第四步 配置word，excel，ppt文件的预览方式，支持5种模式
 #### jodconverter
 > 安装[libroffice](https://zh-cn.libreoffice.org/)并添加配置  
 > 详细配置内容请查看[jodconverter](https://github.com/sbraconnier/jodconverter/)
@@ -160,7 +149,7 @@ docker run -t -d --name code -e "username=admin" -e "password=123456" -e "aliasg
 # aliasgroup1=http://10.133.61.38:8090 配置允许wopi访问地址
 ```
 > 容器启动成功后，打开http://127.0.0.1:9980/browser/dist/admin/admin.html可以看到控制台界面
-> ![img_18.png](img_18.png)
+> ![img_29.png](img_29.png)
 > docker版本的cool安装成功后，在项目中添加配置信息
 ```yaml
 file:
@@ -172,11 +161,12 @@ file:
       storageDomain: http://ip:port #当前服务的域名，用于Collabora Online从当前服务下载文件
 ```
 
-## 第六步 预览文件信息
-> 可通过第四步返回的文件信息中的id  
-> 访问http://ip:port/file/preview?id=??进行文件预览  
-> 如果配置了context-path,请在地址中同样添加  
-> 使用了一些开源组件帮助预览文件内容  
+## 第五步 访问内置界面使用文件上传
+上传的文件可通过http://ip:端口/file/preview/list进行查看  
+注意：如配置了context-path需要在地址中对应添加  
+![img_9.png](img_9.png)
+
+## 其他1：预览文件使用的开源项目
 
 | 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                          |
 |----------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
@@ -188,7 +178,7 @@ file:
 | pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
 | audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                                |
 | video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                                |
-| markdonw       | [Marked](https://marked.js.org/)                                                 | <img src="img.png" width="30%" height="30%">                                                                                                  |
+| markdonw       | [vditor](https://github.com/Vanessa219/vditor)                                                 | <img src="img.png" width="30%" height="30%">                                                                                                  |
 | 代码             | [CodeMirror](https://codemirror.net/)                                            | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                                 |
 | epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                               |
 | xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
@@ -200,11 +190,17 @@ file:
 
 
 
-## 其他1：内置界面
+## 第四步 注入IFilePreviewService，并对文件进行转换
+> 目的是将 word，ppt转换成pdf excel转换成html，并存储所有的预览文件
+> 也可以只记录源文件的位置
+```java
+    @Autowired
+    FilePreviewService filePreviewService;
 
-上传的文件可通过http://ip:端口/file/preview/list进行查看  
-注意：如配置了context-path需要在地址中对应添加  
-![img_9.png](img_9.png)
+    //预览文件转换
+    FilePreviewInfo filePreviewInfo=filePreviewService.covert(file.getInputStream(),file.getOriginalFilename());
+```
+
 
 ## 其他2：下载文件、删除文件
 
