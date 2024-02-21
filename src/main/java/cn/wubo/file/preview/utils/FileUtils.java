@@ -334,6 +334,8 @@ public class FileUtils {
                 contentType = "image/tiff";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".svg") || StringUtils.endsWithIgnoreCase(filePath, ".svgz")) {
                 contentType = "image/svg+xml";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".webp")) {
+                contentType = "image/webp";
             }
             // 文本
             else if (StringUtils.endsWithIgnoreCase(filePath, ".txt") || StringUtils.endsWithIgnoreCase(filePath, ".text") || StringUtils.endsWithIgnoreCase(filePath, ".conf") || StringUtils.endsWithIgnoreCase(filePath, ".prop") || StringUtils.endsWithIgnoreCase(filePath, ".rc") || StringUtils.endsWithIgnoreCase(filePath, ".yaml") || StringUtils.endsWithIgnoreCase(filePath, ".properties")) {
@@ -390,6 +392,8 @@ public class FileUtils {
                 contentType = "application/octet-stream";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".xmind")) {
                 contentType = "application/xmind";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".wgt")) {
+                contentType = "application/widget";
             }
         }
 
