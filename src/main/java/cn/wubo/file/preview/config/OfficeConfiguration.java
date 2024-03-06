@@ -24,7 +24,6 @@ import cn.wubo.file.preview.utils.PageUtils;
 import com.spire.doc.Document;
 import com.spire.presentation.Presentation;
 import com.spire.xls.Workbook;
-import jakarta.servlet.http.Part;
 import org.jodconverter.core.DocumentConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -39,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.function.*;
 
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
