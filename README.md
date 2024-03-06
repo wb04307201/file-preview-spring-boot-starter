@@ -645,8 +645,8 @@ public class Demo2Controller {
 | dmn            | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_28.png" width="30%" height="30%">                                                                                               |
 
 ## 其他6：自定义预览界面渲染
-在实际使用minio作为对象存储，想直接使用minio的url播放视频  
-可通过集成IRenderPage并实现support和render方法的方式自定义页面渲染的方式
+比如在实际使用minio作为对象存储，并想直接使用minio的url播放上传的视频  
+可通过继承IRenderPage并实现support和render方法的方式自定义页面渲染的方式
 ```java
 @Service
 public class MinIORenderPage implements IRenderPage {
