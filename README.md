@@ -96,9 +96,9 @@ file:
 > 直接预览word,excel,ppt,文本类型的文件  
 > 可以通过docker快速安装onlyoffice，命令如下
 ```bash
-docker run --name onlyoffice -i -t -d -p 80:80 -e JWT_ENABLED=false onlyoffice/documentserver
-#如果需要使用JWT
 docker run --name onlyoffice -i -t -d -p 80:80 -e JWT_SECRET=my_jwt_secret onlyoffice/documentserver
+#如果需要关闭使用JWT
+docker run --name onlyoffice -i -t -d -p 80:80 -e JWT_ENABLED=false onlyoffice/documentserver
 ```
 可参考官方文档  
 [Installing ONLYOFFICE Docs Community Edition for Docker on a local server](https://helpcenter.onlyoffice.com/installation/docs-community-install-docker.aspx)  
@@ -119,7 +119,7 @@ file:
         domain: http://ip:port #OnlyOffice服务所在域
         download: http://ip:port/file/preview/download #当前服务的文件下载接口，用于onlyoffice从当前服务下载文件
         callback: http://ip:port/file/preview/onlyoffice/callback #当前服务的回写文件服务，用于onlyoffice回写文件到当前服务
-        #secret: my_jwt_secret #如果启用JWT，需要在这里配置约定好的secret
+        secret: my_jwt_secret #如果启用JWT，需要在这里配置约定好的secret
 
 ```
 
