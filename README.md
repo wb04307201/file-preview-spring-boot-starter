@@ -30,7 +30,7 @@
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.1.17</version>
+    <version>1.1.18</version>
 </dependency>
 ```
 
