@@ -36,6 +36,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.function.*;
 
 import javax.servlet.http.Part;
@@ -46,7 +48,7 @@ import java.util.*;
 import java.util.function.Function;
 
 @EnableConfigurationProperties({FilePreviewProperties.class})
-public class OfficeConfiguration {
+public class OfficeConfiguration implements WebMvcConfigurer {
 
     FilePreviewProperties properties;
 
@@ -224,4 +226,15 @@ public class OfficeConfiguration {
         return builder.build();
     }
 
+    /**
+     * 配置内容协商。
+     * 该方法重写configureContentNegotiation方法，用于自定义媒体类型的映射。
+     *
+     * @param configurer ContentNegotiationConfigurer的实例，用于配置内容协商。
+     */
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        // 将扩展名"mjs"映射到应用级JavaScript媒体类型
+        configurer.mediaType("mjs", new MediaType("application", "javascript"));
+    }
 }
