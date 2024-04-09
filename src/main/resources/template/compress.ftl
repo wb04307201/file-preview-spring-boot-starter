@@ -109,7 +109,7 @@
         }
 
         function downloadRow(fileName) {
-            window.open("${contextPath}/file/download?id=" + mainid + "@" + fileName);
+            window.open("${contextPath}/file/preview/download?id=" + mainid + "@" + fileName);
         }
     });
 </script>
