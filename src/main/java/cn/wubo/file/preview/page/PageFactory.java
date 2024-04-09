@@ -4,6 +4,7 @@ import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.exception.PageRuntimeException;
+import cn.wubo.file.preview.page.impl.PdfPage;
 import cn.wubo.file.preview.utils.FileUtils;
 
 import java.lang.reflect.InvocationTargetException;

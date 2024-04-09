@@ -28,4 +28,8 @@ public class FilePreviewInfo implements Serializable {
      * 创建时间
      */
     private Date createTime;
+    /**
+     * 压缩文件内部文件名
+     */
+    private String compressFileName;
 }

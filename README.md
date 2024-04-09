@@ -32,7 +32,7 @@
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
 </dependency>
 ```
 
@@ -120,7 +120,6 @@ file:
         download: http://ip:port/file/preview/download #当前服务的文件下载接口，用于onlyoffice从当前服务下载文件
         callback: http://ip:port/file/preview/onlyoffice/callback #当前服务的回写文件服务，用于onlyoffice回写文件到当前服务
         secret: my_jwt_secret #如果启用JWT，需要在这里配置约定好的secret
-
 ```
 
 #### LibreOffice Online
@@ -636,7 +635,7 @@ public class Demo2Controller {
 | pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
 | audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                                |
 | video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                                |
-| markdonw       | [vditor](https://github.com/Vanessa219/vditor)                                                 | <img src="img.png" width="30%" height="30%">                                                                                                  |
+| markdonw       | [vditor](https://github.com/Vanessa219/vditor)                                   | <img src="img.png" width="30%" height="30%">                                                                                                  |
 | 代码             | [CodeMirror](https://codemirror.net/)                                            | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                                 |
 | epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                               |
 | xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
@@ -670,8 +669,4 @@ public class MinIORenderPage implements IRenderPage {
     }
 }
 ```
-
-## 待办
-
-- [ ] *查看压缩文件的列表时，可对其中的文件进行预览和下载*
 
