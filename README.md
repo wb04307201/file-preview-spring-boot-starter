@@ -32,7 +32,7 @@
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
 </dependency>
 ```
 
@@ -670,8 +670,4 @@ public class MinIORenderPage implements IRenderPage {
     }
 }
 ```
-
-## 待办
-
-- [ ] *查看压缩文件的列表时，可对其中的文件进行预览和下载*
 
