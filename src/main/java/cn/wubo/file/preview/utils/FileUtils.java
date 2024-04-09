@@ -349,8 +349,14 @@ public class FileUtils {
      * @throws PageRuntimeException 如果在读取、写入或处理归档过程中发生任何异常，则抛出页面运行时异常。
      */
     public static Path getSubCompressFile(Path compressFilePath, String compressFileName) throws IOException, ArchiveException {
+        // 处理输入的压缩文件名，确保只使用文件名，不包含路径
+        String subFileName = new String(compressFileName);
+        if (subFileName.contains("/"))
+            subFileName = subFileName.substring(subFileName.lastIndexOf("/") + 1);
+
         // 创建一个临时文件用于保存提取出的文件
-        Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), compressFileName);
+        Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), subFileName);
+
         try (InputStream is = Files.newInputStream(compressFilePath); BufferedInputStream bis = new BufferedInputStream(is); ArchiveInputStream<ArchiveEntry> ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
             ArchiveEntry entry;
             // 遍历压缩文件中的所有条目，查找匹配的文件
@@ -364,4 +370,5 @@ public class FileUtils {
         }
         return path;
     }
+
 }

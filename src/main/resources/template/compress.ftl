@@ -104,12 +104,12 @@
         })
 
         function previewRow(fileName) {
-            window.open("${contextPath}/file/preview?id=" + mainid + "#" + fileName);
+            window.open("${contextPath}/file/preview?id=" + mainid + "@" + fileName);
 
         }
 
         function downloadRow(fileName) {
-            window.open("${contextPath}/file/download?id=" + mainid + "#" + fileName);
+            window.open("${contextPath}/file/download?id=" + mainid + "@" + fileName);
         }
     });
 </script>

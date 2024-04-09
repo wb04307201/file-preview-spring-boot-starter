@@ -85,24 +85,30 @@ public class FilePreviewService {
 
     /**
      * 根据ID查找文件预览信息。
-     * 如果ID中包含"#"，则将ID拆分为两部分，第一部分用于查找文件预览记录，第二部分设置为压缩文件名。
-     * 如果ID中不包含"#"，则直接使用ID查找文件预览记录。
+     * 如果ID包含"@"，则会将ID分割为两部分，一部分用于查找压缩文件记录，另一部分用于设置压缩文件名和原始文件名。
+     * 如果ID不包含"@"，则直接查找对应的文件预览记录。
      *
-     * @param id 文件预览信息的ID，可能包含"#"用于区分压缩文件名。
-     * @return 返回匹配的文件预览信息对象，如果找不到则返回null。
+     * @param id 文件预览信息的唯一标识符。
+     * @return 返回找到的文件预览信息对象。如果未找到，则返回null。
      */
     public FilePreviewInfo findById(String id) {
         FilePreviewInfo filePreviewInfo;
-        // 检查ID是否包含"#"，进行不同的处理
-        if (id.contains("#")) {
-            // 如果包含"#"，拆分ID，并使用前半部分查找文件预览记录
-            int index = id.indexOf("#");
-            filePreviewInfo = filePreviewRecord.findById(id.substring(0, index)); // 查找文件预览记录
-            // 设置压缩文件名
-            filePreviewInfo.setCompressFileName(id.substring(index + 1)); // 设置压缩文件名
+        if (id.contains("@")) {
+            // ID包含"@"，处理以获取压缩文件名和原始文件名
+            int index = id.indexOf("@");
+            filePreviewInfo = filePreviewRecord.findById(id.substring(0, index));
+            String compressFileName = id.substring(index + 1);
+            filePreviewInfo.setCompressFileName(compressFileName);
+
+            // 设置原始文件名，如果压缩文件名中还包含"@"，则取到最后一个"@"为止的字符串，且去除路径部分
+            String subFileName = compressFileName.contains("@") ? compressFileName.substring(0, compressFileName.lastIndexOf("@") + 1) : compressFileName;
+            if (subFileName.contains("/"))
+                subFileName = subFileName.substring(subFileName.lastIndexOf("/") + 1);
+            filePreviewInfo.setOriginalFilename(subFileName);
+            filePreviewInfo.setFileName(subFileName);
         } else {
-            // ID不包含"#"，直接查找文件预览信息
-            filePreviewInfo = filePreviewRecord.findById(id); // 直接使用ID查找文件预览记录
+            // ID不包含"@"，直接查找文件预览记录
+            filePreviewInfo = filePreviewRecord.findById(id);
         }
         return filePreviewInfo;
     }
@@ -118,10 +124,11 @@ public class FilePreviewService {
     public byte[] getBytes(FilePreviewInfo filePreviewInfo) {
         if (filePreviewInfo.getCompressFileName() != null) {
             // 如果文件预览信息中包含压缩文件名，则处理压缩文件
-            String[] compressFileNames = filePreviewInfo.getCompressFileName().split("#");
+            String[] compressFileNames = filePreviewInfo.getCompressFileName().split("@");
             try {
+                FilePreviewInfo compressFilePreviewInfo = findById(filePreviewInfo.getId());
                 // 首先将文件从存储服务中读取出来，然后写入到临时文件
-                Path path = FileUtils.writeTempFile(filePreviewInfo.getFileName(), fileStorage.getBytes(filePreviewInfo));
+                Path path = FileUtils.writeTempFile(compressFilePreviewInfo.getFileName(), fileStorage.getBytes(compressFilePreviewInfo));
                 // 对临时文件进行解压，获取最终需要的文件
                 for (String compressFileName : compressFileNames)
                     path = FileUtils.getSubCompressFile(path, compressFileName);

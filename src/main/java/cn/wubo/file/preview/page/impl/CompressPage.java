@@ -32,36 +32,15 @@ public class CompressPage extends AbstractPage {
     }
 
     /**
-     * 构建响应，根据压缩文件内文件名的不同执行不同的构建逻辑。
-     * 该方法没有参数。
+     * 构建服务器响应对象。
+     * 该方法重写了build方法，主要功能是调用buildCompressList方法来构建并返回一个服务器响应对象。
      *
-     * @return ServerResponse 如果压缩文件名不为空，则返回构建压缩文件的响应；否则返回构建压缩列表的响应。
+     * @return ServerResponse 返回构建的服务器响应对象。
      */
     @Override
     public ServerResponse build() {
-        // 判断压缩文件内文件名是否已设置，根据不同情况调用不同的构建方法
-        if (getInfo().getCompressFileName() != null) return buildCompressFile();
-        else return buildCompressList();
-    }
-
-    /**
-     * 构建并返回一个压缩文件的服务器响应。
-     * 该方法不接受参数，但依赖于外部方法获取信息、文件预览服务、属性以及上下文路径。
-     * 它首先从压缩文件名中提取子文件名，然后设置该子文件名为当前文件名。
-     * 最后，利用提取的信息和其他依赖项创建并构建一个服务器响应对象。
-     *
-     * @return ServerResponse 返回构建好的服务器响应对象，该对象包含了压缩文件的相关信息及预览等。
-     */
-    private ServerResponse buildCompressFile() {
-        // 从压缩文件名中提取子文件名，直到最后一个“#”字符
-        String subFileName = getInfo().getCompressFileName().substring(0, getInfo().getCompressFileName().lastIndexOf("#") + 1);
-        // 如果子文件名中包含文件分隔符，则进一步提取最后一个文件分隔符后的部分作为子文件名
-        if (subFileName.contains(File.separator))
-            subFileName = subFileName.substring(subFileName.lastIndexOf(File.separator) + 1);
-        // 设置提取的子文件名为当前文件名
-        getInfo().setFileName(subFileName);
-        // 利用当前信息、文件预览服务、属性以及上下文路径创建并构建服务器响应对象
-        return PageFactory.create(getInfo(), getFilePreviewService(), getProperties(), getContextPath()).build();
+        // 调用buildCompressList方法构建服务器响应
+        return buildCompressList();
     }
 
     /**
