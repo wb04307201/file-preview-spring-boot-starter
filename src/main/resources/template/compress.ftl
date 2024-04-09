@@ -91,7 +91,7 @@
         });
 
         // 操作列事件
-        table.on('tool(table)', function (obj) {
+        table.on('tool(compress-table)', function (obj) {
             let data = obj.data; // 获得当前行数据
             switch (obj.event) {
                 case 'preview':
