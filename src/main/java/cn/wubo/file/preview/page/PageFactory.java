@@ -4,6 +4,7 @@ import cn.wubo.file.preview.config.FilePreviewProperties;
 import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.exception.PageRuntimeException;
+import cn.wubo.file.preview.page.impl.PdfPage;
 import cn.wubo.file.preview.utils.FileUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +29,8 @@ public class PageFactory {
                 clazz = PageType.getClass("lool");
             } else if ("cool".equals(properties.getOfficeConverter()) && OFFICE_FILE_TYPES.contains(fileType)) {
                 clazz = PageType.getClass("cool");
+            } else if (("jod".equals(properties.getOfficeConverter()) || "spire".equals(properties.getOfficeConverter())) && OFFICE_FILE_TYPES.contains(fileType)) {
+                clazz = PdfPage.class;
             } else {
                 clazz = PageType.getClass(fileType);
             }

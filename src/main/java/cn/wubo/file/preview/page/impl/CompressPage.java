@@ -5,6 +5,7 @@ import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.core.FilePreviewService;
 import cn.wubo.file.preview.exception.PageRuntimeException;
 import cn.wubo.file.preview.page.AbstractPage;
+import cn.wubo.file.preview.page.PageFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -13,6 +14,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -42,36 +44,24 @@ public class CompressPage extends AbstractPage {
         else return buildCompressList();
     }
 
+    /**
+     * 构建并返回一个压缩文件的服务器响应。
+     * 该方法不接受参数，但依赖于外部方法获取信息、文件预览服务、属性以及上下文路径。
+     * 它首先从压缩文件名中提取子文件名，然后设置该子文件名为当前文件名。
+     * 最后，利用提取的信息和其他依赖项创建并构建一个服务器响应对象。
+     *
+     * @return ServerResponse 返回构建好的服务器响应对象，该对象包含了压缩文件的相关信息及预览等。
+     */
     private ServerResponse buildCompressFile() {
-        String compressFileName = getInfo().getCompressFileName();
-        Map<String, Object> data = new HashMap<>();
-        data.put(CONTEXT_PATH, getContextPath());
-
-        // 创建临时文件并写入文件预览内容
-        Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), getInfo().getFileName());
-        Files.write(path, getFilePreviewService().getBytes(getInfo()));
-        Path path2 = Files.createTempFile(String.valueOf(System.currentTimeMillis()), getInfo().getCompressFileName());
-
-        // 存储文件或目录信息的列表
-        List<Map<String, Object>> list = new ArrayList<>();
-        try (InputStream is = Files.newInputStream(path)) {
-            try (BufferedInputStream bis = new BufferedInputStream(is)) {
-                try (ArchiveInputStream<ArchiveEntry> ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
-                    ArchiveEntry entry;
-                    while ((entry = ais.getNextEntry()) != null) {
-                        if(compressFileName.equals(entry.getName())){
-                            Files.write(path2, ais.readAllBytes());
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        FilePreviewInfo info = new FilePreviewInfo();
-        info.setId(getInfo().getId() + "#" + getInfo().getCompressFileName());
-        info.set
-
-        return null;
+        // 从压缩文件名中提取子文件名，直到最后一个“#”字符
+        String subFileName = getInfo().getCompressFileName().substring(0, getInfo().getCompressFileName().lastIndexOf("#") + 1);
+        // 如果子文件名中包含文件分隔符，则进一步提取最后一个文件分隔符后的部分作为子文件名
+        if (subFileName.contains(File.separator))
+            subFileName = subFileName.substring(subFileName.lastIndexOf(File.separator) + 1);
+        // 设置提取的子文件名为当前文件名
+        getInfo().setFileName(subFileName);
+        // 利用当前信息、文件预览服务、属性以及上下文路径创建并构建服务器响应对象
+        return PageFactory.create(getInfo(), getFilePreviewService(), getProperties(), getContextPath()).build();
     }
 
     /**
@@ -94,28 +84,23 @@ public class CompressPage extends AbstractPage {
 
             // 存储文件或目录信息的列表
             List<Map<String, Object>> list = new ArrayList<>();
-            try (InputStream is = Files.newInputStream(path)) {
-                try (BufferedInputStream bis = new BufferedInputStream(is)) {
-                    // 使用归档输入流读取临时文件，解析文件条目
-                    try (ArchiveInputStream<ArchiveEntry> ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
-                        ArchiveEntry entry;
-                        AtomicInteger atomicInteger = new AtomicInteger(0);
-                        // 遍历归档文件中的所有条目，构建文件信息列表
-                        while ((entry = ais.getNextEntry()) != null) {
-                            Map<String, Object> map = new HashMap<>();
-                            // 区分条目是目录还是文件，并记录相关信息
-                            if (entry.isDirectory()) {
-                                log.debug("directory: " + entry.getName());
-                                map.put("fileType", "directory");
-                            } else {
-                                log.debug("file: " + entry.getName());
-                                map.put("fileType", "file");
-                            }
-                            map.put("fileName", entry.getName());
-                            map.put("id", atomicInteger.addAndGet(1));
-                            list.add(map);
-                        }
+            try (InputStream is = Files.newInputStream(path); BufferedInputStream bis = new BufferedInputStream(is); ArchiveInputStream<ArchiveEntry> ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
+                ArchiveEntry entry;
+                AtomicInteger atomicInteger = new AtomicInteger(0);
+                // 遍历归档文件中的所有条目，构建文件信息列表
+                while ((entry = ais.getNextEntry()) != null) {
+                    Map<String, Object> map = new HashMap<>();
+                    // 区分条目是目录还是文件，并记录相关信息
+                    if (entry.isDirectory()) {
+                        log.debug("directory: " + entry.getName());
+                        map.put("fileType", "directory");
+                    } else {
+                        log.debug("file: " + entry.getName());
+                        map.put("fileType", "file");
                     }
+                    map.put("fileName", entry.getName());
+                    map.put("id", atomicInteger.addAndGet(1));
+                    list.add(map);
                 }
             }
             // 将文件列表和主要ID添加到数据容器
@@ -128,5 +113,4 @@ public class CompressPage extends AbstractPage {
             throw new PageRuntimeException(e.getMessage(), e);
         }
     }
-
 }

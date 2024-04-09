@@ -1,10 +1,18 @@
 package cn.wubo.file.preview.utils;
 
+import cn.wubo.file.preview.exception.PageRuntimeException;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.springframework.util.StringUtils;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileUtils {
@@ -323,5 +331,37 @@ public class FileUtils {
         }
 
         return contentType;
+    }
+
+    public static Path writeTempFile(String tempFileName, byte[] bytes) throws IOException {
+        Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), tempFileName);
+        Files.write(path, bytes);
+        return path;
+    }
+
+    /**
+     * 压缩文件获取方法。
+     * 该方法会从指定的压缩文件中提取出指定的文件，并将其保存到一个临时文件中。
+     *
+     * @param compressFilePath 指定的压缩文件的路径。
+     * @param compressFileName 需要从压缩文件中提取的文件名称。
+     * @return 返回提取出的文件的Path对象。
+     * @throws PageRuntimeException 如果在读取、写入或处理归档过程中发生任何异常，则抛出页面运行时异常。
+     */
+    public static Path getSubCompressFile(Path compressFilePath, String compressFileName) throws IOException, ArchiveException {
+        // 创建一个临时文件用于保存提取出的文件
+        Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), compressFileName);
+        try (InputStream is = Files.newInputStream(compressFilePath); BufferedInputStream bis = new BufferedInputStream(is); ArchiveInputStream<ArchiveEntry> ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
+            ArchiveEntry entry;
+            // 遍历压缩文件中的所有条目，查找匹配的文件
+            while ((entry = ais.getNextEntry()) != null) {
+                if (compressFileName.equals(entry.getName())) {
+                    // 找到匹配的文件，将其内容写入临时文件
+                    Files.write(path, ais.readAllBytes());
+                    break;
+                }
+            }
+        }
+        return path;
     }
 }
