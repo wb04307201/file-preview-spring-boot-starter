@@ -107,6 +107,7 @@ public class FileUtils {
             case "mp3", "wav", "m4a", "m3u", "m4b", "m4p", "mp2", "mpga", "rmvb", "wma", "wmv" -> "audio";
             case "zip", "rar", "7z", "gzip" -> "compressed file";
             case "pdf" -> "pdf";
+            case "ofd" -> "ofd";
             case "htm", "html" -> "html";
             case "md" -> "markdown";
             case "sql" -> "sql";
@@ -370,5 +371,4 @@ public class FileUtils {
         }
         return path;
     }
-
 }
