@@ -1,7 +1,5 @@
 package cn.wubo.file.preview.storage;
 
-import cn.wubo.file.preview.core.FilePreviewInfo;
-
 public interface IFileStorage {
 
     /**
@@ -10,21 +8,21 @@ public interface IFileStorage {
      * @param fileName
      * @return
      */
-    FilePreviewInfo save(byte[] bytes, String fileName);
+    String save(byte[] bytes, String fileName);
 
     /**
      * 删除文件
-     * @param filePreviewInfo
+     * @param path
      * @return
      */
-    Boolean delete(FilePreviewInfo filePreviewInfo);
+    Boolean delete(String path);
 
     /**
      * 获取文件bytes
-     * @param filePreviewInfo
+     * @param path
      * @return
      */
-    byte[] getBytes(FilePreviewInfo filePreviewInfo);
+    byte[] getBytes(String path);
 
     /**
      * 初始化
