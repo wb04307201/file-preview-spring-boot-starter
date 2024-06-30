@@ -1,6 +1,5 @@
 package cn.wubo.file.preview.storage.impl;
 
-import cn.wubo.file.preview.core.FilePreviewInfo;
 import cn.wubo.file.preview.exception.StorageRuntimeException;
 import cn.wubo.file.preview.storage.IFileStorage;
 
@@ -14,26 +13,22 @@ public class LocalFileStorageImpl implements IFileStorage {
     private String basePath = "temp";
 
     @Override
-    public FilePreviewInfo save(byte[] bytes, String fileName) {
-        FilePreviewInfo filePreviewInfo = new FilePreviewInfo();
-        filePreviewInfo.setFileName(fileName);
-
+    public String save(byte[] bytes, String fileName) {
         Path filePath = Paths.get(basePath, fileName);
-        filePreviewInfo.setFilePath(filePath.toString());
         try {
             Files.createDirectories(filePath.getParent());
             if (Files.exists(filePath)) Files.delete(filePath);
             Files.createFile(filePath);
             Files.write(filePath, bytes);
-            return filePreviewInfo;
+            return filePath.toString();
         } catch (IOException e) {
             throw new StorageRuntimeException(e.getMessage(), e);
         }
     }
 
     @Override
-    public Boolean delete(FilePreviewInfo filePreviewInfo) {
-        Path filePath = Paths.get(filePreviewInfo.getFilePath());
+    public Boolean delete(String path) {
+        Path filePath = Paths.get(path);
         try {
             Files.delete(filePath);
         } catch (IOException e) {
@@ -43,9 +38,9 @@ public class LocalFileStorageImpl implements IFileStorage {
     }
 
     @Override
-    public byte[] getBytes(FilePreviewInfo filePreviewInfo) {
+    public byte[] getBytes(String path) {
         try {
-            return Files.readAllBytes(Paths.get(filePreviewInfo.getFilePath()));
+            return Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             throw new StorageRuntimeException(e.getMessage(), e);
         }

@@ -1,5 +1,6 @@
 package cn.wubo.file.preview.core;
 
+import cn.wubo.file.preview.exception.PreviewRuntimeException;
 import cn.wubo.file.preview.office.IOfficeConverter;
 import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
@@ -34,27 +35,38 @@ public class FilePreviewService {
     }
 
     /**
-     * 将输入流中的文件转换为预览信息。
+     * 转换输入流中的文件内容，生成预览信息。
+     * 该方法接收一个输入流和文件名，通过officeConverter将文件内容转换为新的格式，
+     * 并保存转换后的文件，最后返回包含预览信息的对象。
      *
-     * @param is       输入流，代表待转换的文件。
-     * @param fileName 原文件名称。
-     * @return FilePreviewInfo 文件预览信息对象，包含转换后的文件存储信息和记录。
+     * @param is       输入流，代表待转换的文件内容。
+     * @param fileName 原文件名。
+     * @return 返回包含转换后文件名、文件路径、原文件名和创建时间的文件预览信息对象。
      */
     public FilePreviewInfo covert(InputStream is, String fileName) {
-        // 转换文件
+        // 用于存储转换后的文件字节内容
         byte[] bytes;
+        // 存储转换后的新文件名
         String newFileName;
+
         try (FastByteArrayOutputStream os = new FastByteArrayOutputStream()) {
+            // 使用officeConverter进行文件转换，同时获取新文件名
             newFileName = officeConverter.convert(is, os, fileName);
+            // 将转换后的文件内容保存到字节数组中
             bytes = os.toByteArray();
         }
 
-        // 存储转换后的文件
-        FilePreviewInfo filePreviewInfo = fileStorage.save(bytes, newFileName);
-
-        // 保存文件预览记录
+        // 创建文件预览信息对象
+        FilePreviewInfo filePreviewInfo = new FilePreviewInfo();
+        // 设置新文件名
+        filePreviewInfo.setFileName(newFileName);
+        // 保存转换后的文件到文件存储系统，并获取保存后的文件路径
+        filePreviewInfo.setFilePath(fileStorage.save(bytes, newFileName));
+        // 设置原文件名
         filePreviewInfo.setOriginalFilename(fileName);
+        // 设置文件的创建时间
         filePreviewInfo.setCreateTime(new Date());
+        // 将文件预览信息保存到数据库，并返回保存后的对象
         filePreviewInfo = filePreviewRecord.save(filePreviewInfo);
         return filePreviewInfo;
     }
@@ -80,7 +92,7 @@ public class FilePreviewService {
         // 根据ID查找文件预览信息
         FilePreviewInfo filePreviewInfo = filePreviewRecord.findById(id);
         // 尝试删除文件及其预览信息，并返回操作结果
-        return fileStorage.delete(filePreviewInfo) && filePreviewRecord.delete(filePreviewInfo);
+        return fileStorage.delete(filePreviewInfo.getFilePath()) && filePreviewRecord.delete(filePreviewInfo);
     }
 
     /**
@@ -102,8 +114,7 @@ public class FilePreviewService {
 
             // 设置原始文件名，如果压缩文件名中还包含"@"，则取到最后一个"@"为止的字符串，且去除路径部分
             String subFileName = compressFileName.contains("@") ? compressFileName.substring(0, compressFileName.lastIndexOf("@") + 1) : compressFileName;
-            if (subFileName.contains("/"))
-                subFileName = subFileName.substring(subFileName.lastIndexOf("/") + 1);
+            if (subFileName.contains("/")) subFileName = subFileName.substring(subFileName.lastIndexOf("/") + 1);
             filePreviewInfo.setOriginalFilename(subFileName);
             filePreviewInfo.setFileName(subFileName);
         } else {
@@ -128,7 +139,7 @@ public class FilePreviewService {
             try {
                 FilePreviewInfo compressFilePreviewInfo = findById(filePreviewInfo.getId());
                 // 首先将文件从存储服务中读取出来，然后写入到临时文件
-                Path path = FileUtils.writeTempFile(compressFilePreviewInfo.getFileName(), fileStorage.getBytes(compressFilePreviewInfo));
+                Path path = FileUtils.writeTempFile(compressFilePreviewInfo.getFileName(), fileStorage.getBytes(compressFilePreviewInfo.getFilePath()));
                 // 对临时文件进行解压，获取最终需要的文件
                 for (String compressFileName : compressFileNames)
                     path = FileUtils.getSubCompressFile(path, compressFileName);
@@ -136,11 +147,11 @@ public class FilePreviewService {
                 return IoUtils.toByteArray(new BufferedInputStream(Files.newInputStream(path)));
             } catch (IOException | ArchiveException e) {
                 // 如果处理过程中出现异常，则抛出运行时异常
-                throw new RuntimeException(e);
+                throw new PreviewRuntimeException(e.getMessage(), e);
             }
         } else {
             // 如果没有压缩文件名，则直接通过文件存储服务获取指定文件预览信息对应的字节码
-            return fileStorage.getBytes(filePreviewInfo);
+            return fileStorage.getBytes(filePreviewInfo.getFilePath());
         }
     }
 }
