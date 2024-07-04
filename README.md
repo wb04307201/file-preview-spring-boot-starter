@@ -4,17 +4,46 @@
 [![star](https://gitee.com/wb04307201/file-preview-spring-boot-starter/badge/star.svg?theme=dark)](https://gitee.com/wb04307201/file-preview-spring-boot-starter)
 [![fork](https://gitee.com/wb04307201/file-preview-spring-boot-starter/badge/fork.svg?theme=dark)](https://gitee.com/wb04307201/file-preview-spring-boot-starter)
 [![star](https://img.shields.io/github/stars/wb04307201/file-preview-spring-boot-starter)](https://github.com/wb04307201/file-preview-spring-boot-starter)
-[![fork](https://img.shields.io/github/forks/wb04307201/file-preview-spring-boot-starter)](https://github.com/wb04307201/file-preview-spring-boot-starter)
+[![fork](https://img.shields.io/github/forks/wb04307201/file-preview-spring-boot-starter)](https://github.com/wb04307201/file-preview-spring-boot-starter)  
+![MIT](https://img.shields.io/badge/License-Apache2.0-blue.svg) ![JDK](https://img.shields.io/badge/JDK-17+-green.svg) ![SpringBoot](https://img.shields.io/badge/Srping%20Boot-3+-green.svg)
 
+## 简介
 > 一个文档在线预览的中间件  
 > 可通过简单的配置即可集成到springboot中  
 > 支持word、excel、ppt、pdf、ofd、图片、视频、音频、markdown、代码、网页、epub电子书、Xmind脑图、压缩文件、bpmn(业务流程管理和符号)、cmmn(案例管理模型和符号)、dmn(决策管理和符号)等格式文件的在线预览
+
+
+## 支持的文件类型以及相关的的开源项目
+| 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                          |
+|----------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/)                     |                                                                                                                                               |
+| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       | <img src="img_20.png" width="30%" height="30%"><img src="img_19.png" width="30%" height="30%"><img src="img_21.png" width="30%" height="30%"> |
+| word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                                     | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%">    |
+| word/excel/ppt | [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/) | <img src="img_16.png" width="30%" height="30%"><img src="img_15.png" width="30%" height="30%"><img src="img_17.png" width="30%" height="30%"> |
+| word/excel/ppt | [Collabora Online](https://www.collaboraoffice.com/)                             | <img src="img_24.png" width="30%" height="30%"><img src="img_23.png" width="30%" height="30%"><img src="img_25.png" width="30%" height="30%"> |
+| pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
+| audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                                |
+| video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                                |
+| markdonw       | [vditor](https://github.com/Vanessa219/vditor)                                   | <img src="img.png" width="30%" height="30%">                                                                                                  |
+| 代码             | [CodeMirror](https://codemirror.net/)                                            | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                                 |
+| epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                               |
+| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
+| 网页             | 直接渲染                                                                             | <img src="img_13.png" width="30%" height="30%">                                                                                               |
+| 压缩文件           | [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)   | <img src="img_22.png" width="30%" height="30%">                                                                                               |
+| bpmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_26.png" width="30%" height="30%">                                                                                               |
+| cmmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_27.png" width="30%" height="30%">                                                                                               |
+| dmn            | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_28.png" width="30%" height="30%">                                                                                               |
+| ofd            | [ofd.js](https://gitee.com/Donal/ofd.js)                                        | <img src="img_30.png" width="30%" height="30%">                                                                                               |
+
 
 ## 代码示例
 1. 使用[文档在线预览](https://gitee.com/wb04307201/file-preview-spring-boot-starter)、[多平台文件存储](https://gitee.com/wb04307201/file-storage-spring-boot-starter)、[实体SQL工具](https://gitee.com/wb04307201/sql-util)实现的[文件预览Demo](https://gitee.com/wb04307201/file-preview-demo)
 2. 使用[文档在线预览](https://gitee.com/wb04307201/file-preview-spring-boot-starter)、[多平台文件存储](https://gitee.com/wb04307201/file-storage-spring-boot-starter)、[实体SQL工具](https://gitee.com/wb04307201/sql-util)实现的[文件预览VUE Demo](https://gitee.com/wb04307201/file-preview-vue)
 
-## 第一步 增加 JitPack 仓库
+
+## 快速开始
+### 引入依赖
+增加 JitPack 仓库
 ```xml
 <repositories>
     <repository>
@@ -24,7 +53,6 @@
 </repositories>
 ```
 
-## 第二步 引入jar
 1.1.7版本后groupId更换为com.github.wb04307201  
 1.2.0版本后升级到jdk17 SpringBoot3+  
 继续使用jdk 8请查看jdk8分支
@@ -36,7 +64,7 @@
 </dependency>
 ```
 
-## 第三步 在启动类上加上`@EnableFilePreview`注解
+### 在启动类上加上`@EnableFilePreview`注解
 ```java
 @EnableFilePreview
 @SpringBootApplication
@@ -49,7 +77,7 @@ public class FilePreviewDemoApplication {
 }
 ```
 
-## 第四步 添加相关配置
+### 添加相关配置
 ```yaml
 file:
   preview:
@@ -169,12 +197,13 @@ file:
       storageDomain: http://ip:port #当前服务的域名，用于Collabora Online从当前服务下载文件
 ```
 
-## 第五步 访问内置界面使用文件上传
+### 访问内置界面使用文件上传
 上传的文件可通过http://ip:端口/file/preview/list进行查看  
 注意：如配置了context-path需要在地址中对应添加  
 ![img_9.png](img_9.png)
 
-## 其他1：实际使用中，可通过配置和实现文件预览记录接口方法将数据持久化到数据库中
+## 高级
+### 实际使用中，可通过配置和实现文件预览记录接口方法将数据持久化到数据库中
 ```yaml
 file:
   preview:
@@ -228,7 +257,7 @@ public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 }
 ```
 
-## 其他2：实际使用中，可通过配置和实现文件存储记录接口方法将文件持久化到其他平台中
+### 实际使用中，可通过配置和实现文件存储记录接口方法将文件持久化到其他平台中
 ```yaml
 file:
   preview:
@@ -271,7 +300,7 @@ public class MinIOFileStorageImpl implements IFileStorage {
 ```
 *注意： 文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
 
-## 其他3：通过内置Rest接口实现自定义页面
+### 通过内置Rest接口实现自定义页面
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -435,7 +464,7 @@ public class MinIOFileStorageImpl implements IFileStorage {
 </html>
 ```
 
-## 其他4：通过注入FileStorageService实现自定义Rest接口和自定义页面
+### 通过注入FileStorageService实现自定义Rest接口和自定义页面
 ```java
 @Controller
 public class Demo2Controller {
@@ -623,31 +652,7 @@ public class Demo2Controller {
 </html>
 ```
 
-## 其他5：预览文件使用的开源项目
-
-| 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                          |
-|----------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| word/excel/ppt | [jodconverter](https://github.com/sbraconnier/jodconverter/)                     |                                                                                                                                               |
-| word/excel/ppt | [Spire.Office](https://www.e-iceblue.com/)                                       | <img src="img_20.png" width="30%" height="30%"><img src="img_19.png" width="30%" height="30%"><img src="img_21.png" width="30%" height="30%"> |
-| word/excel/ppt | [onlyoffice](https://www.onlyoffice.com/zh/)                                     | <img src="img_2.png" width="30%" height="30%"><img src="img_6.png" width="30%" height="30%"><img src="img_8.png" width="30%" height="30%">    |
-| word/excel/ppt | [libreoffice online](https://zh-cn.libreoffice.org/download/libreoffice-online/) | <img src="img_16.png" width="30%" height="30%"><img src="img_15.png" width="30%" height="30%"><img src="img_17.png" width="30%" height="30%"> |
-| word/excel/ppt | [Collabora Online](https://www.collaboraoffice.com/)                             | <img src="img_24.png" width="30%" height="30%"><img src="img_23.png" width="30%" height="30%"><img src="img_25.png" width="30%" height="30%"> |
-| pdf            | [PDF.js](https://mozilla.github.io/pdf.js/)                                      | <img src="img_11.png" width="30%" height="30%">                                                                                               |
-| audio音频        | [audio.js](http://kolber.github.io/audiojs/)                                     | <img src="img_4.png" width="30%" height="30%">                                                                                                |
-| video视频        | [videojs](https://videojs.com/)                                                  | <img src="img_5.png" width="30%" height="30%">                                                                                                |
-| markdonw       | [vditor](https://github.com/Vanessa219/vditor)                                   | <img src="img.png" width="30%" height="30%">                                                                                                  |
-| 代码             | [CodeMirror](https://codemirror.net/)                                            | <img src="img_1.png" width="30%" height="30%"><img src="img_10.png" width="30%" height="30%">                                                 |
-| epub电子书        | [epub.js](https://github.com/futurepress/epub.js)                                | <img src="img_12.png" width="30%" height="30%">                                                                                               |
-| xmid脑图         | [xmind-embed-viewer](https://github.com/xmindltd/xmind-embed-viewer)             | <img src="img_14.png" width="30%" height="30%">                                                                                               |
-| 网页             | 直接渲染                                                                             | <img src="img_13.png" width="30%" height="30%">                                                                                               |
-| 压缩文件           | [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)   | <img src="img_22.png" width="30%" height="30%">                                                                                               |
-| bpmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_26.png" width="30%" height="30%">                                                                                               |
-| cmmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_27.png" width="30%" height="30%">                                                                                               |
-| dmn            | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_28.png" width="30%" height="30%">                                                                                               |
-| ofd            | [ofd.js](https://gitee.com/Donal/ofd.js)                                        | <img src="img_30.png" width="30%" height="30%">                                                                                               |
-
-
-## 其他6：自定义预览界面渲染
+### 自定义预览界面渲染
 比如在实际使用minio作为对象存储，并想直接使用minio的url播放上传的视频  
 可通过继承IRenderPage并实现support和render方法的方式自定义页面渲染的方式
 ```java
