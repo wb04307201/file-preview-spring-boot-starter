@@ -203,7 +203,7 @@ file:
 ![img_9.png](img_9.png)
 
 ## 高级
-### 实际使用中，可通过配置和实现文件预览记录接口方法将数据持久化到数据库中
+### 如何通过配置和实现文件预览记录接口方法将数据持久化到数据库中
 ```yaml
 file:
   preview:
@@ -257,7 +257,7 @@ public class H2FilePriviewRecordImpl implements IFilePreviewRecord {
 }
 ```
 
-### 实际使用中，可通过配置和实现文件存储记录接口方法将文件持久化到其他平台中
+### 如何通过配置和实现文件存储记录接口方法将文件持久化到其他平台中
 ```yaml
 file:
   preview:
@@ -300,7 +300,7 @@ public class MinIOFileStorageImpl implements IFileStorage {
 ```
 *注意： 文件存储这部分使用了[file-storage-spring-boot-starter](https://gitee.com/wb04307201/file-storage-spring-boot-starter)*
 
-### 通过内置Rest接口实现自定义页面
+### 如何通过内置Rest接口实现自定义页面
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -464,7 +464,7 @@ public class MinIOFileStorageImpl implements IFileStorage {
 </html>
 ```
 
-### 通过注入FileStorageService实现自定义Rest接口和自定义页面
+### 如何通过注入FileStorageService实现自定义Rest接口和自定义页面
 ```java
 @Controller
 public class Demo2Controller {
@@ -652,7 +652,7 @@ public class Demo2Controller {
 </html>
 ```
 
-### 自定义预览界面渲染
+### 如何自定义文件预览方式
 比如在实际使用minio作为对象存储，并想直接使用minio的url播放上传的视频  
 可通过继承IRenderPage并实现support和render方法的方式自定义页面渲染的方式
 ```java
