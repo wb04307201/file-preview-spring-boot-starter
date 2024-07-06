@@ -27,7 +27,13 @@ public class MemFilePreviewRecordImpl implements IFilePreviewRecord {
 
     @Override
     public List<FilePreviewInfo> list(FilePreviewInfo filePreviewInfo) {
-        return filePreviewInfos.stream().filter(e -> !StringUtils.hasLength(filePreviewInfo.getId()) || e.getId().equals(filePreviewInfo.getId())).filter(e -> !StringUtils.hasLength(filePreviewInfo.getFileName()) || e.getFileName().contains(filePreviewInfo.getFileName())).filter(e -> !StringUtils.hasLength(filePreviewInfo.getFilePath()) || e.getFilePath().contains(filePreviewInfo.getFilePath())).toList();
+        // @formatter:off
+        return filePreviewInfos.stream()
+                .filter(e -> !StringUtils.hasLength(filePreviewInfo.getId()) || e.getId().equals(filePreviewInfo.getId()))
+                .filter(e -> !StringUtils.hasLength(filePreviewInfo.getFileName()) || e.getFileName().contains(filePreviewInfo.getFileName()))
+                .filter(e -> !StringUtils.hasLength(filePreviewInfo.getFilePath()) || e.getFilePath().contains(filePreviewInfo.getFilePath()))
+                .toList();
+        // @formatter:om
     }
 
     @Override

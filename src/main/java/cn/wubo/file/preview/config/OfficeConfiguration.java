@@ -97,13 +97,21 @@ public class OfficeConfiguration {
      */
     @Bean
     public FilePreviewService filePreviewService(IOfficeConverter officeConverter, List<IFileStorage> fileStorageList, List<IFilePreviewRecord> filePreviewRecordList) {
+        // @formatter:off
         // 根据配置选择并初始化文件存储服务
-        IFileStorage fileStorage = fileStorageList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFileStorage())).findAny().orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage())));
+        IFileStorage fileStorage = fileStorageList.stream()
+                .filter(obj -> obj.getClass().getName().equals(properties.getFileStorage()))
+                .findAny()
+                .orElseThrow(() -> new StorageRuntimeException(String.format("未找到%s对应的bean，无法加载IFileStorage！", properties.getFileStorage())));
         fileStorage.init();
 
         // 根据配置选择并初始化文件预览记录服务
-        IFilePreviewRecord filePreviewRecord = filePreviewRecordList.stream().filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord())).findAny().orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord())));
+        IFilePreviewRecord filePreviewRecord = filePreviewRecordList.stream()
+                .filter(obj -> obj.getClass().getName().equals(properties.getFilePreviewRecord()))
+                .findAny()
+                .orElseThrow(() -> new RecordRuntimeException(String.format("未找到%s对应的bean，无法加载IFilePreviewRecord！", properties.getFilePreviewRecord())));
         filePreviewRecord.init();
+        // @formatter:on
 
         // 创建并返回文件预览服务实例
         return new FilePreviewService(officeConverter, fileStorage, filePreviewRecord);
@@ -217,6 +225,7 @@ public class OfficeConfiguration {
             String id = request.pathVariable("id"); // 从请求路径中获取文件id
             FilePreviewInfo info = filePreviewService.findById(id); // 根据id查询文件预览信息
             byte[] bytes = filePreviewService.getBytes(info); // 根据文件信息获取文件内容
+            // @formatter:off
             // 构建返回文件内容的响应
             return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))) // 根据文件名设置响应的内容类型
                     .contentLength(bytes.length) // 设置响应内容的长度
@@ -229,6 +238,7 @@ public class OfficeConfiguration {
                         }
                         return new ModelAndView(); // 返回空的ModelAndView对象
                     });
+            // @formatter:on
         });
     }
 
@@ -272,8 +282,12 @@ public class OfficeConfiguration {
                 String id = request.param("id").orElseThrow(() -> new IllegalArgumentException(LOST_ID));
                 FilePreviewInfo info = filePreviewService.findById(id);
                 byte[] bytes = filePreviewService.getBytes(info);
+                // @formatter:off
                 // 处理文件下载请求，返回文件内容。
-                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName()))).contentLength(bytes.length).header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1)).build((res, req) -> {
+                return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName())))
+                        .contentLength(bytes.length)
+                        .header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1))
+                        .build((res, req) -> {
                     try (OutputStream os = req.getOutputStream()) {
                         IoUtils.writeToStream(bytes, os);
                     } catch (IOException e) {
@@ -281,6 +295,7 @@ public class OfficeConfiguration {
                     }
                     return null;
                 });
+                // @formatter:on
             });
         }
 

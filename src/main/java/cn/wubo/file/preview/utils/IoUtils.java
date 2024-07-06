@@ -101,10 +101,8 @@ public class IoUtils {
      * @throws IOException 如果在读取文件或写入文件过程中发生I/O错误。
      */
     public static String readLines(byte[] bytes, String fileName) throws IOException {
-        // 创建一个临时文件
-        Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), fileName);
-        // 将字节数据写入临时文件
-        Files.write(path, bytes);
+        // 创建一个临时文件，并将字节数据写入临时文件
+        Path path = FileUtils.writeTempFile(fileName, bytes);
         try (Stream<String> lines = Files.lines(path)) {
             // 读取临时文件的每行内容，合并为一个字符串，并对其进行Base64编码
             return new String(Base64.getEncoder().encode(lines.collect(Collectors.joining("\n")).getBytes()));

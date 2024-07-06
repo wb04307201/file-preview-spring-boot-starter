@@ -14,4 +14,24 @@ public class FilePreviewProperties {
     private OnlyOfficeProperties onlyOffice = new OnlyOfficeProperties();
     private LibreOfficeProperties libreOffice = new LibreOfficeProperties();
     private CollaboraProperties collabora = new CollaboraProperties();
+
+    @Data
+    public static class CollaboraProperties {
+        private String domain;
+        private String storageDomain;
+    }
+
+    @Data
+    public static class LibreOfficeProperties {
+        private String domain;
+        private String storage;
+    }
+
+    @Data
+    public static class OnlyOfficeProperties {
+        private String domain;
+        private String download;
+        private String callback;
+        private String secret;
+    }
 }

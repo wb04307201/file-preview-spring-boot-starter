@@ -70,6 +70,13 @@
                 <artifactId>fusionauth-jwt</artifactId>
                 <version>5.3.2</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/jakarta.transaction/jakarta.transaction-api -->
+            <dependency>
+                <groupId>jakarta.transaction</groupId>
+                <artifactId>jakarta.transaction-api</artifactId>
+                <version>2.0.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -118,6 +125,11 @@
         <dependency>
             <groupId>io.fusionauth</groupId>
             <artifactId>fusionauth-jwt</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
         </dependency>
 
         <dependency>
