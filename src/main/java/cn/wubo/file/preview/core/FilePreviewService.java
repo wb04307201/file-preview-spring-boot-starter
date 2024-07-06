@@ -6,6 +6,7 @@ import cn.wubo.file.preview.record.IFilePreviewRecord;
 import cn.wubo.file.preview.storage.IFileStorage;
 import cn.wubo.file.preview.utils.FileUtils;
 import cn.wubo.file.preview.utils.IoUtils;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.util.FastByteArrayOutputStream;
@@ -43,6 +44,7 @@ public class FilePreviewService {
      * @param fileName 原文件名。
      * @return 返回包含转换后文件名、文件路径、原文件名和创建时间的文件预览信息对象。
      */
+    @Transactional(rollbackOn = Exception.class)
     public FilePreviewInfo covert(InputStream is, String fileName) {
         // 用于存储转换后的文件字节内容
         byte[] bytes;
@@ -88,6 +90,7 @@ public class FilePreviewService {
      * @param id 预览信息的唯一标识符。
      * @return 返回一个布尔值，表示是否成功删除。若文件预览信息和对应的文件都成功删除，则返回true；否则返回false。
      */
+    @Transactional(rollbackOn = Exception.class)
     public Boolean delete(String id) {
         // 根据ID查找文件预览信息
         FilePreviewInfo filePreviewInfo = filePreviewRecord.findById(id);
