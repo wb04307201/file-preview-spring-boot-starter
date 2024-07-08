@@ -14,7 +14,7 @@ public class LocalFileStorageImpl implements IFileStorage {
 
     @Override
     public String save(byte[] bytes, String fileName) {
-        Path filePath = Paths.get(basePath, fileName);
+        Path filePath = Paths.get(basePath, System.currentTimeMillis() + "", fileName);
         try {
             Files.createDirectories(filePath.getParent());
             if (Files.exists(filePath)) Files.delete(filePath);
