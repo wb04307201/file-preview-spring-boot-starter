@@ -1,6 +1,5 @@
 package cn.wubo.file.preview.utils;
 
-import cn.wubo.file.preview.exception.PageRuntimeException;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -334,41 +333,66 @@ public class FileUtils {
         return contentType;
     }
 
+    /**
+     * 将指定的字节数组写入临时文件。
+     *
+     * 该方法通过结合当前系统时间和指定的tempFileName来生成唯一的临时文件名，
+     * 将字节数组写入文件，然后返回创建的文件路径。使用Files.createTempFile确保了文件名的唯一性和临时文件位置的安全性。
+     *
+     * @param tempFileName 临时文件名的后缀。与当前系统时间组合以生成唯一的文件名。
+     * @param bytes 要写入文件的字节数组。
+     * @return 创建的临时文件的Path对象，表示文件路径。
+     * @throws IOException 如果在文件创建或写入过程中发生I/O错误。
+     */
     public static Path writeTempFile(String tempFileName, byte[] bytes) throws IOException {
+        // 根据当前系统时间和指定的tempFileName生成唯一的临时文件路径。
         Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), tempFileName);
+        // 将指定的字节数组写入文件。
         Files.write(path, bytes);
+        // 返回创建的文件路径。
         return path;
     }
 
     /**
-     * 压缩文件获取方法。
-     * 该方法会从指定的压缩文件中提取出指定的文件，并将其保存到一个临时文件中。
+     * 从压缩文件中提取指定的子文件，并返回其临时路径。
      *
-     * @param compressFilePath 指定的压缩文件的路径。
-     * @param compressFileName 需要从压缩文件中提取的文件名称。
-     * @return 返回提取出的文件的Path对象。
-     * @throws PageRuntimeException 如果在读取、写入或处理归档过程中发生任何异常，则抛出页面运行时异常。
+     * 此方法创建一个临时文件，从压缩文件中读取指定的子文件内容，并写入该临时文件。
+     * 主要用于处理压缩文件中单个文件的提取操作。
+     *
+     * @param compressFilePath 压缩文件的路径。
+     * @param compressFileName 压缩文件中要提取的子文件名。
+     * @return 提取的子文件的临时路径。
+     * @throws IOException 如果读写文件时发生错误。
+     * @throws ArchiveException 如果处理压缩文件时发生错误。
      */
     public static Path getSubCompressFile(Path compressFilePath, String compressFileName) throws IOException, ArchiveException {
-        // 处理输入的压缩文件名，确保只使用文件名，不包含路径
+        // 将字符串compressFileName转换为新的字符串对象subFileName
         String subFileName = new String(compressFileName);
+        // 如果子文件名包含"/"，则提取最后一部分作为真正的子文件名
         if (subFileName.contains("/"))
             subFileName = subFileName.substring(subFileName.lastIndexOf("/") + 1);
 
-        // 创建一个临时文件用于保存提取出的文件
+        // 创建一个临时文件，名称基于当前时间戳和子文件名
         Path path = Files.createTempFile(String.valueOf(System.currentTimeMillis()), subFileName);
 
-        try (InputStream is = Files.newInputStream(compressFilePath); BufferedInputStream bis = new BufferedInputStream(is); ArchiveInputStream<ArchiveEntry> ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
+        // 使用try-with-resources语句确保资源正确关闭
+        try (InputStream is = Files.newInputStream(compressFilePath);
+             BufferedInputStream bis = new BufferedInputStream(is);
+             ArchiveInputStream<ArchiveEntry> ais = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
             ArchiveEntry entry;
-            // 遍历压缩文件中的所有条目，查找匹配的文件
+            // 遍历压缩文件的每个条目，直到找到匹配的子文件
             while ((entry = ais.getNextEntry()) != null) {
+                // 如果当前条目的名称与目标子文件名匹配
                 if (compressFileName.equals(entry.getName())) {
-                    // 找到匹配的文件，将其内容写入临时文件
+                    // 读取条目的所有字节，并写入临时文件
                     Files.write(path, ais.readAllBytes());
+                    // 找到匹配后跳出循环
                     break;
                 }
             }
         }
+        // 返回临时文件的路径
         return path;
     }
+
 }
