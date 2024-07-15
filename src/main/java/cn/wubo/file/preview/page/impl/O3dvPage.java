@@ -19,6 +19,7 @@ public class O3dvPage extends AbstractPage {
         Map<String, Object> data = new HashMap<>();
         data.put(CONTEXT_PATH, getContextPath());
         data.put("url", getContextPath() + "/file/preview/download?id=" + getInfo().getId());
+        data.put("fileName", getInfo().getFileName());
         return writePage("o3dv.ftl", data);
     }
 }

@@ -322,7 +322,39 @@ public class FileUtils {
             }
             // 3D文件
             // application/octet-stream
-            else if (StringUtils.endsWithIgnoreCase(filePath, ".3mf")) {
+            else if (StringUtils.endsWithIgnoreCase(filePath, ".3dm")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".3ds")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".3mf")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".amf")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".bim")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".brep")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".dae")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".fbx")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".fcstd")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".gltf")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".ifc")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".iges")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".step")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".stl")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".off")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".ply")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".wrl")) {
                 contentType = "application/octet-stream";
             }
             // 其他文件类型

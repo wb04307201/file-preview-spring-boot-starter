@@ -287,7 +287,6 @@ public class OfficeConfiguration {
                 return ServerResponse.ok().contentType(MediaType.parseMediaType(FileUtils.getMimeType(info.getFileName())))
                         .contentLength(bytes.length)
                         .header("Content-Disposition", "attachment;filename=" + new String(Objects.requireNonNull(info.getFileName()).getBytes(), StandardCharsets.ISO_8859_1))
-                        .header("Accept-Ranges","bytes")
                         .build((res, req) -> {
                     try (OutputStream os = req.getOutputStream()) {
                         IoUtils.writeToStream(bytes, os);
