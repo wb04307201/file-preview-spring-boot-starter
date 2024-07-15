@@ -88,12 +88,12 @@ public class OfficeConfiguration {
      * 创建并初始化文件预览服务。
      * 该方法根据配置的属性选择对应的文件存储和文件预览记录实现，并基于提供的office转换器创建文件预览服务实例。
      *
-     * @param officeConverter 用于文件格式转换的IOfficeConverter接口实例。
-     * @param fileStorageList 文件存储实现的列表，用于根据配置选择合适的文件存储服务。
+     * @param officeConverter       用于文件格式转换的IOfficeConverter接口实例。
+     * @param fileStorageList       文件存储实现的列表，用于根据配置选择合适的文件存储服务。
      * @param filePreviewRecordList 文件预览记录实现的列表，用于根据配置选择合适的文件预览记录服务。
      * @return 初始化后的FilePreviewService实例，提供文件预览功能。
      * @throws StorageRuntimeException 如果根据配置无法找到对应的IFileStorage实现。
-     * @throws RecordRuntimeException 如果根据配置无法找到对应的IFilePreviewRecord实现。
+     * @throws RecordRuntimeException  如果根据配置无法找到对应的IFilePreviewRecord实现。
      */
     @Bean
     public FilePreviewService filePreviewService(IOfficeConverter officeConverter, List<IFileStorage> fileStorageList, List<IFilePreviewRecord> filePreviewRecordList) {
@@ -172,7 +172,7 @@ public class OfficeConfiguration {
 
     /**
      * 添加onlyoffice回调路由函数
-     *
+     * <p>
      * 该函数用于通过路由函数构建器构建一个处理OnlyOffice预览回调的路由。
      * 当OnlyOffice编辑文件后需要回调应用时，会发送请求到此路由进行处理。
      *
@@ -203,7 +203,7 @@ public class OfficeConfiguration {
 
     /**
      * 添加WOPi路由函数
-     *
+     * <p>
      * 该方法用于通过RouterFunctions.Builder构建两个GET请求的路由：
      * 1. 用于获取文件信息；
      * 2. 用于获取文件内容。
@@ -246,7 +246,7 @@ public class OfficeConfiguration {
      * 构建文件预览的路由功能。
      *
      * @param filePreviewService 文件预览服务，用于处理文件预览相关的业务逻辑。
-     * @param renderPages 渲染页面列表，提供不同的页面渲染能力。
+     * @param renderPages        渲染页面列表，提供不同的页面渲染能力。
      * @return RouterFunction<ServerResponse> 路由器功能，用于处理HTTP请求并返回响应。
      */
     @Bean("wb04307201FilePreviewRouter")

@@ -10,7 +10,7 @@
 ## 简介
 > 一个文档在线预览的中间件  
 > 可通过简单的配置即可集成到springboot中  
-> 支持word、excel、ppt、pdf、ofd、图片、视频、音频、markdown、代码、网页、epub电子书、Xmind脑图、压缩文件、bpmn(业务流程管理和符号)、cmmn(案例管理模型和符号)、dmn(决策管理和符号)等格式文件的在线预览
+> 支持word、excel、ppt、pdf、ofd、图片、视频、音频、markdown、代码、网页、epub图书文档、Xmind脑图、压缩文件、bpmn业务流程、cmmn案例管理、dmn决策、3D模型等格式文件的在线预览
 
 ## 支持的文件类型以及相关的的开源项目
 | 文件类型           | 预览组件                                                                             | 预览示例                                                                                                                                          |
@@ -32,7 +32,8 @@
 | bpmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_26.png" width="30%" height="30%">                                                                                               |
 | cmmn           | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_27.png" width="30%" height="30%">                                                                                               |
 | dmn            | [bpmn.io](https://bpmn.io/)                                                      | <img src="img_28.png" width="30%" height="30%">                                                                                               |
-| ofd            | [ofd.js](https://gitee.com/Donal/ofd.js)                                        | <img src="img_30.png" width="30%" height="30%">                                                                                               |
+| ofd            | [ofd.js](https://gitee.com/Donal/ofd.js)                                         | <img src="img_30.png" width="30%" height="30%">                                                                                               |
+| 3D模型           | [Online 3D Viewer](https://gitee.com/Donal/ofd.js)                               | <img src="img_31.png" width="30%" height="30%">                                                                                               |
 
 ## 代码示例
 1. 使用[文档在线预览](https://gitee.com/wb04307201/file-preview-spring-boot-starter)、[多平台文件存储](https://gitee.com/wb04307201/file-storage-spring-boot-starter)、[实体SQL工具](https://gitee.com/wb04307201/sql-util)实现的[文件预览Demo](https://gitee.com/wb04307201/file-preview-demo)
@@ -57,7 +58,7 @@
 <dependency>
     <groupId>com.github.wb04307201</groupId>
     <artifactId>file-preview-spring-boot-starter</artifactId>
-    <version>1.2.9</version>
+    <version>1.2.10</version>
 </dependency>
 ```
 

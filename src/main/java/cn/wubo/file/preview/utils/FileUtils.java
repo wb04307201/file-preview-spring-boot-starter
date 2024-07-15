@@ -34,47 +34,64 @@ public class FileUtils {
     public static final String EMPTY = ".";
 
     /**
-     * 获得文件的扩展名（后缀名），扩展名不带“.”
+     * 获取文件名的扩展名（后缀名）。
+     * 扩展名是指文件名中最后一个“.”之后的部分。如果文件名中没有“.”，或者“.”后面紧跟着路径分隔符，
+     * 则视为该文件没有扩展名。
+     * 特殊情况下，如果文件名以特殊后缀结尾（如".zip.gz"），会返回整个特殊后缀。
      *
-     * @param fileName 文件名
-     * @return 扩展名
+     * @param fileName 文件名或路径
+     * @return 扩展名，如果没有扩展名则返回空字符串，如果文件名是null则返回null。
      */
     public static String extName(String fileName) {
+        // 检查文件名是否为空
         if (fileName == null) {
             return null;
         }
+        // 查找最后一个“.”
         final int index = fileName.lastIndexOf(DOT);
+        // 如果没有“.”，则没有扩展名
         if (index == -1) {
             return EMPTY;
         } else {
+            // 查找倒数第二个“.”，以处理如".zip.gz"这样的特殊后缀
             final int secondToLastIndex = fileName.substring(0, index).lastIndexOf(DOT);
+            // 提取从倒数第二个“.”之后到最后一个“.”之前的字符串
             final String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
+            // 如果该字符串包含在特殊后缀列表中，则返回整个特殊后缀
             if (containsAny(substr, SPECIAL_SUFFIX)) {
                 return substr;
             }
 
+            // 提取从最后一个“.”之后的字符串作为扩展名
             final String ext = fileName.substring(index + 1);
+            // 如果扩展名中包含路径分隔符，则视为没有扩展名
             // 扩展名中不能包含路径相关的符号
             return containsAny(ext, SEPARATOR) ? EMPTY : ext;
         }
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
+     * 检查指定字符串是否包含在给定的字符串数组中。
+     * <p>
+     * 此方法用于验证一个主字符串是否含有一个或多个子字符串。这在某些验证场景中非常有用，比如检查输入文本是否包含敏感词。
      *
-     * @param str      指定字符串
-     * @param testStrs 需要检查的字符串数组
-     * @return 是否包含任意一个字符串
+     * @param str      要检查的主字符串。
+     * @param testStrs 一个字符串数组，包含要检查的子字符串。
+     * @return 如果主字符串包含任何子字符串，则返回true；否则返回false。
      */
     public static boolean containsAny(CharSequence str, CharSequence... testStrs) {
+        // 首先检查主字符串和子字符串数组是否为空，如果任意一个为空，则直接返回false。
         if (!StringUtils.hasLength(str) || arrayIsEmpty(testStrs)) {
             return false;
         }
+        // 遍历子字符串数组，检查主字符串是否包含每个子字符串。
         for (CharSequence checkStr : testStrs) {
+            // 如果主字符串包含当前检查的子字符串，则返回true。
             if (str.toString().contains(checkStr)) {
                 return true;
             }
         }
+        // 如果遍历完所有子字符串后都没有找到匹配的，则返回false。
         return false;
     }
 
@@ -90,40 +107,49 @@ public class FileUtils {
     }
 
     /**
-     * 根据后缀名对文件进行分类
+     * 根据文件扩展名确定文件类型。
      *
-     * @param extName
-     * @return
+     * 此方法通过文件扩展名来识别各种文件类型，并返回相应的类型名称。
+     * 支持的文件类型包括文档、电子表格、演示文稿、图片、视频、音频、压缩文件、
+     * PDF、OFD、HTML、Markdown、SQL、C/C++、Java、XML、JavaScript、JSON、CSS、Python、
+     * EPUB、Xmind、BPMN、CMMN、DMN、文本和其他3D模型文件等。
+     * 对于不识别的文件扩展名，将默认返回"txt"作为文件类型。
+     *
+     * @param extName 文件的扩展名，不包含点号（.）。
+     * @return 文件的类型名称。
      */
     public static String fileType(String extName) {
+        // 使用switch表达式根据文件扩展名的小写形式判断文件类型
         return switch (extName.toLowerCase()) {
-            case "doc", "docm", "docx", "dot", "dotm" -> "word";
-            case "xls", "xlt", "xlsx", "xlsm", "xltx", "xltm", "csv" -> "excel";
-            case "ppt", "pot", "pps", "pptx", "pptm", "potx", "ppsx", "ppsm" -> "power point";
-            case "gif", "jpg", "jpeg", "bmp", "tiff", "tif", "png", "svg" -> "image";
+            case "doc", "docm", "docx", "dot", "dotm" -> "word"; // 文档类型：Microsoft Word
+            case "xls", "xlt", "xlsx", "xlsm", "xltx", "xltm", "csv" -> "excel"; // 电子表格类型：Microsoft Excel
+            case "ppt", "pot", "pps", "pptx", "pptm", "potx", "ppsx", "ppsm" -> "power point"; // 演示文稿类型：Microsoft PowerPoint
+            case "gif", "jpg", "jpeg", "bmp", "tiff", "tif", "png", "svg" -> "image"; // 图片类型
             case "ogg", "webm", "3gp", "asf", "avi", "m4u", "m4v", "mov", "mp4", "mpe", "mpeg", "mpg", "mpg4" ->
-                    "video";
-            case "mp3", "wav", "m4a", "m3u", "m4b", "m4p", "mp2", "mpga", "rmvb", "wma", "wmv" -> "audio";
-            case "zip", "rar", "7z", "gzip" -> "compressed file";
-            case "pdf" -> "pdf";
-            case "ofd" -> "ofd";
-            case "htm", "html" -> "html";
-            case "md" -> "markdown";
-            case "sql" -> "sql";
-            case "c", "cpp", "c++", "h" -> "cpp";
-            case "java" -> "java";
-            case "xml" -> "xml";
-            case "js" -> "javascript";
-            case "json" -> "json";
-            case "css" -> "css";
-            case "py", "py3" -> "python";
-            case "epub" -> "epub";
-            case "xmind" -> "xmind";
-            case "bpmn" -> "bpmn";
-            case "cmmn" -> "cmmn";
-            case "dmn" -> "dmn";
-            case "txt", "log", "conf", "prop", "rc", "sh", "yaml", "properties" -> "text";
-            default -> "txt";
+                    "video"; // 视频类型
+            case "mp3", "wav", "m4a", "m3u", "m4b", "m4p", "mp2", "mpga", "rmvb", "wma", "wmv" -> "audio"; // 音频类型
+            case "zip", "rar", "7z", "gzip" -> "compressed file"; // 压缩文件类型
+            case "pdf" -> "pdf"; // PDF类型
+            case "ofd" -> "ofd"; // OFD类型
+            case "htm", "html" -> "html"; // HTML类型
+            case "md" -> "markdown"; // Markdown类型
+            case "sql" -> "sql"; // SQL类型
+            case "c", "cpp", "c++", "h" -> "cpp"; // C/C++源代码类型
+            case "java" -> "java"; // Java源代码类型
+            case "xml" -> "xml"; // XML类型
+            case "js" -> "javascript"; // JavaScript类型
+            case "json" -> "json"; // JSON类型
+            case "css" -> "css"; // CSS类型
+            case "py", "py3" -> "python"; // Python类型
+            case "epub" -> "epub"; // EPUB电子书类型
+            case "xmind" -> "xmind"; // Xmind思维导图类型
+            case "bpmn" -> "bpmn"; // BPMN业务流程类型
+            case "cmmn" -> "cmmn"; // CMMN案例管理类型
+            case "dmn" -> "dmn"; // DMN决策模型类型
+            case "txt", "log", "conf", "prop", "rc", "sh", "yaml", "properties" -> "text"; // 文本类型
+            case "3dm", "3ds", "3mf", "amf", "bim", "brep", "dae", "fbx", "fcstd", "gltf", "ifc", "iges", "step", "stl",
+                 "obj", "off", "ply", "wrl" -> "o3dv"; // 3D模型类型
+            default -> "txt"; // 默认为文本类型
         };
     }
 
@@ -138,16 +164,19 @@ public class FileUtils {
     }
 
     /**
-     * 根据文件扩展名获得MimeType
+     * 根据文件路径获取文件的MIME类型。
      *
-     * @param filePath  文件路径或文件名
-     * @param checkFile 是否检测本地文件
-     * @return MimeType
+     * @param filePath 文件路径。
+     * @param checkFile 是否检查文件的实际内容以确定MIME类型。
+     * @return 文件的MIME类型。
+     * @throws IOException 如果发生I/O错误。
      */
     public static String getMimeType(String filePath, Boolean checkFile) throws IOException {
+        // 使用URLConnection.getFileNameMap().getContentTypeFor()尝试获取文件的MIME类型
         String contentType = URLConnection.getFileNameMap().getContentTypeFor(filePath);
         if (null == contentType) {
-            // 补充一些常用的mimeType
+            // 如果获取失败，则根据文件后缀手动匹配MIME类型
+            // 下面是各种文件类型及其对应的MIME类型的匹配逻辑
             // 压缩文件
             if (StringUtils.endsWithIgnoreCase(filePath, ".rar")) {
                 contentType = "application/x-rar-compressed";
@@ -166,7 +195,7 @@ public class FileUtils {
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".zip")) {
                 contentType = "application/x-zip-compressed";
             }
-            // office
+            // office文档
             // word
             else if (StringUtils.endsWithIgnoreCase(filePath, ".doc")) {
                 contentType = "application/msword";
@@ -205,7 +234,7 @@ public class FileUtils {
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".ppsm")) {
                 contentType = "application/vnd.ms-powerpoint.slideshow.macroenabled.12";
             }
-            // 视频
+            // 视频文件
             else if (StringUtils.endsWithIgnoreCase(filePath, ".3gp")) {
                 contentType = "video/3gpp";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".asf")) {
@@ -225,7 +254,7 @@ public class FileUtils {
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".webm") || StringUtils.endsWithIgnoreCase(filePath, ".weba")) {
                 contentType = "video/webm";
             }
-            // 音频
+            // 音频文件
             else if (StringUtils.endsWithIgnoreCase(filePath, ".m3u")) {
                 contentType = "audio/x-mpegurl";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".m4a") || StringUtils.endsWithIgnoreCase(filePath, ".m4b") || StringUtils.endsWithIgnoreCase(filePath, ".m4p")) {
@@ -245,7 +274,7 @@ public class FileUtils {
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".mpga")) {
                 contentType = "audio/mpeg";
             }
-            // 图片
+            // 图片文件
             else if (StringUtils.endsWithIgnoreCase(filePath, ".bmp")) {
                 contentType = "image/bmp";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".gif")) {
@@ -261,7 +290,7 @@ public class FileUtils {
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".webp")) {
                 contentType = "image/webp";
             }
-            // 文本
+            // 文本文件
             else if (StringUtils.endsWithIgnoreCase(filePath, ".txt") || StringUtils.endsWithIgnoreCase(filePath, ".text") || StringUtils.endsWithIgnoreCase(filePath, ".conf") || StringUtils.endsWithIgnoreCase(filePath, ".prop") || StringUtils.endsWithIgnoreCase(filePath, ".rc") || StringUtils.endsWithIgnoreCase(filePath, ".yaml") || StringUtils.endsWithIgnoreCase(filePath, ".properties")) {
                 contentType = "text/plain";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".htm") || StringUtils.endsWithIgnoreCase(filePath, ".html")) {
@@ -291,7 +320,44 @@ public class FileUtils {
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".py3")) {
                 contentType = "text/x-python3";
             }
-            // 其他
+            // 3D文件
+            // application/octet-stream
+            else if (StringUtils.endsWithIgnoreCase(filePath, ".3dm")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".3ds")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".3mf")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".amf")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".bim")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".brep")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".dae")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".fbx")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".fcstd")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".gltf")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".ifc")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".iges")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".step")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".stl")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".off")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".ply")) {
+                contentType = "application/octet-stream";
+            } else if (StringUtils.endsWithIgnoreCase(filePath, ".wrl")) {
+                contentType = "application/octet-stream";
+            }
+            // 其他文件类型
             else if (StringUtils.endsWithIgnoreCase(filePath, ".jar")) {
                 contentType = "application/java-archive";
             } else if (StringUtils.endsWithIgnoreCase(filePath, ".mpc")) {
@@ -321,26 +387,29 @@ public class FileUtils {
             }
         }
 
+        // 如果通过文件后缀无法确定contentType，且checkFile为true，则通过检查文件的实际内容来尝试确定contentType
         // 补充
         if (null == contentType && checkFile) {
             contentType = Files.probeContentType(Paths.get(filePath));
         }
 
+        // 如果仍然无法确定contentType，则默认为"text/plain"
         if (null == contentType) {
             contentType = "text/plain";
         }
 
+        // 返回最终确定的contentType
         return contentType;
     }
 
     /**
      * 将指定的字节数组写入临时文件。
-     *
+     * <p>
      * 该方法通过结合当前系统时间和指定的tempFileName来生成唯一的临时文件名，
      * 将字节数组写入文件，然后返回创建的文件路径。使用Files.createTempFile确保了文件名的唯一性和临时文件位置的安全性。
      *
      * @param tempFileName 临时文件名的后缀。与当前系统时间组合以生成唯一的文件名。
-     * @param bytes 要写入文件的字节数组。
+     * @param bytes        要写入文件的字节数组。
      * @return 创建的临时文件的Path对象，表示文件路径。
      * @throws IOException 如果在文件创建或写入过程中发生I/O错误。
      */
@@ -355,14 +424,14 @@ public class FileUtils {
 
     /**
      * 从压缩文件中提取指定的子文件，并返回其临时路径。
-     *
+     * <p>
      * 此方法创建一个临时文件，从压缩文件中读取指定的子文件内容，并写入该临时文件。
      * 主要用于处理压缩文件中单个文件的提取操作。
      *
      * @param compressFilePath 压缩文件的路径。
      * @param compressFileName 压缩文件中要提取的子文件名。
      * @return 提取的子文件的临时路径。
-     * @throws IOException 如果读写文件时发生错误。
+     * @throws IOException      如果读写文件时发生错误。
      * @throws ArchiveException 如果处理压缩文件时发生错误。
      */
     public static Path getSubCompressFile(Path compressFilePath, String compressFileName) throws IOException, ArchiveException {
